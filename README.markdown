@@ -17,9 +17,10 @@ Or the preferred external method:
 
 	$('elementId').addTip('Content', { options });
 
+For the complete documentation please visit [www.opentip.org][opentip].
 
 ## Author
-Opentip is written by Matthias Loitsch.
+Opentip is written by Matthias Loitsch.<br>
 All graphics by Tjandra Mayerhold.
 
 ## License
