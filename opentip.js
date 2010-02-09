@@ -1,5 +1,5 @@
 /**
- ** More infos at http://www.opentip.org
+ ** More info at http://www.opentip.org
  **
  ** Copyright (c) 2009, Matthias Loitsch
  ** Graphics by Tjandra Mayerhold
