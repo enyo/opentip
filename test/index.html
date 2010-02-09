@@ -135,7 +135,7 @@
 		Ajax and hooked
 	</div>
 	<script type="text/javascript">
-		$('testE').addTip({ title: 'Ajax test', hideTrigger: 'closeButton', targetJoint: [ 'right', 'middle'], target: true, tipJoint: ['left', 'bottom'], stem: ['left','bottom'], ajax: { url: 'ajaxtest.php' } });
+		$('testE').addTip({ title: 'Ajax test', hideTrigger: 'closeButton', targetJoint: [ 'right', 'middle'], target: true, tipJoint: ['left', 'bottom'], stem: ['left','bottom'], ajax: { url: 'ajaxtest.html' } });
 	</script>
 	<br />
 
@@ -258,7 +258,7 @@
 	<div class="test">
 		Testing that opentip automatically uses the href attribute of links.<br />
 		Also: The showOn is not defined. But the tooltip is defined in the onclick event. Opentip should get that.<br />
-		<a id="testL" href="ajaxtest.php" onclick="javascript:Tips.add(this, event, { ajax:true });">This should get the content via ajax from the href attribute.</a>
+		<a id="testL" href="ajaxtest.html" onclick="javascript:Tips.add(this, event, { ajax:true });">This should get the content via ajax from the href attribute.</a>
 	</div>
 
 
@@ -278,10 +278,10 @@
 
 	<div class="test" id="testN">
 		Testing that opentip automatically uses the href attribute of links.<br />
-		<a href="ajaxtest.php">Link a</a>
-		<a href="ajaxtest.php">Link b</a>
-		<a href="ajaxtest.php">Link c</a>
-		<a href="ajaxtest.php">Link d</a>
+		<a href="ajaxtest.html">Link a</a>
+		<a href="ajaxtest.html">Link b</a>
+		<a href="ajaxtest.html">Link c</a>
+		<a href="ajaxtest.html">Link d</a>
 	</div>
 	<script type="text/javascript">
 		$('testN').select('a').invoke('addTip', { showOn: 'click', ajax: true });
