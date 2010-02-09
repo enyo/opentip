@@ -1,5 +1,5 @@
 /**
- ** More infos at http://www.opentip.org
+ ** More info at http://www.opentip.org
  **
  ** Copyright (c) 2009, Matthias Loitsch
  ** Graphics by Tjandra Mayerhold
@@ -41,7 +41,7 @@
 
 var Opentip = {
 
-	Version: '1.2.3',
+	Version: '1.2.4',
 	REQUIRED_PROTOTYPE_VERSION: '1.6.0',
 	REQUIRED_SCRIPTACULOUS_VERSION: '1.8.0',
 	cached: {},
