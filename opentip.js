@@ -489,15 +489,24 @@ var TipClass = Class.create({
 
 		this.lastPosition = position;
 		if (position) {
-			Opentip.debug('Positioning element.');
+			Opentip.debug('Positioning element #', this.id);
 			var style = { 'left': position.left + 'px', 'top': position.top + 'px' };
 			this.container.setStyle(style);
 			if (Opentip.useIFrame() && this.iFrameElement) {
 				this.iFrameElement.setStyle({ width: this.container.getWidth() + 'px', height: this.container.getHeight() + 'px' });
 			}
+
+			/**
+			 * Following is a redraw fix, because I noticed some drawing errors in some browsers when tooltips where overlapping.
+			 */
+			var container = this.container;
+			(function() {
+				container.style.visibility = "hidden"; // I chose visibility instead of display so that I don't interfere with appear/disappear effects.
+				var redrawFix = container.offsetHeight;
+				container.style.visibility = "visible";
+			}).defer();
 		}
 		this.positionStem();
-//		if (this.options.containInViewport && !tipJ && !trgJ) this.ensureViewportContainment(evt);
 	},
 	getPosition: function(evt, tipJ, trgJ, stem) {
 		var tipJ = tipJ || this.options.tipJoint;
@@ -560,7 +569,6 @@ var TipClass = Class.create({
 	ensureViewportContainment: function(evt, position) {
 		// Sometimes the element is theoretically visible, but an effect is not yet showing it.
 		// So the calculation of the offsets is incorrect sometimes, which results in faulty repositioning.
-//		if (!this.visible || !this.container.visible() || !this.sticksOut(position)) return position;
 		if (!this.visible) return position;
 
 		var sticksOut = [ this.sticksOutX(position), this.sticksOutY(position) ];
