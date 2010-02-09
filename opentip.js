@@ -512,7 +512,12 @@ var TipClass = Class.create({
 			if (trgJ[0] == 'right')  {
 				// For wrapping inline elements, left + width does not give the right border, because left is where
 				// the element started, not its most left position.
-				position.left = (typeof this.options.target.getBoundingClientRect != 'undefined') ? this.options.target.getBoundingClientRect().right : (position.left + this.options.target.getWidth());
+				if (typeof this.options.target.getBoundingClientRect != 'undefined') {
+					position.left = this.options.target.getBoundingClientRect().right + $(document.viewport).getScrollOffsets().left;
+				}
+				else {
+					position.left = position.left + this.options.target.getWidth();
+				}
 			}
 			else if (trgJ[0] == 'center') { position.left += Math.round(this.options.target.getWidth() / 2); }
 			if      (trgJ[1] == 'bottom') { position.top += this.options.target.getHeight(); }
