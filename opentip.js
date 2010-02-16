@@ -198,7 +198,7 @@ var TipClass = Class.create({
 		else if (typeof(arguments[3]) == 'object') { this.content = arguments[2]; options = arguments[3]; }
 		else if (typeof(arguments[4]) == 'object') { this.content = arguments[2]; options = arguments[4];  options.title = arguments[3]; }
 		else {
-			if (Object.isString(arguments[2])) this.content = arguments[2];
+			if (Object.isString(arguments[2]) || Object.isFunction(arguments[2])) this.content = arguments[2];
 			if (Object.isString(arguments[3])) options.title = arguments[3];
 		}
 
