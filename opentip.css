@@ -11,6 +11,7 @@
 	position: relative;
 	font-size: 13px;
 	line-height: 120%;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 	-moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 	-webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
@@ -79,6 +80,7 @@
 	background-color: #fff18f;
 	color: black;
 	padding: 6px 10px;
+	box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.1);
 	-moz-box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.1);
 	-webkit-box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.1);
 }
@@ -96,6 +98,7 @@
 	background-color: rgba(0,0,0,0.2);
 	width: 21px;
 	height: 21px;
+	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 }
@@ -107,8 +110,10 @@
 	border: 7px solid #81b4da;
 	background-color: #f9fbfc;
 	color: #3f5d73;
+	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 	-moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 	-webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 }
@@ -131,6 +136,7 @@
 	background-color: #81B4DA;
 	width: 21px;
 	height: 21px;
+	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 }
@@ -138,6 +144,7 @@
 .style-slick .opentip {
 	border: 1px solid #eeeeee;
 	background: #f7f7f7;
+	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 }
@@ -158,6 +165,7 @@
 	top: -11px;
 }
 .style-slick .opentipButtons .close {
+	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	background-color: rgba(0, 0, 0, 0.1);
@@ -170,8 +178,10 @@
 .style-glass .opentip {
 	background: white;
 	background: rgba(255, 255, 255, 0.9);
+	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	box-shadow: 0 0 15px rgba(51, 113, 136, 0.5);
 	-moz-box-shadow: 0 0 15px rgba(51, 113, 136, 0.5);
 	-webkit-box-shadow: 0 0 15px rgba(51, 113, 136, 0.5);
 	padding: 20px 30px; 
@@ -191,6 +201,7 @@
 }
 .style-glass .opentipButtons .close {
 	background-image: url("images/button.close.big.ffffff.png");
+	border-radius: 0 5px 0 5px;
 	-moz-border-radius: 0 5px 0 5px;
 	-webkit-border-top-right-radius: 5px;
 	-webkit-border-bottom-left-radius: 5px;
