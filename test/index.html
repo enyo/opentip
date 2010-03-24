@@ -311,13 +311,43 @@
 		<button onclick="javascript:Tips.add(this, event, 'This tooltip should appear every time', { showOn: 'creation' });">Click me!</button>
 
 	</div>
-<br />
+
+	<br />
+
 	<div class="test">
 		Testing that 'hideTrigger' set to tip, works.
 		
 		<button onclick="javascript:Tips.add(this, event, 'This tooltip should disappear when mouseOut the tip.', { target: true, hideTrigger: 'tip', hideOn: 'mouseout' });">Click me!</button>
 
 	</div>
+
+	<br />
+
+	<div class="test" id="groupTest">
+		Testing groups.
+		When you click on one of those buttons, the other tooltips created with any of those buttons should disappear.
+		
+		<script type="text/javascript">
+			Opentip.styles.grouped = {
+				stem: true,
+				target: true,
+				showOn: 'click',
+				hideOn: 'click'
+				,
+				group: 'myGroup'
+			}
+		</script>
+		
+		<button>Click me!</button>
+		<button>Click me!</button>
+		<button>Click me!</button>
+		<button>Click me!</button>
+
+	</div>
+	<script type="text/javascript">
+		$('groupTest').select('button').each(function(button) { button.addTip('Test', { style: 'grouped' }); });
+	</script>
+
 
 
 	<div id="helper" style="background: rgba(255, 0, 0, 0.2);position: absolute;"></div>

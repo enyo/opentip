@@ -105,7 +105,8 @@ Opentip.styles = {
 		tipJoint: [ 'left', 'top' ], // POSITION
 		target: null, // null (no target, opentip uses mouse as target)   ||   true (target is the triggerElement)   ||   elementId|element (for another element)
 		targetJoint: null, // POSITION (Ignored if target == null)   ||   null (targetJoint is the opposite of tipJoint)
-		ajax: false // Ajax options. eg: { url: 'yourUrl.html', options: { ajaxOptions... } } or { options: { ajaxOptions } /* This will use the href of the A element the tooltip is attached to */ }
+		ajax: false, // Ajax options. eg: { url: 'yourUrl.html', options: { ajaxOptions... } } or { options: { ajaxOptions } /* This will use the href of the A element the tooltip is attached to */ }
+		group: null // You can group opentips together. So when a tooltip shows, it looks if there are others in the same group, and hides them.
 	},
 	slick: {
 		className: 'slick',
@@ -159,6 +160,9 @@ var Tips = {
 		Opentip.postponeCreation(createTip);
 		
 		return;
+	},
+	hideGroup: function(groupName) {
+	  this.list.findAll(function(t) { return (t.options.group == groupName); }).invoke('doHide');
 	}
 };
 
@@ -311,10 +315,11 @@ var TipClass = Class.create({
 		if (this.options.showEffect || this.options.hideEffect) this.queue = { limit: 1, position: 'end', scope: this.container.identify() };
 
 		this.setupObserversForHiddenTip();
+		this.setupObserversForReallyHiddenTip();
 	},
 	deactivate: function() {
 		this.doHide();
-		this.setupObserversForHiddenTip();
+		this.setupObserversForReallyHiddenTip();
 	},
 	buildContainer: function() {
 		this.container = $(Builder.node('div', { className: 'opentipContainer style-' + this.options.className + (this.options.ajax ? ' loading' : '') })).setStyle({ display: 'none', position: 'absolute' });
@@ -355,11 +360,13 @@ var TipClass = Class.create({
 	clearTimeouts: function() { this.clearShowTimeout(); this.clearHideTimeout(); },
 	/** Gets called only when doShow() is called, not when show() is called **/
 	setupObserversForReallyVisibleTip: function() {
+		Opentip.debug('REALLY VISIBLE', this.id);
 		this.options.showTriggerElementsWhenVisible.each(function(pair) { $(pair.element).observe(pair.event, this.bound.show); }, this);
   },
   /** Gets only called when show() is called. show() might not really result in showing the tooltip, because there may
       be another trigger that calls hide() directly after. **/
 	setupObserversForVisibleTip: function() {
+		Opentip.debug('VISIBLE', this.id);
 		this.options.hideTriggerElements.each(function(pair) { $(pair.element).observe(pair.event, this.bound.hide); }, this);
 		this.options.showTriggerElementsWhenHidden.each(function(pair) { $(pair.element).stopObserving(pair.event, this.bound.show); }, this);
 		Event.observe(document.onresize ? document : window, "resize", this.bound.position);
@@ -371,36 +378,45 @@ var TipClass = Class.create({
   },
   /** Gets called everytime hide() is called. See setupObserversForVisibleTip for more info **/
 	setupObserversForHiddenTip: function() {
-		this.options.showTriggerElementsWhenHidden.each(function(pair) { $(pair.element).observe(pair.event, this.bound.show); }, this);
-		this.options.hideTriggerElements.each(function(pair) { $(pair.element).stopObserving(pair.event, this.bound.hide); }, this);
+		this.options.showTriggerElementsWhenHidden.each(function(pair) {
+  		Opentip.debug(pair.element.identify(), pair.event, this.id);
+		  $(pair.element).observe(pair.event, this.bound.show);
+	  }, this);
+		this.options.hideTriggerElements.each(function(pair) {
+  		Opentip.debug('STOP', pair.element.identify(), pair.event, this.id);
+		  $(pair.element).stopObserving(pair.event, this.bound.hide);
+		}, this);
 		Event.stopObserving(document.onresize ? document : window, "resize", this.bound.position);
 		Event.stopObserving(window, "scroll", this.bound.position);
 	},
 	show: function(evt) {
-		Opentip.debug('Show', this.id);
-
-		this.clearTimeouts();
-
-		this.waitingToHide = false;
-		this.waitingToShow = false;
-
-		this.setupObserversForVisibleTip();
-
-		this.followMousePosition();
-
+	  if (this.waitingToHide) {
+  		this.clearTimeouts();
+  		this.waitingToHide = false;
+  		this.setupObserversForVisibleTip();
+	  }
 		if (this.visible) return;
+
+		Opentip.debug('Show', this.id);
 
 		this.waitingToShow = true;
 
+    // Even though it is not yet visible, I already attach the observers, so the tooltip won't show if a hideEvent is triggered.
+		this.setupObserversForVisibleTip();
+
+    // So the tooltip is positioned as soon as it shows.
+		this.followMousePosition();
 		this.position(evt);
 
 		if (!this.options.delay) this.bound.doShow(evt);
 		else this.timeoutId = this.bound.doShow.delay(this.options.delay);
 	},
 	doShow: function() {
+	  this.clearTimeouts();
+	  if (this.visible) return;
+
 		Opentip.debug('DoShow', this.id);
 
-		var wasAlreadyVisible = this.visible;
 		this.visible = true;
 		this.waitingToShow = false;
 
@@ -415,10 +431,10 @@ var TipClass = Class.create({
 		this.ensureElement();
 		this.container.setStyle({ zIndex: Opentip.lastZIndex += 1 });
 
-		this.setupObserversForVisibleTip();
 		this.setupObserversForReallyVisibleTip();
+		this.setupObserversForVisibleTip();
 
-		if (wasAlreadyVisible) return;
+    if (this.options.group) Tips.hideGroup(this.options.group);
 
 		if (this.options.showEffect || this.options.hideEffect) this.cancelEffects();
 
@@ -472,38 +488,36 @@ var TipClass = Class.create({
 		}
 	},
 	hide: function(afterFinish) {
-		Opentip.debug('Hide', this.id);
-
-		this.clearTimeouts();
-
-		this.waitingToHide = false;
-		this.waitingToShow = false;
-
-		this.setupObserversForHiddenTip();
-
-		if (!this.visible) {
+	  if (this.waitingToShow) {
+  		this.clearTimeouts();
 			this.stopFollowingMousePosition();
-			return;
-		}
+  		this.waitingToShow = false;
+  		this.setupObserversForHiddenTip();
+	  }
+	  if (!this.visible) return;
+
+		Opentip.debug('Hide', this.id);
 
 		this.waitingToHide = true;
 
-		this.hideTimeoutId = this.bound.doHide.delay(this.options.hideDelay, afterFinish); // hide has to be delayed because when hovering children a mousout is registered.
+    // We start observing even though it is not yet hidden, so the tooltip does not disappear when a showEvent is triggered.
+		this.setupObserversForHiddenTip();
+
+		this.hideTimeoutId = this.bound.doHide.delay(this.options.hideDelay, afterFinish); // hide has to be delayed because when hovering children a mouseout is registered.
 	},
 	doHide: function(afterFinish) {
+	  this.clearTimeouts();
+	  if (!this.visible) return;
+
+		this.visible = false;
+		this.waitingToHide = false;
+
 		Opentip.debug('DoHide', this.id);
 
 		this.deactivateElementEnsurance();
 
-		this.clearTimeouts();
-		this.setupObserversForHiddenTip();
 		this.setupObserversForReallyHiddenTip();
-
-		this.waitingToHide = false;
-
-		if (!this.visible) return;
-
-		this.visible = false;
+		this.setupObserversForHiddenTip();
 
 		if (!this.options.fixed) this.stopFollowingMousePosition();
 
