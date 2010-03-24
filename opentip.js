@@ -252,15 +252,47 @@ var TipClass = Class.create({
 
 		this.buildContainer();
 
+
+		this.options.showTriggerElementsWhenHidden = [];
+
+    if (this.options.showOn && this.options.showOn != 'creation') {
+      this.options.showTriggerElementsWhenHidden.push({ element: this.triggerElement, event: this.options.showOn });
+    }
+
+		this.options.showTriggerElementsWhenVisible = [];
+
+
 		this.options.hideTriggerElements = [];
 
 		if (this.options.hideTrigger) {
+		  var hideOnEvent = null;
+		  var hideTriggerElement = null;
 			switch (this.options.hideTrigger) {
-				case 'trigger':     this.options.hideTriggerElements.push({ element: this.triggerElement, event: this.options.hideOn ? this.options.hideOn : 'mouseout' }); break;
-				case 'tip':         this.options.hideTriggerElements.push({ element: this.container,      event: this.options.hideOn ? this.options.hideOn : 'mouseover' }); break;
-				case 'target':      this.options.hideTriggerElements.push({ element: this.options.target, event: this.options.hideOn ? this.options.hideOn : 'mouseover' }); break;
+				case 'trigger':
+				  hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseout';
+				  hideTriggerElement = this.triggerElement;
+				  break;
+				case 'tip':
+				  hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
+				  hideTriggerElement = this.container;
+				  break;
+				case 'target':
+			    hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
+				  hideTriggerElement = this.options.target;
+				  break;
 				case 'closeButton': break;
-				default:            this.options.hideTriggerElements.push({ element: $(this.options.hideTrigger), event: this.options.hideOn ? this.options.hideOn : 'mouseover' }); break;
+				default:
+		      hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
+				  hideTriggerElement = $(this.options.hideTrigger);
+				  break;
+			}
+			if (hideTriggerElement) {
+			  this.options.hideTriggerElements.push({ element: hideTriggerElement, event: hideOnEvent });
+  			if (hideOnEvent == 'mouseout') {
+  			  // When the hide trigger is mouseout, we have to attach a mouseover trigger to that element, so the tooltip doesn't disappear when
+  			  // hovering child elements. (Hovering children fires a mouseout mouseover event)
+          this.options.showTriggerElementsWhenVisible.push({ element: hideTriggerElement, event: 'mouseover' });
+  			}
 			}
 		}
 
@@ -321,14 +353,25 @@ var TipClass = Class.create({
 	clearShowTimeout: function() { window.clearTimeout(this.timeoutId); },
 	clearHideTimeout: function() { window.clearTimeout(this.hideTimeoutId); },
 	clearTimeouts: function() { this.clearShowTimeout(); this.clearHideTimeout(); },
+	/** Gets called only when doShow() is called, not when show() is called **/
+	setupObserversForReallyVisibleTip: function() {
+		this.options.showTriggerElementsWhenVisible.each(function(pair) { $(pair.element).observe(pair.event, this.bound.show); }, this);
+  },
+  /** Gets only called when show() is called. show() might not really result in showing the tooltip, because there may
+      be another trigger that calls hide() directly after. **/
 	setupObserversForVisibleTip: function() {
 		this.options.hideTriggerElements.each(function(pair) { $(pair.element).observe(pair.event, this.bound.hide); }, this);
-		if (this.options.showOn && this.options.showOn != 'creation') this.triggerElement.stopObserving(this.options.showOn, this.bound.show);
+		this.options.showTriggerElementsWhenHidden.each(function(pair) { $(pair.element).stopObserving(pair.event, this.bound.show); }, this);
 		Event.observe(document.onresize ? document : window, "resize", this.bound.position);
 		Event.observe(window, "scroll", this.bound.position);
 	},
+	/** Gets called only when doHide() is called. */
+	setupObserversForReallyHiddenTip: function() {
+		this.options.showTriggerElementsWhenVisible.each(function(pair) { $(pair.element).stopObserving(pair.event, this.bound.show); }, this);
+  },
+  /** Gets called everytime hide() is called. See setupObserversForVisibleTip for more info **/
 	setupObserversForHiddenTip: function() {
-		if (this.options.showOn && this.options.showOn != 'creation') $(this.triggerElement).observe(this.options.showOn, this.bound.show);
+		this.options.showTriggerElementsWhenHidden.each(function(pair) { $(pair.element).observe(pair.event, this.bound.show); }, this);
 		this.options.hideTriggerElements.each(function(pair) { $(pair.element).stopObserving(pair.event, this.bound.hide); }, this);
 		Event.stopObserving(document.onresize ? document : window, "resize", this.bound.position);
 		Event.stopObserving(window, "scroll", this.bound.position);
@@ -373,6 +416,7 @@ var TipClass = Class.create({
 		this.container.setStyle({ zIndex: Opentip.lastZIndex += 1 });
 
 		this.setupObserversForVisibleTip();
+		this.setupObserversForReallyVisibleTip();
 
 		if (wasAlreadyVisible) return;
 
@@ -453,6 +497,7 @@ var TipClass = Class.create({
 
 		this.clearTimeouts();
 		this.setupObserversForHiddenTip();
+		this.setupObserversForReallyHiddenTip();
 
 		this.waitingToHide = false;
 
