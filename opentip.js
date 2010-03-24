@@ -314,8 +314,9 @@ var TipClass = Class.create({
 
 		if (this.options.showEffect || this.options.hideEffect) this.queue = { limit: 1, position: 'end', scope: this.container.identify() };
 
+    // The order is important here! Do not reverse.
+    this.setupObserversForReallyHiddenTip();
 		this.setupObserversForHiddenTip();
-		this.setupObserversForReallyHiddenTip();
 	},
 	deactivate: function() {
 		this.doHide();
@@ -360,13 +361,11 @@ var TipClass = Class.create({
 	clearTimeouts: function() { this.clearShowTimeout(); this.clearHideTimeout(); },
 	/** Gets called only when doShow() is called, not when show() is called **/
 	setupObserversForReallyVisibleTip: function() {
-		Opentip.debug('REALLY VISIBLE', this.id);
 		this.options.showTriggerElementsWhenVisible.each(function(pair) { $(pair.element).observe(pair.event, this.bound.show); }, this);
   },
   /** Gets only called when show() is called. show() might not really result in showing the tooltip, because there may
       be another trigger that calls hide() directly after. **/
 	setupObserversForVisibleTip: function() {
-		Opentip.debug('VISIBLE', this.id);
 		this.options.hideTriggerElements.each(function(pair) { $(pair.element).observe(pair.event, this.bound.hide); }, this);
 		this.options.showTriggerElementsWhenHidden.each(function(pair) { $(pair.element).stopObserving(pair.event, this.bound.show); }, this);
 		Event.observe(document.onresize ? document : window, "resize", this.bound.position);
@@ -378,14 +377,8 @@ var TipClass = Class.create({
   },
   /** Gets called everytime hide() is called. See setupObserversForVisibleTip for more info **/
 	setupObserversForHiddenTip: function() {
-		this.options.showTriggerElementsWhenHidden.each(function(pair) {
-  		Opentip.debug(pair.element.identify(), pair.event, this.id);
-		  $(pair.element).observe(pair.event, this.bound.show);
-	  }, this);
-		this.options.hideTriggerElements.each(function(pair) {
-  		Opentip.debug('STOP', pair.element.identify(), pair.event, this.id);
-		  $(pair.element).stopObserving(pair.event, this.bound.hide);
-		}, this);
+		this.options.showTriggerElementsWhenHidden.each(function(pair) { $(pair.element).observe(pair.event, this.bound.show); }, this);
+		this.options.hideTriggerElements.each(function(pair) { $(pair.element).stopObserving(pair.event, this.bound.hide); }, this);
 		Event.stopObserving(document.onresize ? document : window, "resize", this.bound.position);
 		Event.stopObserving(window, "scroll", this.bound.position);
 	},
@@ -417,6 +410,9 @@ var TipClass = Class.create({
 
 		Opentip.debug('DoShow', this.id);
 
+    if (this.options.group) Tips.hideGroup(this.options.group);
+
+
 		this.visible = true;
 		this.waitingToShow = false;
 
@@ -431,10 +427,9 @@ var TipClass = Class.create({
 		this.ensureElement();
 		this.container.setStyle({ zIndex: Opentip.lastZIndex += 1 });
 
+    // The order is important here! Do not reverse.
 		this.setupObserversForReallyVisibleTip();
 		this.setupObserversForVisibleTip();
-
-    if (this.options.group) Tips.hideGroup(this.options.group);
 
 		if (this.options.showEffect || this.options.hideEffect) this.cancelEffects();
 
@@ -516,6 +511,7 @@ var TipClass = Class.create({
 
 		this.deactivateElementEnsurance();
 
+    // The order is important here! Do not reverse.
 		this.setupObserversForReallyHiddenTip();
 		this.setupObserversForHiddenTip();
 
@@ -549,7 +545,6 @@ var TipClass = Class.create({
 
 		this.lastPosition = position;
 		if (position) {
-			Opentip.debug('Positioning element #', this.id);
 			var style = { 'left': position.left + 'px', 'top': position.top + 'px' };
 			this.container.setStyle(style);
 			if (Opentip.useIFrame() && this.iFrameElement) {
