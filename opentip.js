@@ -41,7 +41,7 @@
 
 var Opentip = {
 
-	Version: '1.2.4',
+	Version: '1.2.5',
 	REQUIRED_PROTOTYPE_VERSION: '1.6.0',
 	REQUIRED_SCRIPTACULOUS_VERSION: '1.8.0',
 	cached: {},
@@ -329,6 +329,7 @@ var TipClass = Class.create({
 	},
 	setupObserversForHiddenTip: function() {
 		if (this.options.showOn && this.options.showOn != 'creation') $(this.triggerElement).observe(this.options.showOn, this.bound.show);
+		this.options.hideTriggerElements.each(function(pair) { $(pair.element).stopObserving(pair.event, this.bound.hide); }, this);
 		Event.stopObserving(document.onresize ? document : window, "resize", this.bound.position);
 		Event.stopObserving(window, "scroll", this.bound.position);
 	},
