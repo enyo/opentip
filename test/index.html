@@ -222,7 +222,7 @@
 		This test shows that the content can be a function, executed the first time it's shown. (This avoids unnecessary calculations when a tooltip is not shown)
 	</div>
 
-
+	<br />
 	<div class="test" id="testI">
 		Testing the $(element).addTip() function;
 	</div>
@@ -309,6 +309,13 @@
 		Testing that 'showOnCreation' also works if the tooltip is already created, and shown again.
 		
 		<button onclick="javascript:Tips.add(this, event, 'This tooltip should appear every time', { showOn: 'creation' });">Click me!</button>
+
+	</div>
+<br />
+	<div class="test">
+		Testing that 'hideTrigger' set to tip, works.
+		
+		<button onclick="javascript:Tips.add(this, event, 'This tooltip should disappear when mouseOut the tip.', { target: true, hideTrigger: 'tip', hideOn: 'mouseout' });">Click me!</button>
 
 	</div>
 
