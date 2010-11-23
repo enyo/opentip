@@ -140,6 +140,9 @@ var Tips = {
 		if (element._opentipAddedTips) {
 			/* TODO: Now it just returns the first found... try to find the correct one. */
 			var tip = this.list.find(function(t) { return (t.triggerElement === element); });
+			if (tip.waitingToShow) {
+			    tip.show();
+			}
 			if (tip.options.showOn == 'creation') tip.show();
 			Opentip.debug('Using an existing opentip');
 			return;
