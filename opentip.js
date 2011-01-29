@@ -324,7 +324,7 @@ var TipClass = Class.create({
     this.setupObserversForReallyHiddenTip();
   },
   buildContainer: function() {
-    this.container = $(Builder.node('div', { className: 'opentipContainer style-' + this.options.className + (this.options.ajax ? ' loading' : '') })).setStyle({ display: 'none', position: 'absolute' });
+    this.container = $(Builder.node('div', { className: 'opentipContainer style-' + this.options.className + (this.options.ajax ? ' opentip-loading' : '') + (this.options.fixed ? ' opentip-fixed' : '') })).setStyle({ display: 'none', position: 'absolute' });
   },
   buildElements: function() {
     if (this.options.stem) {
