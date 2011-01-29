@@ -41,7 +41,7 @@
 
 var Opentip = {
 
-  Version: '1.2.5',
+  Version: '1.2.6',
   REQUIRED_PROTOTYPE_VERSION: '1.6.0',
   REQUIRED_SCRIPTACULOUS_VERSION: '1.8.0',
   cached: {},
