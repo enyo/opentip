@@ -357,6 +357,11 @@
 		$('groupTest').select('button').each(function(button) { button.addTip('Test', { style: 'grouped' }); });
 	</script>
 
+	<br />
+
+	<div class="test" id="testEscapeHtml" onclick="javascript:Tips.add(this, event, '&lt;script&gt;alert(\'Escape html test!!\');</script>', { style: 'standard', stem: true, tipJoint: [ 'left', 'middle' ], targetJoint: [ 'right', 'middle' ], target: true, hideOn: 'click', escapeHtml: true });">
+		Escape html test
+	</div>
 
 
 	<br />

@@ -106,7 +106,8 @@ Opentip.styles = {
 		target: null, // null (no target, opentip uses mouse as target)   ||   true (target is the triggerElement)   ||   elementId|element (for another element)
 		targetJoint: null, // POSITION (Ignored if target == null)   ||   null (targetJoint is the opposite of tipJoint)
 		ajax: false, // Ajax options. eg: { url: 'yourUrl.html', options: { ajaxOptions... } } or { options: { ajaxOptions } /* This will use the href of the A element the tooltip is attached to */ }
-		group: null // You can group opentips together. So when a tooltip shows, it looks if there are others in the same group, and hides them.
+		group: null, // You can group opentips together. So when a tooltip shows, it looks if there are others in the same group, and hides them.
+		escapeHtml: false
 	},
 	slick: {
 		className: 'slick',
@@ -336,7 +337,7 @@ var TipClass = Class.create({
 		if (this.options.title) headerContent.push(Builder.node('div', { className: 'title' }, this.options.title));
 
 		content.push(Builder.node('div', { className: 'header' }, headerContent));
-		content.push($(Builder.node('div', { className: 'content' })).update(this.content));
+		content.push($(Builder.node('div', { className: 'content' })).update(this.options.escapeHtml ? this.content.escapeHTML() : this.content ));
 		if (this.options.ajax) { content.push($(Builder.node('div', { className: 'loadingIndication' }, Builder.node('span', 'Loading...')))); }
 		this.tooltipElement = $(Builder.node('div', { className: 'opentip' }, content));
 
