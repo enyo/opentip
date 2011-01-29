@@ -383,6 +383,10 @@ var TipClass = Class.create({
     Event.stopObserving(document.onresize ? document : window, "resize", this.bound.position);
     Event.stopObserving(window, "scroll", this.bound.position);
   },
+  /**
+   * The show function only schedules the tooltip to show. (If there is a delay, this function will generate the timer)
+   * The actual function to show the tooltip is doShow().
+   **/
   show: function(evt) {
     if (this.waitingToHide) {
       this.clearTimeouts();
@@ -405,6 +409,9 @@ var TipClass = Class.create({
     if (!this.options.delay) this.bound.doShow(evt);
     else this.timeoutId = this.bound.doShow.delay(this.options.delay);
   },
+  /**
+   * Actually shows the tooltip. This function is called when any possible delay has expired.
+   **/
   doShow: function() {
     this.clearTimeouts();
     if (this.visible) return;
