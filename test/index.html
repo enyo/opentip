@@ -359,6 +359,16 @@
 
 
 
+	<br />
+	<div class="test" id="testMultipleAddtip">
+		Testing the $(element).addTip() function multiple times.
+	</div>
+	<script type="text/javascript">
+		$('testMultipleAddtip').addTip('Right', { target: true, tipJoint: [ 'left', 'middle' ] });
+		$('testMultipleAddtip').addTip('Left', { target: true, tipJoint: [ 'right', 'middle' ] });
+	</script>
+
+
 	<div id="helper" style="background: rgba(255, 0, 0, 0.2);position: absolute;"></div>
 
 
