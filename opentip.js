@@ -71,7 +71,7 @@ var Opentip = {
 	lastZIndex: 100,
 	documentIsLoaded: false,
 	postponeCreation: function(createFunction) {
-		if (Opentip.documentIsLoaded || !Opentip.IEVersion) createFunction();
+		if (Opentip.documentIsLoaded || !Opentip.IEVersion()) createFunction();
 		else {
 			Event.observe(window, 'load', createFunction); // Sorry IE users but... well: get another browser!
 		}
@@ -79,7 +79,7 @@ var Opentip = {
 };
 Opentip.load();
 
-Event.observe(window, Opentip.IEVersion ? 'load' : 'dom:loaded', function() { Opentip.documentIsLoaded = true; });
+Event.observe(window, Opentip.IEVersion() ? 'load' : 'dom:loaded', function() { Opentip.documentIsLoaded = true; });
 
 Opentip.styles = {
 	standard: {
