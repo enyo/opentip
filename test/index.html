@@ -356,6 +356,31 @@
 	<script type="text/javascript">
 		$('groupTest').select('button').each(function(button) { button.addTip('Test', { style: 'grouped' }); });
 	</script>
+	<br />
+
+	<div class="test" id="groupTestHover">
+		Testing groups with hover.
+		Hover those (don't be scared to change rapidly) to see grouping in action.
+        The hide trigger is the tip.
+		
+		<script type="text/javascript">
+			Opentip.styles.grouped2 = {
+				stem: true,
+				target: true,
+                hideTrigger: 'tip',
+				group: 'myGroup2'
+			}
+		</script>
+		<br /><br />
+		<span style="background: yellow;" class="hover-lover">Hover!</span>
+		<span style="background: yellow;" class="hover-lover">Hover!</span>
+		<span style="background: yellow;" class="hover-lover">Hover!</span>
+		<span style="background: yellow;" class="hover-lover">Hover!</span>
+
+	</div>
+	<script type="text/javascript">
+		$('groupTestHover').select('.hover-lover').each(function(button) { button.addTip('Test', { style: 'grouped2' }); });
+	</script>
 
 	<br />
 

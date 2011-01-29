@@ -123,6 +123,10 @@ Opentip.styles = {
 };
 Opentip.defaultStyle = 'standard'; // Change this to the style name you want your tooltips to have.
 
+Opentip.STICKS_OUT_TOP = 1;
+Opentip.STICKS_OUT_BOTTOM = 2;
+Opentip.STICKS_OUT_LEFT = 1;
+Opentip.STICKS_OUT_RIGHT = 2;
 
 
 var Tips = {
@@ -164,6 +168,9 @@ var Tips = {
   },
   hideGroup: function(groupName) {
     this.list.findAll(function(t) { return (t.options.group == groupName); }).invoke('doHide');
+  },
+  abortShowingGroup: function(groupName) {
+    this.list.findAll(function(t) { return (t.options.group == groupName); }).invoke('abortShowing');
   }
 };
 
@@ -388,14 +395,12 @@ var TipClass = Class.create({
    * The actual function to show the tooltip is doShow().
    **/
   show: function(evt) {
-    if (this.waitingToHide) {
-      this.clearTimeouts();
-      this.waitingToHide = false;
-      this.setupObserversForVisibleTip();
-    }
+    this.abortHiding();
     if (this.visible) return;
 
-    Opentip.debug('Show', this.id);
+    Opentip.debug('Showing in ' + this.options.delay + 's.', 'ID:', this.id);
+
+    if (this.options.group) Tips.abortShowingGroup(this.options.group);
 
     this.waitingToShow = true;
 
@@ -409,6 +414,16 @@ var TipClass = Class.create({
     if (!this.options.delay) this.bound.doShow(evt);
     else this.timeoutId = this.bound.doShow.delay(this.options.delay);
   },
+  // If the tip is waiting to show (and only then), this will abort it.
+  abortShowing: function() {
+    if (this.waitingToShow) {
+      Opentip.debug('Aborting showing.', 'ID:', this.id);
+      this.clearTimeouts();
+      this.stopFollowingMousePosition();
+      this.waitingToShow = false;
+      this.setupObserversForHiddenTip();
+    }
+  },
   /**
    * Actually shows the tooltip. This function is called when any possible delay has expired.
    **/
@@ -416,7 +431,7 @@ var TipClass = Class.create({
     this.clearTimeouts();
     if (this.visible) return;
 
-    Opentip.debug('DoShow', this.id);
+    Opentip.debug('Showing!', 'ID:', this.id);
 
     if (this.options.group) Tips.hideGroup(this.options.group);
 
@@ -491,15 +506,10 @@ var TipClass = Class.create({
     }
   },
   hide: function(afterFinish) {
-    if (this.waitingToShow) {
-      this.clearTimeouts();
-      this.stopFollowingMousePosition();
-      this.waitingToShow = false;
-      this.setupObserversForHiddenTip();
-    }
+    this.abortShowing();
     if (!this.visible) return;
 
-    Opentip.debug('Hide', this.id);
+    Opentip.debug('Hiding in ' + this.options.hideDelay + 's.', 'ID:', this.id);
 
     this.waitingToHide = true;
 
@@ -508,14 +518,23 @@ var TipClass = Class.create({
 
     this.hideTimeoutId = this.bound.doHide.delay(this.options.hideDelay, afterFinish); // hide has to be delayed because when hovering children a mouseout is registered.
   },
+  abortHiding: function() {
+    if (this.waitingToHide) {
+      Opentip.debug('Aborting hiding.', 'ID:', this.id);
+      this.clearTimeouts();
+      this.waitingToHide = false;
+      this.setupObserversForVisibleTip();
+    }
+  },
   doHide: function(afterFinish) {
     this.clearTimeouts();
     if (!this.visible) return;
 
-    this.visible = false;
-    this.waitingToHide = false;
+    Opentip.debug('Hiding!', 'ID:', this.id);
 
-    Opentip.debug('DoHide', this.id);
+    this.visible = false;
+
+    this.waitingToHide = false;
 
     this.deactivateElementEnsurance();
 
@@ -534,6 +553,7 @@ var TipClass = Class.create({
       this.container[this.options.hideEffect](effectOptions);
     }
     if (Opentip.useIFrame()) this.iFrameElement.hide();
+
   },
   cancelEffects: function() { Effect.Queues.get(this.queue.scope).invoke('cancel'); },
   followMousePosition:        function() { if (!this.options.fixed) $(document.body).observe('mousemove', this.bound.position); },
@@ -700,17 +720,17 @@ var TipClass = Class.create({
   sticksOutX: function(position) {
     var viewportScrollOffset = $(document.viewport).getScrollOffsets();
     var viewportOffset = { left: position.left - viewportScrollOffset.left, top: position.top - viewportScrollOffset.top };
-    if (viewportOffset.left < 0) return 1;
-    if (viewportOffset.left + this.dimensions.width > document.viewport.getDimensions().width) { return 2; }
+    if (viewportOffset.left < 0) return Opentip.STICKS_OUT_LEFT;
+    if (viewportOffset.left + this.dimensions.width > document.viewport.getDimensions().width) { return Opentip.STICKS_OUT_RIGHT; }
   },
   /**
-   * return 1 for left 2 for right
+   * return 1 for top 2 for bottom
    */
   sticksOutY: function(position) {
     var viewportScrollOffset = $(document.viewport).getScrollOffsets();
     var viewportOffset = { left: position.left - viewportScrollOffset.left, top: position.top - viewportScrollOffset.top };
-    if (viewportOffset.top < 0) return 1;
-    if (viewportOffset.top + this.dimensions.height > document.viewport.getDimensions().height) return 2;
+    if (viewportOffset.top < 0) return Opentip.STICKS_OUT_TOP;
+    if (viewportOffset.top + this.dimensions.height > document.viewport.getDimensions().height) return Opentip.STICKS_OUT_BOTTOM;
   },
   getStemElement: function() {
     return this.container.down('.stem');
