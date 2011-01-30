@@ -2,12 +2,16 @@
  ** http://www.opentip.org
  ** See opentip.js for the license.
  **/
-.opentipContainer {
+.ot-container {
 	position: absolute;
 	max-width: 300px;
 	z-index: 100;
 }
-  .opentipContainer.opentip-fixed {
+  /**
+   * Only using the position transition on fixed opentips, so the tip only moves
+   * smoothly when it changes position due to browser viewport changes.
+   */
+  .ot-container.ot-fixed {
     -webkit-transition-property: left, top;
     -webkit-transition-duration: 0.2s, 0.2s;
     -moz-transition-property: left, top;
@@ -33,36 +37,36 @@
 	height: 15px;
 }
 .opentip .loadingIndication span { display: none; }
-.opentip-loading .opentip .loadingIndication { display: block; }
-.opentip-loading .opentip .content { display: none; }
+.ot-loading .opentip .loadingIndication { display: block; }
+.ot-loading .opentip .content { display: none; }
 
-.opentipButtons {
+.ot-buttons {
 	position: absolute;
 	right: 0;
 	top: 0;
 }
 
-.opentipButtons .close {
+.ot-buttons .close {
 	display: block;
 	text-decoration:none;
 	width: 15px;
 	height: 15px;
 	background: url("images/button.close.small.ffffff.png") center center no-repeat;
 }
-.opentipButtons .close span {
+.ot-buttons .close span {
 	display: none;
 }
 
-.opentipContainer .stemContainer {
+.ot-container .stem-container {
 	position: absolute;
 	width: 0;
 	height: 0;
 }
-.opentipContainer .stem {
+.ot-container .stem {
 	position: absolute;
 	overflow: hidden;
 }
-.opentipContainer .stem div {
+.ot-container .stem div {
 	background: no-repeat url("images/stems.cccccc.png");
 	position: absolute;
 	width: 320px;
@@ -70,12 +74,12 @@
 }
 
 
-.opentipContainer .left { left: 0; }
-.opentipContainer .center { left: 50%; }
-.opentipContainer .right { right: 0; }
-.opentipContainer .top { top: 0; }
-.opentipContainer .middle { top: 50%; }
-.opentipContainer .bottom { bottom: 0; }
+.ot-container .left { left: 0; }
+.ot-container .center { left: 50%; }
+.ot-container .right { right: 0; }
+.ot-container .top { top: 0; }
+.ot-container .middle { top: 50%; }
+.ot-container .bottom { bottom: 0; }
 
 
 
@@ -96,11 +100,11 @@
 .style-standard .stem div {
 	background-image: url("images/stems.e3ca1b.png");
 }
-.style-standard .opentipButtons {
+.style-standard .ot-buttons {
 	top: -9px;
 	right: -10px;
 }
-.style-standard .opentipButtons .close {
+.style-standard .ot-buttons .close {
 	background-color: rgba(0,0,0,0.2);
 	width: 21px;
 	height: 21px;
@@ -134,11 +138,11 @@
 .style-rounded .stem div {
 	background-image: url("images/stems.c3ddf0.png");
 }
-.style-rounded .opentipButtons {
+.style-rounded .ot-buttons {
 	top: -13px;
 	right: -12px;
 }
-.style-rounded .opentipButtons .close {
+.style-rounded .ot-buttons .close {
 	background-color: #81B4DA;
 	width: 21px;
 	height: 21px;
@@ -166,11 +170,11 @@
 .style-slick .stem div {
 	background-image: url("images/stems.cccccc.png");
 }
-.style-slick .opentipButtons {
+.style-slick .ot-buttons {
 	right: -11px;
 	top: -11px;
 }
-.style-slick .opentipButtons .close {
+.style-slick .ot-buttons .close {
 	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
@@ -205,7 +209,7 @@
 .style-glass .stem {
 	background-image: url("images/stems.ffffff.png");
 }
-.style-glass .opentipButtons .close {
+.style-glass .ot-buttons .close {
 	background-image: url("images/button.close.big.ffffff.png");
 	border-radius: 0 5px 0 5px;
 	-moz-border-radius: 0 5px 0 5px;
@@ -219,7 +223,7 @@
 
 /** IE 6 HACKS **/
 /*\*/
-.opentipButtons {
+.ot-buttons {
 	z-index: 110;
 }
 .opentip {
@@ -238,7 +242,7 @@
  	z-index:-1;/*must have*/
  	filter:mask();/*must have*/
 }
-.opentipContainer .stem div {
+.ot-container .stem div {
 	behavior: expression((this.runtimeStyle.behavior="none")&&(this.pngSet?this.pngSet=true:(this.nodeName == "IMG" && this.src.toLowerCase().indexOf('.png')>-1?(this.runtimeStyle.backgroundImage = "none",
 		this.runtimeStyle.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + this.src + "', sizingMethod='image')",
 		this.src = "transparent.gif"):(this.origBg = this.origBg? this.origBg :this.currentStyle.backgroundImage.toString().replace('url("','').replace('")',''),
@@ -251,3 +255,22 @@
 }
 /**/
 
+
+
+
+/**
+
+CSS3 Transitions
+================
+
+The definitions that follow here, are only meant for browsers that support css3
+transitions.
+
+So the syntax I'm going to use, is really meant for more modern browsers than
+IE6.
+
+**/
+
+.ot-container.ot-visible.ot-showeffect-appear  {
+  
+}

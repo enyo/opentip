@@ -47,11 +47,11 @@ var Opentip = {
   cached: {},
   debugging: false,
   load: function() {
-    function getComparableVersion(version) { var v = version.split('.'); return parseInt(v[0])*100000 + parseInt(v[1])*1000 + parseInt(v[2]); }
-    if((typeof Prototype === 'undefined') || (typeof Element === 'undefined') || (typeof Element.Methods === 'undefined') || (getComparableVersion(Prototype.Version) < getComparableVersion(Opentip.REQUIRED_PROTOTYPE_VERSION))) { throw("Opentip requires the Prototype JavaScript framework >= " + Opentip.REQUIRED_PROTOTYPE_VERSION); }
-    if((typeof Scriptaculous === 'undefined') || (typeof Effect === 'undefined') || (getComparableVersion(Scriptaculous.Version) < getComparableVersion(Opentip.REQUIRED_SCRIPTACULOUS_VERSION))) { throw("Opentip requires the Scriptaculous JavaScript framework >= " + Opentip.REQUIRED_SCRIPTACULOUS_VERSION); }
+    function getComparableVersion(version) {var v = version.split('.');return parseInt(v[0])*100000 + parseInt(v[1])*1000 + parseInt(v[2]);}
+    if((typeof Prototype === 'undefined') || (typeof Element === 'undefined') || (typeof Element.Methods === 'undefined') || (getComparableVersion(Prototype.Version) < getComparableVersion(Opentip.REQUIRED_PROTOTYPE_VERSION))) {throw("Opentip requires the Prototype JavaScript framework >= " + Opentip.REQUIRED_PROTOTYPE_VERSION);}
+    if((typeof Scriptaculous === 'undefined') || (typeof Effect === 'undefined') || (getComparableVersion(Scriptaculous.Version) < getComparableVersion(Opentip.REQUIRED_SCRIPTACULOUS_VERSION))) {throw("Opentip requires the Scriptaculous JavaScript framework >= " + Opentip.REQUIRED_SCRIPTACULOUS_VERSION);}
   },
-  debug: function() { if (this.debugging && typeof console !== 'undefined' && typeof console.debug !== 'undefined') console.debug.apply(console, arguments); },
+  debug: function() {if (this.debugging && typeof console !== 'undefined' && typeof console.debug !== 'undefined') console.debug.apply(console, arguments);},
   IEVersion: function() {
     if (typeof Opentip.cached.IEVersion !== 'undefined') return Opentip.cached.IEVersion;
     if (Prototype.Browser.IE) {
@@ -66,7 +66,7 @@ var Opentip = {
     // There must be a better way of doing this.
     return (typeof(obj) == 'object' && obj.type && obj.screenX);
   },
-  useIFrame: function() { return Opentip.IEVersion() ? (Opentip.IEVersion() <= 6) : false; },
+  useIFrame: function() {return Opentip.IEVersion() ? (Opentip.IEVersion() <= 6) : false;},
   lastTipId: 1,
   lastZIndex: 100,
   documentIsLoaded: false,
@@ -79,7 +79,7 @@ var Opentip = {
 };
 Opentip.load();
 
-Event.observe(window, Opentip.IEVersion() ? 'load' : 'dom:loaded', function() { Opentip.documentIsLoaded = true; });
+Event.observe(window, Opentip.IEVersion() ? 'load' : 'dom:loaded', function() {Opentip.documentIsLoaded = true;});
 
 Opentip.styles = {
   standard: {
@@ -129,12 +129,38 @@ Opentip.STICKS_OUT_LEFT = 1;
 Opentip.STICKS_OUT_RIGHT = 2;
 
 
+// Thanks to Jeffrey Way @ snipplr.com
+Opentip.supports = (function() {
+   var div = document.createElement('div'),
+      vendors = 'Khtml Ms O Moz Webkit'.split(' '),
+      len = vendors.length;
+ 
+   return function(prop) {
+      if ( prop in div.style ) return true;
+ 
+      prop = prop.replace(/^[a-z]/, function(val) {
+         return val.toUpperCase();
+      });
+ 
+      while(len--) {
+         if ( vendors[len] + prop in div.style ) {
+            // browser supports box-shadow. Do what you need.
+            // Or use a bang (!) to test if the browser doesn't.
+            return true;
+         } 
+      }
+      return false;
+   };
+})();
+
+Opentip.useCss3Transitions = Opentip.supports('transition');
+
 var Tips = {
   list: [],
-  append: function(tip) { this.list.push(tip); },
+  append: function(tip) {this.list.push(tip);},
   remove: function(element) {
-    if (!element.element) var tip = this.list.find(function(t) { return t.triggerElement === element });
-    else var tip = this.list.find(function(t) { return t === element });
+    if (!element.element) var tip = this.list.find(function(t) {return t.triggerElement === element});
+    else var tip = this.list.find(function(t) {return t === element});
     if (tip) {
       tip.deactivate();
       tip.destroyAllElements();
@@ -144,11 +170,11 @@ var Tips = {
   add: function(element, evt) {
     if (element._opentipAddedTips) {
       /* TODO: Now it just returns the first found... try to find the correct one. */
-      var tip = this.list.find(function(t) { return (t.triggerElement === element); });
+      var tip = this.list.find(function(t) {return (t.triggerElement === element);});
       if (tip.options.showOn == 'creation') tip.show();
       Opentip.debug('Using an existing opentip');
       return;
-    } else setTimeout(function() { element._opentipAddedTips = true; }, 1); // I added a timeout, so that tooltips, defined in an onmouseover or onclick event, will show.
+    } else setTimeout(function() {element._opentipAddedTips = true;}, 1); // I added a timeout, so that tooltips, defined in an onmouseover or onclick event, will show.
 
     Opentip.debug('Creating new opentip');
 
@@ -160,21 +186,21 @@ var Tips = {
     });
 
     var self = this;
-    var createTip = function() { self.append(new TipClass(tipArguments[0], tipArguments[1], tipArguments[2], tipArguments[3], tipArguments[4])); }
+    var createTip = function() {self.append(new TipClass(tipArguments[0], tipArguments[1], tipArguments[2], tipArguments[3], tipArguments[4]));}
 
     Opentip.postponeCreation(createTip);
     
     return;
   },
   hideGroup: function(groupName) {
-    this.list.findAll(function(t) { return (t.options.group == groupName); }).invoke('doHide');
+    this.list.findAll(function(t) {return (t.options.group == groupName);}).invoke('doHide');
   },
   abortShowingGroup: function(groupName) {
-    this.list.findAll(function(t) { return (t.options.group == groupName); }).invoke('abortShowing');
+    this.list.findAll(function(t) {return (t.options.group == groupName);}).invoke('abortShowing');
   }
 };
 
-var Tip = function() { Tips.add.apply(Tips, arguments); return; };
+var Tip = function() {Tips.add.apply(Tips, arguments);return;};
 
 Element.addMethods({
   addTip: function(element) {
@@ -200,15 +226,15 @@ var TipClass = Class.create({
     this.waitingToShow = false;
     this.waitingToHide = false;
 
-    this.lastPosition = { left: 0, top: 0 };
+    this.lastPosition = {left: 0, top: 0};
     this.dimensions   = [ 100, 50 ]; // Just some initial values.
 
     var options = {};
     this.content = '';
 
-    if      (typeof(arguments[2]) == 'object') { this.content = '';           options = arguments[2]; }
-    else if (typeof(arguments[3]) == 'object') { this.content = arguments[2]; options = arguments[3]; }
-    else if (typeof(arguments[4]) == 'object') { this.content = arguments[2]; options = arguments[4];  options.title = arguments[3]; }
+    if      (typeof(arguments[2]) == 'object') {this.content = '';options = arguments[2];}
+    else if (typeof(arguments[3]) == 'object') {this.content = arguments[2];options = arguments[3];}
+    else if (typeof(arguments[4]) == 'object') {this.content = arguments[2];options = arguments[4];options.title = arguments[3];}
     else {
       if (Object.isString(arguments[2]) || Object.isFunction(arguments[2])) this.content = arguments[2];
       if (Object.isString(arguments[3])) options.title = arguments[3];
@@ -222,11 +248,11 @@ var TipClass = Class.create({
       if (this.triggerElement.tagName.toLowerCase() == 'a') {
         if (typeof(options.ajax) != 'object') options.ajax = { };
         options.ajax.url = this.triggerElement.href;
-      } else { options.ajax = false; }
+      } else {options.ajax = false;}
     }
 
     // If the event is 'click', no point in following a link
-    if (options.showOn == 'click' && this.triggerElement.tagName.toLowerCase() == 'a') { if (evt) { evt.stop(); } this.triggerElement.observe('click', function(e) { e.stop(); }); }
+    if (options.showOn == 'click' && this.triggerElement.tagName.toLowerCase() == 'a') {if (evt) {evt.stop();}this.triggerElement.observe('click', function(e) {e.stop();});}
 
 
     options.style || (options.style = Opentip.defaultStyle);
@@ -268,7 +294,7 @@ var TipClass = Class.create({
     this.options.showTriggerElementsWhenHidden = [];
 
     if (this.options.showOn && this.options.showOn != 'creation') {
-      this.options.showTriggerElementsWhenHidden.push({ element: this.triggerElement, event: this.options.showOn });
+      this.options.showTriggerElementsWhenHidden.push({element: this.triggerElement, event: this.options.showOn});
     }
 
     this.options.showTriggerElementsWhenVisible = [];
@@ -292,18 +318,18 @@ var TipClass = Class.create({
           hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
           hideTriggerElement = this.options.target;
           break;
-        case 'closeButton': break;
+        case 'closeButton':break;
         default:
           hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
           hideTriggerElement = $(this.options.hideTrigger);
           break;
       }
       if (hideTriggerElement) {
-        this.options.hideTriggerElements.push({ element: hideTriggerElement, event: hideOnEvent });
+        this.options.hideTriggerElements.push({element: hideTriggerElement, event: hideOnEvent});
         if (hideOnEvent == 'mouseout') {
           // When the hide trigger is mouseout, we have to attach a mouseover trigger to that element, so the tooltip doesn't disappear when
           // hovering child elements. (Hovering children fires a mouseout mouseover event)
-          this.options.showTriggerElementsWhenVisible.push({ element: hideTriggerElement, event: 'mouseover' });
+          this.options.showTriggerElementsWhenVisible.push({element: hideTriggerElement, event: 'mouseover'});
         }
       }
     }
@@ -320,7 +346,7 @@ var TipClass = Class.create({
     this.bound.hide     = this.hide.bindAsEventListener(this);
     this.bound.position = this.position.bindAsEventListener(this);
 
-    if (this.options.showEffect || this.options.hideEffect) this.queue = { limit: 1, position: 'end', scope: this.container.identify() };
+    if (this.options.showEffect || this.options.hideEffect) this.queue = {limit: 1, position: 'end', scope: this.container.identify()};
 
     // The order is important here! Do not reverse.
     this.setupObserversForReallyHiddenTip();
@@ -331,62 +357,62 @@ var TipClass = Class.create({
     this.setupObserversForReallyHiddenTip();
   },
   buildContainer: function() {
-    this.container = $(Builder.node('div', { className: 'opentipContainer style-' + this.options.className + (this.options.ajax ? ' opentip-loading' : '') + (this.options.fixed ? ' opentip-fixed' : '') })).setStyle({ display: 'none', position: 'absolute' });
+    this.container = $(Builder.node('div', {className: 'ot-container style-' + this.options.className + (this.options.ajax ? ' ot-loading' : '') + (this.options.fixed ? ' ot-fixed' : '')})).setStyle({display: 'none', position: 'absolute'});
   },
   buildElements: function() {
     if (this.options.stem) {
       var stemOffset = '-' + this.options.stemSize + 'px';
-      this.container.appendChild(Builder.node('div', { className: 'stemContainer ' + this.options.stem[0] + ' ' + this.options.stem[1] }, Builder.node('div', { className: 'stem' }, Builder.node('div', ''))));
+      this.container.appendChild(Builder.node('div', {className: 'stem-container ' + this.options.stem[0] + ' ' + this.options.stem[1]}, Builder.node('div', {className: 'stem'}, Builder.node('div', ''))));
     }
     var self = this;
     var content = [];
     var headerContent = [];
-    if (this.options.title) headerContent.push(Builder.node('div', { className: 'title' }, this.options.title));
+    if (this.options.title) headerContent.push(Builder.node('div', {className: 'title'}, this.options.title));
 
-    content.push(Builder.node('div', { className: 'header' }, headerContent));
-    content.push($(Builder.node('div', { className: 'content' })).update(this.options.escapeHtml ? this.content.escapeHTML() : this.content ));
-    if (this.options.ajax) { content.push($(Builder.node('div', { className: 'loadingIndication' }, Builder.node('span', 'Loading...')))); }
-    this.tooltipElement = $(Builder.node('div', { className: 'opentip' }, content));
+    content.push(Builder.node('div', {className: 'header'}, headerContent));
+    content.push($(Builder.node('div', {className: 'content'})).update(this.options.escapeHtml ? this.content.escapeHTML() : this.content ));
+    if (this.options.ajax) {content.push($(Builder.node('div', {className: 'loadingIndication'}, Builder.node('span', 'Loading...'))));}
+    this.tooltipElement = $(Builder.node('div', {className: 'opentip'}, content));
 
     this.container.appendChild(this.tooltipElement);
 
-    var buttons = this.container.appendChild(Builder.node('div', { className: 'opentipButtons' }));
-    if (this.options.hideTrigger == 'closeButton') buttons.appendChild(Builder.node('a', { href: 'javascript:undefined', className: 'close' }, Builder.node('span', 'x')));
+    var buttons = this.container.appendChild(Builder.node('div', {className: 'ot-buttons'}));
+    if (this.options.hideTrigger == 'closeButton') buttons.appendChild(Builder.node('a', {href: 'javascript:undefined', className: 'close'}, Builder.node('span', 'x')));
     
-    if (Opentip.useIFrame()) this.iFrameElement = this.container.appendChild($(Builder.node('iframe', { className: 'opentipIFrame', src: 'javascript:false;' })).setStyle({ display: 'none', zIndex: 100 }).setOpacity(0));
+    if (Opentip.useIFrame()) this.iFrameElement = this.container.appendChild($(Builder.node('iframe', {className: 'opentipIFrame', src: 'javascript:false;'})).setStyle({display: 'none', zIndex: 100}).setOpacity(0));
 
     document.body.appendChild(this.container);
     this.storeAndFixDimensions();
   },
   storeAndFixDimensions: function() {
-    this.container.setStyle({ width: 'auto', left: '0px', top: '0px' });
+    this.container.setStyle({width: 'auto', left: '0px', top: '0px'});
     this.dimensions = this.container.getDimensions();
-    this.container.setStyle({ width: this.dimensions.width + 'px', left: this.lastPosition.left + 'px', top: this.lastPosition.top + 'px' });
+    this.container.setStyle({width: this.dimensions.width + 'px', left: this.lastPosition.left + 'px', top: this.lastPosition.top + 'px'});
   },
-  destroyAllElements: function() { if (this.container) this.container.remove(); },
-  clearShowTimeout: function() { window.clearTimeout(this.timeoutId); },
-  clearHideTimeout: function() { window.clearTimeout(this.hideTimeoutId); },
-  clearTimeouts: function() { this.clearShowTimeout(); this.clearHideTimeout(); },
+  destroyAllElements: function() {if (this.container) this.container.remove();},
+  clearShowTimeout: function() {window.clearTimeout(this.timeoutId);},
+  clearHideTimeout: function() {window.clearTimeout(this.hideTimeoutId);},
+  clearTimeouts: function() {this.clearShowTimeout();this.clearHideTimeout();},
   /** Gets called only when doShow() is called, not when show() is called **/
   setupObserversForReallyVisibleTip: function() {
-    this.options.showTriggerElementsWhenVisible.each(function(pair) { $(pair.element).observe(pair.event, this.bound.show); }, this);
+    this.options.showTriggerElementsWhenVisible.each(function(pair) {$(pair.element).observe(pair.event, this.bound.show);}, this);
   },
   /** Gets only called when show() is called. show() might not really result in showing the tooltip, because there may
       be another trigger that calls hide() directly after. **/
   setupObserversForVisibleTip: function() {
-    this.options.hideTriggerElements.each(function(pair) { $(pair.element).observe(pair.event, this.bound.hide); }, this);
-    this.options.showTriggerElementsWhenHidden.each(function(pair) { $(pair.element).stopObserving(pair.event, this.bound.show); }, this);
+    this.options.hideTriggerElements.each(function(pair) {$(pair.element).observe(pair.event, this.bound.hide);}, this);
+    this.options.showTriggerElementsWhenHidden.each(function(pair) {$(pair.element).stopObserving(pair.event, this.bound.show);}, this);
     Event.observe(document.onresize ? document : window, "resize", this.bound.position);
     Event.observe(window, "scroll", this.bound.position);
   },
   /** Gets called only when doHide() is called. */
   setupObserversForReallyHiddenTip: function() {
-    this.options.showTriggerElementsWhenVisible.each(function(pair) { $(pair.element).stopObserving(pair.event, this.bound.show); }, this);
+    this.options.showTriggerElementsWhenVisible.each(function(pair) {$(pair.element).stopObserving(pair.event, this.bound.show);}, this);
   },
   /** Gets called everytime hide() is called. See setupObserversForVisibleTip for more info **/
   setupObserversForHiddenTip: function() {
-    this.options.showTriggerElementsWhenHidden.each(function(pair) { $(pair.element).observe(pair.event, this.bound.show); }, this);
-    this.options.hideTriggerElements.each(function(pair) { $(pair.element).stopObserving(pair.event, this.bound.hide); }, this);
+    this.options.showTriggerElementsWhenHidden.each(function(pair) {$(pair.element).observe(pair.event, this.bound.show);}, this);
+    this.options.hideTriggerElements.each(function(pair) {$(pair.element).stopObserving(pair.event, this.bound.hide);}, this);
     Event.stopObserving(document.onresize ? document : window, "resize", this.bound.position);
     Event.stopObserving(window, "scroll", this.bound.position);
   },
@@ -439,16 +465,16 @@ var TipClass = Class.create({
     this.visible = true;
     this.waitingToShow = false;
 
-    if (Object.isFunction(this.content)) { Opentip.debug('Executing content function...'); this.content = this.content(this);}
+    if (Object.isFunction(this.content)) {Opentip.debug('Executing content function...');this.content = this.content(this);}
 
     if (!this.tooltipElement) this.buildElements();
 
-    if (this.options.ajax && !this.loaded) { this.loadAjax(); }
+    if (this.options.ajax && !this.loaded) {this.loadAjax();}
 
     this.searchAndActivateHideButtons();
 
     this.ensureElement();
-    this.container.setStyle({ zIndex: Opentip.lastZIndex += 1 });
+    this.container.setStyle({zIndex: Opentip.lastZIndex += 1});
 
     // The order is important here! Do not reverse.
     this.setupObserversForReallyVisibleTip();
@@ -457,7 +483,7 @@ var TipClass = Class.create({
     if (this.options.showEffect || this.options.hideEffect) this.cancelEffects();
 
     if (!this.options.showEffect) this.container.show();
-    else this.container[this.options.showEffect]({ duration: this.options.showEffectDuration, queue: this.queue, afterFinish: this.afterShowEffect.bind(this) });
+    else this.container[this.options.showEffect]({duration: this.options.showEffectDuration, queue: this.queue, afterFinish: this.afterShowEffect.bind(this)});
     if (Opentip.useIFrame()) this.iFrameElement.show();
 
     this.activateFirstInput();
@@ -470,7 +496,7 @@ var TipClass = Class.create({
     this.container.addClassName('loading');
     var self = this;
     new Ajax.Request(this.options.ajax.url,
-      Object.extend({ onSuccess: function(transport) {
+      Object.extend({onSuccess: function(transport) {
         self.content = transport.responseText;
         var content = self.container.down('.content');
         if (content) {
@@ -483,7 +509,7 @@ var TipClass = Class.create({
         self.storeAndFixDimensions();
         self.position();
         this.activateFirstInput();
-      } }, this.options.ajax.options || {}));
+      }}, this.options.ajax.options || {}));
   },
   afterShowEffect: function() {
     this.activateFirstInput();
@@ -493,14 +519,14 @@ var TipClass = Class.create({
     // TODO: check if there is a simple way of finding EITHER an input OR a textarea.
     var input = this.container.down('input');
     var textarea = this.container.down('textarea');
-    if (input) { input.focus(); }
+    if (input) {input.focus();}
     else if (textarea) textarea.focus();
   },
   searchAndActivateHideButtons: function() {
     if (this.options.hideTrigger == 'closeButton' || !this.options.hideTrigger) {
       this.options.hideTriggerElements = [];
       this.container.select('.close').each(function(el) {
-        this.options.hideTriggerElements.push({ element: el, event: 'click' });
+        this.options.hideTriggerElements.push({element: el, event: 'click'});
       }, this);
       if (this.visible) this.setupObserversForVisibleTip();
     }
@@ -548,16 +574,16 @@ var TipClass = Class.create({
 
     if (!this.options.hideEffect) this.container.hide(); 
     else {
-      var effectOptions = { duration: this.options.hideEffectDuration, queue: this.queue };
+      var effectOptions = {duration: this.options.hideEffectDuration, queue: this.queue};
       if(afterFinish && Object.isFunction(afterFinish)) effectOptions.afterFinish = afterFinish;
       this.container[this.options.hideEffect](effectOptions);
     }
     if (Opentip.useIFrame()) this.iFrameElement.hide();
 
   },
-  cancelEffects: function() { Effect.Queues.get(this.queue.scope).invoke('cancel'); },
-  followMousePosition:        function() { if (!this.options.fixed) $(document.body).observe('mousemove', this.bound.position); },
-  stopFollowingMousePosition: function() { if (!this.options.fixed) $(document.body).stopObserving('mousemove', this.bound.position); },
+  cancelEffects: function() {Effect.Queues.get(this.queue.scope).invoke('cancel');},
+  followMousePosition:        function() {if (!this.options.fixed) $(document.body).observe('mousemove', this.bound.position);},
+  stopFollowingMousePosition: function() {if (!this.options.fixed) $(document.body).stopObserving('mousemove', this.bound.position);},
   positionsEqual: function(position1, position2) {
     return (position1.left == position2.left && position1.top == position2.top);  
   },
@@ -573,10 +599,10 @@ var TipClass = Class.create({
 
     this.lastPosition = position;
     if (position) {
-      var style = { 'left': position.left + 'px', 'top': position.top + 'px' };
+      var style = {'left': position.left + 'px', 'top': position.top + 'px'};
       this.container.setStyle(style);
       if (Opentip.useIFrame() && this.iFrameElement) {
-        this.iFrameElement.setStyle({ width: this.container.getWidth() + 'px', height: this.container.getHeight() + 'px' });
+        this.iFrameElement.setStyle({width: this.container.getWidth() + 'px', height: this.container.getHeight() + 'px'});
       }
 
       /**
@@ -611,9 +637,9 @@ var TipClass = Class.create({
           position.left = position.left + this.options.target.getWidth();
         }
       }
-      else if (trgJ[0] == 'center') { position.left += Math.round(this.options.target.getWidth() / 2); }
-      if      (trgJ[1] == 'bottom') { position.top += this.options.target.getHeight(); }
-      else if (trgJ[1] == 'middle') { position.top += Math.round(this.options.target.getHeight() / 2); }
+      else if (trgJ[0] == 'center') {position.left += Math.round(this.options.target.getWidth() / 2);}
+      if      (trgJ[1] == 'bottom') {position.top += this.options.target.getHeight();}
+      else if (trgJ[1] == 'middle') {position.top += Math.round(this.options.target.getHeight() / 2);}
     } else {
       if (!evt) return; // No event passed, so returning.
       this.lastEvt = evt;
@@ -642,10 +668,10 @@ var TipClass = Class.create({
     position.left += this.options.offset[0];
     position.top += this.options.offset[1];
 
-    if (tipJ[0] == 'right')  { position.left -= this.container.getWidth(); }
-    if (tipJ[0] == 'center') { position.left -= Math.round(this.container.getWidth()/2); }
-    if (tipJ[1] == 'bottom') { position.top -= this.container.getHeight(); }
-    if (tipJ[1] == 'middle') { position.top -= Math.round(this.container.getHeight()/2); }
+    if (tipJ[0] == 'right')  {position.left -= this.container.getWidth();}
+    if (tipJ[0] == 'center') {position.left -= Math.round(this.container.getWidth()/2);}
+    if (tipJ[1] == 'bottom') {position.top -= this.container.getHeight();}
+    if (tipJ[1] == 'middle') {position.top -= Math.round(this.container.getHeight()/2);}
 
     return position;
   },
@@ -662,7 +688,7 @@ var TipClass = Class.create({
     
     var viewportScrollOffset = $(document.viewport).getScrollOffsets();
     var dimensions = this.dimensions;
-    var viewportOffset = { left: position.left - viewportScrollOffset.left, top: position.top - viewportScrollOffset.top };
+    var viewportOffset = {left: position.left - viewportScrollOffset.left, top: position.top - viewportScrollOffset.top};
     var viewportDimensions = document.viewport.getDimensions();
     var reposition = false;
 
@@ -670,12 +696,12 @@ var TipClass = Class.create({
       if (viewportOffset.left < 0) {
         reposition = true;
         tipJ[0] = 'left';
-        if (this.options.target && trgJ[0] == 'left') { trgJ[0] = 'right'; }
+        if (this.options.target && trgJ[0] == 'left') {trgJ[0] = 'right';}
       }
       else if (viewportOffset.left + dimensions.width > viewportDimensions.width) {
         reposition = true;
         tipJ[0] = 'right';
-        if (this.options.target && trgJ[0] == 'right') { trgJ[0] = 'left'; }
+        if (this.options.target && trgJ[0] == 'right') {trgJ[0] = 'left';}
       }
     }
 
@@ -683,12 +709,12 @@ var TipClass = Class.create({
       if (viewportOffset.top < 0) {
         reposition = true;
         tipJ[1] = 'top';
-        if (this.options.target && trgJ[1] == 'top') { trgJ[1] = 'bottom'; }
+        if (this.options.target && trgJ[1] == 'top') {trgJ[1] = 'bottom';}
       }
       else if (viewportOffset.top + dimensions.height > viewportDimensions.height) {
         reposition = true;
         tipJ[1] = 'bottom';
-        if (this.options.target && trgJ[1] == 'bottom') { trgJ[1] = 'top'; }
+        if (this.options.target && trgJ[1] == 'bottom') {trgJ[1] = 'top';}
       }
     }
     if (reposition) {
@@ -701,7 +727,7 @@ var TipClass = Class.create({
           // If its still sticking out, but on the same side, it's ok. At least, it sticks out less.
           revertedCount ++;
           tipJ[i] = this.options.tipJoint[i];
-          if (this.options.target) { trgJ[i] = this.options.targetJoint[i]; }
+          if (this.options.target) {trgJ[i] = this.options.targetJoint[i];}
         }
       }
       if (revertedCount < 2) {
@@ -719,16 +745,16 @@ var TipClass = Class.create({
    */
   sticksOutX: function(position) {
     var viewportScrollOffset = $(document.viewport).getScrollOffsets();
-    var viewportOffset = { left: position.left - viewportScrollOffset.left, top: position.top - viewportScrollOffset.top };
+    var viewportOffset = {left: position.left - viewportScrollOffset.left, top: position.top - viewportScrollOffset.top};
     if (viewportOffset.left < 0) return Opentip.STICKS_OUT_LEFT;
-    if (viewportOffset.left + this.dimensions.width > document.viewport.getDimensions().width) { return Opentip.STICKS_OUT_RIGHT; }
+    if (viewportOffset.left + this.dimensions.width > document.viewport.getDimensions().width) {return Opentip.STICKS_OUT_RIGHT;}
   },
   /**
    * return 1 for top 2 for bottom
    */
   sticksOutY: function(position) {
     var viewportScrollOffset = $(document.viewport).getScrollOffsets();
-    var viewportOffset = { left: position.left - viewportScrollOffset.left, top: position.top - viewportScrollOffset.top };
+    var viewportOffset = {left: position.left - viewportScrollOffset.left, top: position.top - viewportScrollOffset.top};
     if (viewportOffset.top < 0) return Opentip.STICKS_OUT_TOP;
     if (viewportOffset.top + this.dimensions.height > document.viewport.getDimensions().height) return Opentip.STICKS_OUT_BOTTOM;
   },
@@ -754,22 +780,22 @@ var TipClass = Class.create({
 
         var stemsImageSize = [ 320, 160 ];
 
-        var style = { width: stemSize + 'px', height: stemSize + 'px' };
+        var style = {width: stemSize + 'px', height: stemSize + 'px'};
 
         style.left = style.top = '0';
 
         switch (stem[0]) {
-          case 'center': style.width = stemSize * 2 + 'px'; // no break
-          case 'left':   style.left = '-' + stemSize + 'px'; break;
+          case 'center':style.width = stemSize * 2 + 'px'; // no break
+          case 'left':style.left = '-' + stemSize + 'px';break;
         }
         switch (stem[1]) {
-          case 'middle':  style.height = stemSize * 2 + 'px'; // no break
-          case 'top':     style.top = '-' + stemSize + 'px'; break;
+          case 'middle':style.height = stemSize * 2 + 'px'; // no break
+          case 'top':style.top = '-' + stemSize + 'px';break;
         }
 
         if (stem[0] != 'center' && stem[1] != 'middle') style.width = style.height = stemSize * 2 + 'px'; // Corners.
 
-        var imageStyle = { left: 0, top: 0 };
+        var imageStyle = {left: 0, top: 0};
 
         switch (stem[0] + '-' + stem[1]) {
           case 'left-middle':
@@ -787,7 +813,7 @@ var TipClass = Class.create({
             imageStyle.left = '-' + Math.round(stemsImageSize[0] - stemSize) + 'px';
             imageStyle.top  = '-' + Math.round(stemsImageSize[1] / 2 - stemSize) + 'px';
             break;
-          case 'left-top': break;
+          case 'left-top':break;
           case 'right-top':
             imageStyle.left = '-'   + Math.round(stemsImageSize[0] * (1/2) - stemSize * 2) + 'px';
             style.top = '-' + stemSize + 'px';
@@ -810,15 +836,15 @@ var TipClass = Class.create({
         stemElement.setStyle(style);
         stemElement._appliedStyle = true;
         
-        stemElement.up('.stemContainer').removeClassName('left').removeClassName('right').removeClassName('center').removeClassName('top').removeClassName('bottom').removeClassName('middle').addClassName(stem[0] + ' ' + stem[1]);
+        stemElement.up('.stem-container').removeClassName('left').removeClassName('right').removeClassName('center').removeClassName('top').removeClassName('bottom').removeClassName('middle').addClassName(stem[0] + ' ' + stem[1]);
       }
     }
   },
   ensureElementInterval: 1000, // In milliseconds, how often opentip should check for the existance of the element
   ensureElement: function() { // Regularely checks if the element is still in the dom.
     this.deactivateElementEnsurance();
-    if (!this.triggerElement.parentNode || !this.triggerElement.visible() || !this.triggerElement.descendantOf(document.body)) { this.deactivate(); }
+    if (!this.triggerElement.parentNode || !this.triggerElement.visible() || !this.triggerElement.descendantOf(document.body)) {this.deactivate();}
     this.ensureElementTimeoutId = setTimeout(this.ensureElement.bind(this), this.ensureElementInterval);
   },
-  deactivateElementEnsurance: function() { clearTimeout(this.ensureElementTimeoutId); }
+  deactivateElementEnsurance: function() {clearTimeout(this.ensureElementTimeoutId);}
 });
