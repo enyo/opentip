@@ -8,6 +8,7 @@ It supports:
 - Different styles
 - Automatic repositioning of the tooltip if it's not in the viewport of the browser anymore
 - All kind of triggers (The tooltip can be triggered by mouse over, click, form submit, … everything you can think of really)
+- CSS3 Transitions / Animations if available. (If not, it uses scriptaculous).
 
 ## Usage
 

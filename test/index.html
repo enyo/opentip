@@ -38,6 +38,8 @@
 
 	<script type="text/javascript" src="../opentip.js"></script>
 	<script type="text/javascript">
+//        Opentip.useCss3Transitions = false;
+//        Opentip.useScriptaculousTransitions = true;
 		Opentip.debugging = true;
 // 		Opentip.defaultStyle = 'rounded';
 		Opentip.styles.codeSample = {
@@ -125,7 +127,7 @@
 
 	<br />
 
-	<div class="test" id="testest" onclick="javascript:Tips.add(this, event, 'test test etset setset sets et', 'title', { style: 'standard', stem: true, tipJoint: [ 'left', 'middle' ], targetJoint: [ 'right', 'middle' ], target: true, hideOn: 'click' });">
+	<div class="test" id="testest" onclick="javascript:Tips.add(this, event, 'test test etset setset sets et', 'title', { style: 'standard', stem: true, tipJoint: [ 'left', 'middle' ], targetJoint: [ 'right', 'middle' ], target: true, hideOn: 'click', showEffectDuration: 0.2, hideEffectDuration: 3 });">
 		Just for test purposes
 	</div>
 
@@ -399,6 +401,20 @@
 	</script>
 
 
+    <br />
+    
+	<div class="test">
+      <a href="javascript:undefined;" id="testGrowShrink">Grow / Shrink</a>
+      <a href="javascript:undefined;" id="testBlind">Blind down / up</a>
+      <a href="javascript:undefined;" id="testPuff">Puff</a>
+	</div>
+    <script type="text/javascript">
+      $('testGrowShrink').addTip('Test', { showEffect: 'grow', hideEffect: 'shrink' })
+      $('testBlind').addTip('Test', { showEffect: 'blindDown', hideEffect: 'blindUp' })
+      $('testPuff').addTip('Test', { showEffect: 'condense',  hideEffect: 'puff' })
+    </script>
+
+    
 	<div id="helper" style="background: rgba(255, 0, 0, 0.2);position: absolute;"></div>
 
 

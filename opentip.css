@@ -271,6 +271,87 @@ IE6.
 
 **/
 
-.ot-container.ot-visible.ot-showeffect-appear  {
-  
+.ot-container.ot-css3 {
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-duration: 1s; /* Will be overridden by JS */
+  -moz-animation-iteration-count: 1;
+  -moz-animation-timing-function: ease-in-out;
+  -moz-animation-duration: 1s; /* Will be overridden by JS */
 }
+
+.ot-container.ot-css3.ot-visible {
+  opacity: 1;
+}
+
+.ot-container.ot-css3.ot-hidden {
+  opacity: 0;
+}
+
+@-webkit-keyframes appear {
+	0% { opacity: 0; }
+	100% { opacity: 1; }
+}
+.ot-container.ot-css3.ot-visible.ot-show-appear { -webkit-animation-name: appear; }
+
+@-webkit-keyframes grow {
+	0% { opacity: 0; -webkit-transform: scale(0); }
+    10% { opacity: 1; -webkit-transform: scale(0.1);  }
+	100% { opacity: 1; -webkit-transform: scale(1); }
+}
+.ot-container.ot-css3.ot-visible.ot-show-grow { -webkit-animation-name: grow; }
+
+@-webkit-keyframes blindDown {
+	0% { opacity: 0; -webkit-transform: scaleY(0); }
+    10% { opacity: 1; -webkit-transform: scaleY(0.1); }
+	100% { opacity: 1; -webkit-transform: scaleY(1); }
+}
+.ot-container.ot-css3.ot-visible.ot-show-blindDown { -webkit-animation-name: blindDown; }
+.ot-container.ot-css3.ot-visible.ot-show-slideDown { -webkit-animation-name: blindDown; }
+
+@-webkit-keyframes condense {
+	0% { opacity: 0; -webkit-transform: scale(5); }
+	100% { opacity: 1; -webkit-transform: scale(1); }
+}
+.ot-container.ot-css3.ot-visible.ot-show-condense { -webkit-animation-name: condense; }
+
+
+
+
+
+
+@-webkit-keyframes fade {
+	0% { opacity: 1; }
+	100% { opacity: 0; }
+}
+.ot-container.ot-css3.ot-hidden.ot-hide-fade { -webkit-animation-name: fade; }
+
+@-webkit-keyframes shrink {
+	0% { opacity: 1; -webkit-transform: scale(1); }
+    90% { opacity: 0; -webkit-transform: scale(0.1); }
+	100% { opacity: 0; -webkit-transform: scale(0); }
+}
+.ot-container.ot-css3.ot-hidden.ot-hide-shrink { -webkit-animation-name: shrink; }
+
+@-webkit-keyframes blindUp {
+	0% { opacity: 1; -webkit-transform: scaleY(1); }
+    90% { opacity: 0; -webkit-transform: scaleY(0.1); }
+	100% { opacity: 0; -webkit-transform: scaleY(0); }
+}
+.ot-container.ot-css3.ot-hidden.ot-hide-blindUp { -webkit-animation-name: blindUp; }
+.ot-container.ot-css3.ot-hidden.ot-hide-slideUp { -webkit-animation-name: blindUp; }
+
+
+@-webkit-keyframes puff {
+	0% { opacity: 1; -webkit-transform: scale(1); }
+	100% { opacity: 0; -webkit-transform: scale(5); }
+}
+.ot-container.ot-css3.ot-hidden.ot-hide-puff { -webkit-animation-name: puff; }
+
+
+
+
+
+
+
+

@@ -153,7 +153,8 @@ Opentip.supports = (function() {
    };
 })();
 
-Opentip.useCss3Transitions = Opentip.supports('transition');
+Opentip.useCss3Transitions = Opentip.supports('transition') && Opentip.supports('animationName');
+Opentip.useScriptaculousTransitions = !Opentip.useCss3Transitions;
 
 var Tips = {
   list: [],
@@ -357,7 +358,17 @@ var TipClass = Class.create({
     this.setupObserversForReallyHiddenTip();
   },
   buildContainer: function() {
-    this.container = $(Builder.node('div', {className: 'ot-container style-' + this.options.className + (this.options.ajax ? ' ot-loading' : '') + (this.options.fixed ? ' ot-fixed' : '')})).setStyle({display: 'none', position: 'absolute'});
+    this.container = $(Builder.node('div', {className: 'ot-container ot-hidden style-' + this.options.className + (this.options.ajax ? ' ot-loading' : '') + (this.options.fixed ? ' ot-fixed' : '')}));
+    if (Opentip.useCss3Transitions) {
+      this.container.addClassName('ot-css3');
+      if (this.options.showEffect) {
+        this.container.addClassName('ot-show-' + this.options.showEffect);
+      }
+      if (this.options.hideEffect) {
+        this.container.addClassName('ot-hide-' + this.options.hideEffect);
+      }
+    }
+    if (Opentip.useScriptaculousTransitions) this.container.setStyle({display: 'none'});
   },
   buildElements: function() {
     if (this.options.stem) {
@@ -480,11 +491,19 @@ var TipClass = Class.create({
     this.setupObserversForReallyVisibleTip();
     this.setupObserversForVisibleTip();
 
-    if (this.options.showEffect || this.options.hideEffect) this.cancelEffects();
+    if (Opentip.useScriptaculousTransitions) {
+      if (this.options.showEffect || this.options.hideEffect) this.cancelEffects();
 
-    if (!this.options.showEffect) this.container.show();
-    else this.container[this.options.showEffect]({duration: this.options.showEffectDuration, queue: this.queue, afterFinish: this.afterShowEffect.bind(this)});
-    if (Opentip.useIFrame()) this.iFrameElement.show();
+      if (!this.options.showEffect || !this.container[this.options.showEffect]) this.container.show();
+      else this.container[this.options.showEffect]({duration: this.options.showEffectDuration, queue: this.queue, afterFinish: this.afterShowEffect.bind(this)});
+      if (Opentip.useIFrame()) this.iFrameElement.show();
+    }
+
+    if (Opentip.useCss3Transitions) {
+      this.container.setStyle({ 'webkitAnimationDuration': this.options.showEffectDuration + 's' });
+    }
+
+    this.container.removeClassName('ot-hidden').addClassName('ot-visible');
 
     this.activateFirstInput();
 
@@ -570,15 +589,23 @@ var TipClass = Class.create({
 
     if (!this.options.fixed) this.stopFollowingMousePosition();
 
-    if (this.options.showEffect || this.options.hideEffect) this.cancelEffects();
+    if (Opentip.useScriptaculousTransitions) {
+      if (this.options.showEffect || this.options.hideEffect) this.cancelEffects();
 
-    if (!this.options.hideEffect) this.container.hide(); 
-    else {
-      var effectOptions = {duration: this.options.hideEffectDuration, queue: this.queue};
-      if(afterFinish && Object.isFunction(afterFinish)) effectOptions.afterFinish = afterFinish;
-      this.container[this.options.hideEffect](effectOptions);
+      if (!this.options.hideEffect || !this.container[this.options.hideEffect]) this.container.hide(); 
+      else {
+        var effectOptions = {duration: this.options.hideEffectDuration, queue: this.queue};
+        if(afterFinish && Object.isFunction(afterFinish)) effectOptions.afterFinish = afterFinish;
+        this.container[this.options.hideEffect](effectOptions);
+      }
+      if (Opentip.useIFrame()) this.iFrameElement.hide();
     }
-    if (Opentip.useIFrame()) this.iFrameElement.hide();
+
+    if (Opentip.useCss3Transitions) {
+      this.container.setStyle({ 'webkitAnimationDuration': this.options.hideEffectDuration + 's' });
+    }
+
+   this.container.removeClassName('ot-visible').addClassName('ot-hidden');
 
   },
   cancelEffects: function() {Effect.Queues.get(this.queue.scope).invoke('cancel');},
