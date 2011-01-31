@@ -153,7 +153,7 @@ Opentip.supports = (function() {
    };
 })();
 
-Opentip.useCss3Transitions = Opentip.supports('transition') && Opentip.supports('animationName');
+Opentip.useCss3Transitions = Opentip.supports('transition');
 Opentip.useScriptaculousTransitions = !Opentip.useCss3Transitions;
 
 var Tips = {

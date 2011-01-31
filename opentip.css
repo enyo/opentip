@@ -285,9 +285,19 @@ with your .ot-show-effectName).
 **/
 
 .ot-container.ot-css3 {
-  -webkit-transition-duration: 1s;
+  -webkit-transition-duration: 1s; /* Well be reset by JS */
   -webkit-transition-property: opacity, -webkit-transform;
+  -moz-transition-duration: 1s; /* Well be reset by JS */
+  -moz-transition-property: opacity, -moz-transform;
+
   opacity: 1;
+}
+
+.ot-container.ot-css3.ot-fixed {
+  -webkit-transition-property: opacity, -webkit-transform, left, top;
+  -webkit-transition-duration: 1s, 1s, 0.2s, 0.2s;
+  -moz-transition-property: opacity, -moz-transform, left, top;
+  -moz-transition-duration: 1s, 1s, 0.2s, 0.2s;
 }
 
 .ot-container.ot-css3.ot-completely-hidden {
@@ -310,6 +320,7 @@ with your .ot-show-effectName).
 .ot-container.ot-css3.ot-becoming-visible.ot-show-grow,
 .ot-container.ot-css3.ot-hidden.ot-hide-shrink {
   -webkit-transform: scale(0);
+  -moz-transform: scale(0);
 }
 
 
@@ -319,6 +330,7 @@ with your .ot-show-effectName).
 .ot-container.ot-css3.ot-becoming-visible.ot-show-slideDown,
 .ot-container.ot-css3.ot-hidden.ot-hide-blindUp {
   -webkit-transform: scaleY(0);
+  -moz-transform: scaleY(0);
   opacity: 0;
 }
 
@@ -327,16 +339,19 @@ with your .ot-show-effectName).
 .ot-container.ot-css3.ot-becoming-visible.ot-show-condense,
 .ot-container.ot-css3.ot-hidden.ot-hide-puff {
   -webkit-transform: scale(5);
+  -moz-transform: scale(5);
   opacity: 0;
 }
 
 /** Rotate **/
 .ot-container.ot-css3.ot-becoming-visible.ot-show-rotate {
   -webkit-transform: scale(3) rotate(-500deg);
+  -moz-transform: scale(3) rotate(-500deg);
   opacity: 0;
 }
 .ot-container.ot-css3.ot-hidden.ot-hide-rotate {
   -webkit-transform: scale(3) rotate(500deg);
+  -moz-transform: scale(3) rotate(500deg);
   opacity: 0;
 }
 
