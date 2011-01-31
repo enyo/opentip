@@ -358,8 +358,10 @@ var TipClass = Class.create({
     this.setupObserversForReallyHiddenTip();
   },
   buildContainer: function() {
-    this.container = $(Builder.node('div', {className: 'ot-container ot-hidden style-' + this.options.className + (this.options.ajax ? ' ot-loading' : '') + (this.options.fixed ? ' ot-fixed' : '')}));
+    this.container = $(Builder.node('div', {className: 'ot-container ot-completely-hidden style-' + this.options.className + (this.options.ajax ? ' ot-loading' : '') + (this.options.fixed ? ' ot-fixed' : '')}));
     if (Opentip.useCss3Transitions) {
+      this.container.setStyle({'webkitTransitionDuration': '0s'}); // To make sure the initial state doesn't fade
+
       this.container.addClassName('ot-css3');
       if (this.options.showEffect) {
         this.container.addClassName('ot-show-' + this.options.showEffect);
@@ -403,7 +405,11 @@ var TipClass = Class.create({
   destroyAllElements: function() {if (this.container) this.container.remove();},
   clearShowTimeout: function() {window.clearTimeout(this.timeoutId);},
   clearHideTimeout: function() {window.clearTimeout(this.hideTimeoutId);},
-  clearTimeouts: function() {this.clearShowTimeout();this.clearHideTimeout();},
+  clearTimeouts: function() {
+    window.clearTimeout(this.visibilityStateTimeoutId);
+    this.clearShowTimeout();
+    this.clearHideTimeout();
+  },
   /** Gets called only when doShow() is called, not when show() is called **/
   setupObserversForReallyVisibleTip: function() {
     this.options.showTriggerElementsWhenVisible.each(function(pair) {$(pair.element).observe(pair.event, this.bound.show);}, this);
@@ -499,15 +505,26 @@ var TipClass = Class.create({
       if (Opentip.useIFrame()) this.iFrameElement.show();
     }
 
-    if (Opentip.useCss3Transitions) {
-      this.container.setStyle({ 'webkitAnimationDuration': this.options.showEffectDuration + 's' });
-    }
-
-    this.container.removeClassName('ot-hidden').addClassName('ot-visible');
-
-    this.activateFirstInput();
-
     this.position();
+
+    this.container.removeClassName('ot-hidden').removeClassName('ot-completely-hidden').addClassName('ot-becoming-visible');
+    
+    (function() {
+      if (Opentip.useCss3Transitions) {
+        this.container.setStyle({'webkitTransitionDuration': this.options.showEffectDuration + 's'});
+      }
+
+      this.container.removeClassName('ot-becoming-visible').addClassName('ot-visible');
+      if (this.options.showEffect && this.options.showEffectDuration) {
+        this.visibilityStateTimeoutId = (function() { this.removeClassName('ot-visible').addClassName('ot-completely-visible'); }).bind(this.container).delay(this.options.showEffectDuration);
+      }
+      else {
+        this.container.removeClassName('ot-visible').addClassName('ot-completely-visible');
+      }
+
+      this.activateFirstInput();
+    }).bind(this).defer(); // Has to be deferred, so the div has the class ot-becoming-visible.
+
   },
   loadAjax: function() {
     if (this.loading) return;
@@ -602,10 +619,19 @@ var TipClass = Class.create({
     }
 
     if (Opentip.useCss3Transitions) {
-      this.container.setStyle({ 'webkitAnimationDuration': this.options.hideEffectDuration + 's' });
+      this.container.setStyle({'webkitTransitionDuration': this.options.hideEffectDuration + 's'});
     }
 
-   this.container.removeClassName('ot-visible').addClassName('ot-hidden');
+   this.container.removeClassName('ot-visible').removeClassName('ot-completely-visible').addClassName('ot-hidden');
+   if (this.options.hideEffect && this.options.hideEffectDuration) {
+     this.visibilityStateTimeoutId = (function() {
+       this.setStyle({'webkitTransitionDuration': '0s'});
+       this.removeClassName('ot-hidden').addClassName('ot-completely-hidden');
+     }).bind(this.container).delay(this.options.showEffectDuration);
+   }
+   else {
+     this.container.removeClassName('ot-hidden').addClassName('ot-completely-hidden');
+   }
 
   },
   cancelEffects: function() {Effect.Queues.get(this.queue.scope).invoke('cancel');},

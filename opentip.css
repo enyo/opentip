@@ -17,6 +17,9 @@
     -moz-transition-property: left, top;
     -moz-transition-duration: 0.2s, 0.2s;
   }
+  .ot-container.ot-completely-hidden {
+/*    display: none;*/
+  }
 .opentip {
 	position: relative;
 	font-size: 13px;
@@ -269,62 +272,86 @@ transitions.
 So the syntax I'm going to use, is really meant for more modern browsers than
 IE6.
 
+
+
+To define a show effect, you have to define the position you want to come from
+as the .ot-completely-hidden property (in combination with your
+.ot-show-effectName).
+
+To define a hide effect, you do the same, but for .ot-hidden (in combination
+with your .ot-show-effectName).
+
+
 **/
 
 .ot-container.ot-css3 {
-  -webkit-animation-iteration-count: 1;
-  -webkit-animation-timing-function: ease-in-out;
-  -webkit-animation-duration: 1s; /* Will be overridden by JS */
-  -moz-animation-iteration-count: 1;
-  -moz-animation-timing-function: ease-in-out;
-  -moz-animation-duration: 1s; /* Will be overridden by JS */
-}
-
-.ot-container.ot-css3.ot-visible {
+  -webkit-transition-duration: 1s;
+  -webkit-transition-property: opacity, -webkit-transform;
   opacity: 1;
 }
 
-.ot-container.ot-css3.ot-hidden {
+.ot-container.ot-css3.ot-completely-hidden {
+  display: none;
+}
+
+
+
+
+
+/** Appear / Fade**/
+.ot-container.ot-css3.ot-becoming-visible.ot-show-appear,
+.ot-container.ot-css3.ot-hidden.ot-hide-fade {
   opacity: 0;
 }
 
-@-webkit-keyframes appear {
-	0% { opacity: 0; }
-	100% { opacity: 1; }
+
+
+/** Grow / Shrink **/
+.ot-container.ot-css3.ot-becoming-visible.ot-show-grow,
+.ot-container.ot-css3.ot-hidden.ot-hide-shrink {
+  -webkit-transform: scale(0);
 }
-.ot-container.ot-css3.ot-visible.ot-show-appear { -webkit-animation-name: appear; }
 
-@-webkit-keyframes grow {
-	0% { opacity: 0; -webkit-transform: scale(0); }
-    10% { opacity: 1; -webkit-transform: scale(0.1);  }
-	100% { opacity: 1; -webkit-transform: scale(1); }
+
+
+/** Blind/Slide down / Blind up**/
+.ot-container.ot-css3.ot-becoming-visible.ot-show-blindDown,
+.ot-container.ot-css3.ot-becoming-visible.ot-show-slideDown,
+.ot-container.ot-css3.ot-hidden.ot-hide-blindUp {
+  -webkit-transform: scaleY(0);
+  opacity: 0;
 }
-.ot-container.ot-css3.ot-visible.ot-show-grow { -webkit-animation-name: grow; }
 
-@-webkit-keyframes blindDown {
-	0% { opacity: 0; -webkit-transform: scaleY(0); }
-    10% { opacity: 1; -webkit-transform: scaleY(0.1); }
-	100% { opacity: 1; -webkit-transform: scaleY(1); }
+
+/** Condense / Puff **/
+.ot-container.ot-css3.ot-becoming-visible.ot-show-condense,
+.ot-container.ot-css3.ot-hidden.ot-hide-puff {
+  -webkit-transform: scale(5);
+  opacity: 0;
 }
-.ot-container.ot-css3.ot-visible.ot-show-blindDown { -webkit-animation-name: blindDown; }
-.ot-container.ot-css3.ot-visible.ot-show-slideDown { -webkit-animation-name: blindDown; }
 
-@-webkit-keyframes condense {
-	0% { opacity: 0; -webkit-transform: scale(5); }
-	100% { opacity: 1; -webkit-transform: scale(1); }
+/** Rotate **/
+.ot-container.ot-css3.ot-becoming-visible.ot-show-rotate {
+  -webkit-transform: scale(3) rotate(-500deg);
+  opacity: 0;
 }
-.ot-container.ot-css3.ot-visible.ot-show-condense { -webkit-animation-name: condense; }
-
-
-
-
-
-
-@-webkit-keyframes fade {
-	0% { opacity: 1; }
-	100% { opacity: 0; }
+.ot-container.ot-css3.ot-hidden.ot-hide-rotate {
+  -webkit-transform: scale(3) rotate(500deg);
+  opacity: 0;
 }
-.ot-container.ot-css3.ot-hidden.ot-hide-fade { -webkit-animation-name: fade; }
+
+
+
+/*
+
+.ot-container.ot-css3.ot-hidden.ot-show-condense { -webkit-transform: scale(5); }
+*/
+
+
+
+/*
+.ot-container.ot-css3.ot-hidden.ot-hide-fade { }
+
 
 @-webkit-keyframes shrink {
 	0% { opacity: 1; -webkit-transform: scale(1); }
@@ -349,9 +376,5 @@ IE6.
 .ot-container.ot-css3.ot-hidden.ot-hide-puff { -webkit-animation-name: puff; }
 
 
-
-
-
-
-
+*/
 
