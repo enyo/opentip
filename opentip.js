@@ -75,9 +75,31 @@ var Opentip = {
     else {
       Event.observe(window, 'load', createFunction); // Sorry IE users but... well: get another browser!
     }
+  },
+
+
+  /* Browser support testing */
+  vendors: 'Khtml Ms O Moz Webkit'.split(' '),
+  testDiv: document.createElement('div'),
+  supports: function(prop) {
+    if ( prop in Opentip.testDiv.style ) return true;
+
+    prop = prop.ot_ucfirst();
+
+    return Opentip.vendors.any(function(vendor) {
+      return vendor + prop in Opentip.testDiv.style;
+    });
   }
 };
 Opentip.load();
+
+
+
+String.prototype.ot_ucfirst = function() {
+    var element = $(this);
+    return element.replace(/^\w/, function(val) { return val.toUpperCase(); });
+  };
+
 
 Event.observe(window, Opentip.IEVersion() ? 'load' : 'dom:loaded', function() {Opentip.documentIsLoaded = true;});
 
@@ -129,32 +151,12 @@ Opentip.STICKS_OUT_LEFT = 1;
 Opentip.STICKS_OUT_RIGHT = 2;
 
 
-Opentip.vendors = 'Khtml Ms O Moz Webkit'.split(' ');
-// Thanks to Jeffrey Way @ snipplr.com
-Opentip.supports = (function() {
-   var div = document.createElement('div'),
-      len = Opentip.vendors.length;
- 
-   return function(prop) {
-      if ( prop in div.style ) return true;
- 
-      prop = prop.replace(/^[a-z]/, function(val) {
-         return val.toUpperCase();
-      });
- 
-      while(len--) {
-         if ( Opentip.vendors[len] + prop in div.style ) {
-            // browser supports box-shadow. Do what you need.
-            // Or use a bang (!) to test if the browser doesn't.
-            return true;
-         } 
-      }
-      return false;
-   };
-})();
-
 Opentip.useCss3Transitions = Opentip.supports('transition');
 Opentip.useScriptaculousTransitions = !Opentip.useCss3Transitions;
+
+
+
+
 
 var Tips = {
   list: [],
@@ -213,7 +215,7 @@ Element.addMethods({
     element = $(element);
     var style = {};
     for (var propertyName in arguments[1]) {
-      var css3PropertyName = propertyName.replace(/^\w/, function($0) { return $0.toUpperCase(); });
+      var css3PropertyName = propertyName.ot_ucfirst();
       var css3PropertyValue = arguments[1][propertyName];
       Opentip.vendors.each(function(vendor) {
         style[vendor + css3PropertyName] = css3PropertyValue;
