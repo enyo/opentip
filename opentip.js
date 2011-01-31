@@ -44,12 +44,23 @@ var Opentip = {
   Version: '1.2.6',
   REQUIRED_PROTOTYPE_VERSION: '1.6.0',
   REQUIRED_SCRIPTACULOUS_VERSION: '1.8.0',
+  STICKS_OUT_TOP: 1,
+  STICKS_OUT_BOTTOM: 2,
+  STICKS_OUT_LEFT: 1,
+  STICKS_OUT_RIGHT: 2,
   cached: {},
   debugging: false,
   load: function() {
     function getComparableVersion(version) {var v = version.split('.');return parseInt(v[0])*100000 + parseInt(v[1])*1000 + parseInt(v[2]);}
     if((typeof Prototype === 'undefined') || (typeof Element === 'undefined') || (typeof Element.Methods === 'undefined') || (getComparableVersion(Prototype.Version) < getComparableVersion(Opentip.REQUIRED_PROTOTYPE_VERSION))) {throw("Opentip requires the Prototype JavaScript framework >= " + Opentip.REQUIRED_PROTOTYPE_VERSION);}
-    if((typeof Scriptaculous === 'undefined') || (typeof Effect === 'undefined') || (getComparableVersion(Scriptaculous.Version) < getComparableVersion(Opentip.REQUIRED_SCRIPTACULOUS_VERSION))) {throw("Opentip requires the Scriptaculous JavaScript framework >= " + Opentip.REQUIRED_SCRIPTACULOUS_VERSION);}
+
+    Opentip.useCss3Transitions = Opentip.supports('transition');
+    Opentip.useScriptaculousTransitions = ! Opentip.useCss3Transitions;
+
+    if((typeof Scriptaculous === 'undefined') || (typeof Effect === 'undefined') || (getComparableVersion(Scriptaculous.Version) < getComparableVersion(Opentip.REQUIRED_SCRIPTACULOUS_VERSION))) {
+      Opentip.debug('No scriptaculous available. Disabling scriptaculous transitions.');
+      Opentip.useScriptaculousTransitions = false;
+    }
   },
   debug: function() {if (this.debugging && typeof console !== 'undefined' && typeof console.debug !== 'undefined') console.debug.apply(console, arguments);},
   IEVersion: function() {
@@ -77,6 +88,27 @@ var Opentip = {
     }
   },
 
+  // Mimics scriptaculous Builder.node behaviour
+  element: function(tagName, attributes, children) {
+    if (Object.isArray(attributes) || Object.isString(attributes) || Object.isElement(attributes)) {
+      children = attributes;
+      attributes = null;
+    }
+
+    var element = new Element(tagName, attributes || {});
+    
+    if (children) {
+      if (Object.isArray(children)) {
+        children.each(function(child) {
+          element.insert({ bottom: child });
+        });
+      }
+      else {
+        element.insert({ bottom: children });
+      }
+    }
+    return element;
+  },
 
   /* Browser support testing */
   vendors: 'Khtml Ms O Moz Webkit'.split(' '),
@@ -91,14 +123,13 @@ var Opentip = {
     });
   }
 };
-Opentip.load();
-
-
 
 String.prototype.ot_ucfirst = function() {
     var element = $(this);
     return element.replace(/^\w/, function(val) { return val.toUpperCase(); });
   };
+
+Opentip.load();
 
 
 Event.observe(window, Opentip.IEVersion() ? 'load' : 'dom:loaded', function() {Opentip.documentIsLoaded = true;});
@@ -144,16 +175,6 @@ Opentip.styles = {
   }
 };
 Opentip.defaultStyle = 'standard'; // Change this to the style name you want your tooltips to have.
-
-Opentip.STICKS_OUT_TOP = 1;
-Opentip.STICKS_OUT_BOTTOM = 2;
-Opentip.STICKS_OUT_LEFT = 1;
-Opentip.STICKS_OUT_RIGHT = 2;
-
-
-Opentip.useCss3Transitions = Opentip.supports('transition');
-Opentip.useScriptaculousTransitions = !Opentip.useCss3Transitions;
-
 
 
 
@@ -373,7 +394,7 @@ var TipClass = Class.create({
     this.setupObserversForReallyHiddenTip();
   },
   buildContainer: function() {
-    this.container = $(Builder.node('div', {className: 'ot-container ot-completely-hidden style-' + this.options.className + (this.options.ajax ? ' ot-loading' : '') + (this.options.fixed ? ' ot-fixed' : '')}));
+    this.container = $(Opentip.element('div', {className: 'ot-container ot-completely-hidden style-' + this.options.className + (this.options.ajax ? ' ot-loading' : '') + (this.options.fixed ? ' ot-fixed' : '')}));
     if (Opentip.useCss3Transitions) {
       this.container.setCss3Style({ 'transitionDuration': '0s' }); // To make sure the initial state doesn't fade
 
@@ -390,24 +411,24 @@ var TipClass = Class.create({
   buildElements: function() {
     if (this.options.stem) {
       var stemOffset = '-' + this.options.stemSize + 'px';
-      this.container.appendChild(Builder.node('div', {className: 'stem-container ' + this.options.stem[0] + ' ' + this.options.stem[1]}, Builder.node('div', {className: 'stem'}, Builder.node('div', ''))));
+      this.container.appendChild(Opentip.element('div', {className: 'stem-container ' + this.options.stem[0] + ' ' + this.options.stem[1]}, Opentip.element('div', {className: 'stem'}, Opentip.element('div'))));
     }
     var self = this;
     var content = [];
     var headerContent = [];
-    if (this.options.title) headerContent.push(Builder.node('div', {className: 'title'}, this.options.title));
+    if (this.options.title) headerContent.push(Opentip.element('div', {className: 'title'}, this.options.title));
 
-    content.push(Builder.node('div', {className: 'header'}, headerContent));
-    content.push($(Builder.node('div', {className: 'content'})).update(this.options.escapeHtml ? this.content.escapeHTML() : this.content ));
-    if (this.options.ajax) {content.push($(Builder.node('div', {className: 'loadingIndication'}, Builder.node('span', 'Loading...'))));}
-    this.tooltipElement = $(Builder.node('div', {className: 'opentip'}, content));
+    content.push(Opentip.element('div', {className: 'header'}, headerContent));
+    content.push($(Opentip.element('div', {className: 'content'})).update(this.options.escapeHtml ? this.content.escapeHTML() : this.content ));
+    if (this.options.ajax) {content.push($(Opentip.element('div', {className: 'loadingIndication'}, Opentip.element('span', 'Loading...'))));}
+    this.tooltipElement = $(Opentip.element('div', {className: 'opentip'}, content));
 
     this.container.appendChild(this.tooltipElement);
 
-    var buttons = this.container.appendChild(Builder.node('div', {className: 'ot-buttons'}));
-    if (this.options.hideTrigger == 'closeButton') buttons.appendChild(Builder.node('a', {href: 'javascript:undefined', className: 'close'}, Builder.node('span', 'x')));
+    var buttons = this.container.appendChild(Opentip.element('div', {className: 'ot-buttons'}));
+    if (this.options.hideTrigger == 'closeButton') buttons.appendChild(Opentip.element('a', {href: 'javascript:undefined', className: 'close'}, Opentip.element('span', 'x')));
     
-    if (Opentip.useIFrame()) this.iFrameElement = this.container.appendChild($(Builder.node('iframe', {className: 'opentipIFrame', src: 'javascript:false;'})).setStyle({display: 'none', zIndex: 100}).setOpacity(0));
+    if (Opentip.useIFrame()) this.iFrameElement = this.container.appendChild($(Opentip.element('iframe', {className: 'opentipIFrame', src: 'javascript:false;'})).setStyle({display: 'none', zIndex: 100}).setOpacity(0));
 
     document.body.appendChild(this.container);
     this.storeAndFixDimensions();
