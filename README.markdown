@@ -8,7 +8,9 @@ It supports:
 - Different styles
 - Automatic repositioning of the tooltip if it's not in the viewport of the browser anymore
 - All kind of triggers (The tooltip can be triggered by mouse over, click, form submit, … everything you can think of really)
-- CSS3 Transitions / Animations if available. (If not, it uses scriptaculous).
+- CSS3 Animations if available. (If not, it uses scriptaculous if available).
+
+As of Version 1.2.6 Opentip does no longer depend on scriptaculous.
 
 ## Usage
 
