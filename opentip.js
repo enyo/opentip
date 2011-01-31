@@ -129,11 +129,11 @@ Opentip.STICKS_OUT_LEFT = 1;
 Opentip.STICKS_OUT_RIGHT = 2;
 
 
+Opentip.vendors = 'Khtml Ms O Moz Webkit'.split(' ');
 // Thanks to Jeffrey Way @ snipplr.com
 Opentip.supports = (function() {
    var div = document.createElement('div'),
-      vendors = 'Khtml Ms O Moz Webkit'.split(' '),
-      len = vendors.length;
+      len = Opentip.vendors.length;
  
    return function(prop) {
       if ( prop in div.style ) return true;
@@ -143,7 +143,7 @@ Opentip.supports = (function() {
       });
  
       while(len--) {
-         if ( vendors[len] + prop in div.style ) {
+         if ( Opentip.vendors[len] + prop in div.style ) {
             // browser supports box-shadow. Do what you need.
             // Or use a bang (!) to test if the browser doesn't.
             return true;
@@ -207,6 +207,19 @@ Element.addMethods({
   addTip: function(element) {
     element = $(element);
     Tips.add.apply(Tips, arguments);
+    return element;
+  },
+  setCss3Style: function(element) {
+    element = $(element);
+    var style = {};
+    for (var propertyName in arguments[1]) {
+      var css3PropertyName = propertyName.replace(/^\w/, function($0) { return $0.toUpperCase(); });
+      var css3PropertyValue = arguments[1][propertyName];
+      Opentip.vendors.each(function(vendor) {
+        style[vendor + css3PropertyName] = css3PropertyValue;
+        element.setStyle(style);
+      });
+    }
     return element;
   }
 });
@@ -360,7 +373,7 @@ var TipClass = Class.create({
   buildContainer: function() {
     this.container = $(Builder.node('div', {className: 'ot-container ot-completely-hidden style-' + this.options.className + (this.options.ajax ? ' ot-loading' : '') + (this.options.fixed ? ' ot-fixed' : '')}));
     if (Opentip.useCss3Transitions) {
-      this.container.setStyle({'webkitTransitionDuration': '0s'}); // To make sure the initial state doesn't fade
+      this.container.setCss3Style({ 'transitionDuration': '0s' }); // To make sure the initial state doesn't fade
 
       this.container.addClassName('ot-css3');
       if (this.options.showEffect) {
@@ -507,11 +520,33 @@ var TipClass = Class.create({
 
     this.position();
 
-    this.container.removeClassName('ot-hidden').removeClassName('ot-completely-hidden').addClassName('ot-becoming-visible');
-    
-    (function() {
+    this.container.removeClassName('ot-hidden').addClassName('ot-becoming-visible');
+
+
+    /**
+     * The next lines may seem a bit weird. I ran into some bizarre opera problems
+     * while implementing the switch of the different states.
+     * 
+     * This is what's happening here:
+     * 
+     * I wanted to just remove ot-completely-hidden, and add ot-becoming-visible
+     * (so the tip has the style it should have when it appears) and then switch
+     * ot-becoming-visible with ot-visible so the transition can take place.
+     * I then setup a timer to set ot-completely-visible when appropriate.
+     * 
+     * I ran into problems with opera, which showed the tip for a frame because
+     * apparently the -o-transforms are slower then just setting display: none
+     * (or something...)
+     * 
+     * So I have to 1) set ot-becoming-visible first, so the tip has the appropriate
+     * CSS definitions set, 2) defer the removal of ot-completely-hidden, so it's
+     * not invisible anymore, and 3) defer the rest of the process (setting ot-visible
+     * and stuff) so the transition takes place.
+     */
+
+    var startShowEffect = function() {
       if (Opentip.useCss3Transitions) {
-        this.container.setStyle({'webkitTransitionDuration': this.options.showEffectDuration + 's'});
+        this.container.setCss3Style({ 'transitionDuration': this.options.showEffectDuration + 's'});
       }
 
       this.container.removeClassName('ot-becoming-visible').addClassName('ot-visible');
@@ -523,7 +558,15 @@ var TipClass = Class.create({
       }
 
       this.activateFirstInput();
-    }).bind(this).defer(); // Has to be deferred, so the div has the class ot-becoming-visible.
+    };
+
+
+    (function() {
+      this.container.removeClassName('ot-completely-hidden');
+      (startShowEffect).bind(this).defer(); // Has to be deferred, so the div has the class ot-becoming-visible.
+    }).bind(this).defer();
+
+  
 
   },
   loadAjax: function() {
@@ -619,13 +662,13 @@ var TipClass = Class.create({
     }
 
     if (Opentip.useCss3Transitions) {
-      this.container.setStyle({'webkitTransitionDuration': this.options.hideEffectDuration + 's'});
+      this.container.setCss3Style({ 'transitionDuration': this.options.hideEffectDuration + 's' });
     }
 
    this.container.removeClassName('ot-visible').removeClassName('ot-completely-visible').addClassName('ot-hidden');
    if (this.options.hideEffect && this.options.hideEffectDuration) {
      this.visibilityStateTimeoutId = (function() {
-       this.setStyle({'webkitTransitionDuration': '0s'});
+       this.setCss3Style({ 'transitionDuration': '0s'});
        this.removeClassName('ot-hidden').addClassName('ot-completely-hidden');
      }).bind(this.container).delay(this.options.showEffectDuration);
    }
