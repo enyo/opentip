@@ -41,7 +41,7 @@
 
 var Opentip = {
 
-  Version: '1.2.7',
+  Version: '1.2.8',
   REQUIRED_PROTOTYPE_VERSION: '1.6.0',
   REQUIRED_SCRIPTACULOUS_VERSION: '1.8.0',
   STICKS_OUT_TOP: 1,
@@ -196,7 +196,7 @@ var Tips = {
       /* TODO: Now it just returns the first found... try to find the correct one. */
       var tip = this.list.find(function(t) {return (t.triggerElement === element);});
       if (tip.options.showOn == 'creation') tip.show();
-      Opentip.debug('Using an existing opentip');
+      tip.debug('Using an existing opentip.');
       return;
     } else setTimeout(function() {element._opentipAddedTips = true;}, 1); // I added a timeout, so that tooltips, defined in an onmouseover or onclick event, will show.
 
@@ -249,6 +249,11 @@ Element.addMethods({
 
 
 var TipClass = Class.create({
+  debug: function() {
+    var newArguments = Array.from(arguments);
+    newArguments.unshift('ID:', this.id, '|');
+    Opentip.debug.apply(Opentip, newArguments);
+  },
   initialize: function(element, evt) {
     this.id = Opentip.lastTipId ++;
 
@@ -419,7 +424,7 @@ var TipClass = Class.create({
     if (this.options.title) headerContent.push(Opentip.element('div', {className: 'title'}, this.options.title));
 
     content.push(Opentip.element('div', {className: 'header'}, headerContent));
-    content.push($(Opentip.element('div', {className: 'content'})).update(this.options.escapeHtml ? this.content.escapeHTML() : this.content ));
+    content.push($(Opentip.element('div', {className: 'content'}))); // Will be updated by updateContent()
     if (this.options.ajax) {content.push($(Opentip.element('div', {className: 'loadingIndication'}, Opentip.element('span', 'Loading...'))));}
     this.tooltipElement = $(Opentip.element('div', {className: 'opentip'}, content));
 
@@ -431,7 +436,13 @@ var TipClass = Class.create({
     if (Opentip.useIFrame()) this.iFrameElement = this.container.appendChild($(Opentip.element('iframe', {className: 'opentipIFrame', src: 'javascript:false;'})).setStyle({display: 'none', zIndex: 100}).setOpacity(0));
 
     document.body.appendChild(this.container);
-    this.storeAndFixDimensions();
+  },
+  updateContent: function() {
+     var contentDiv = this.container.down('.content');
+     if (contentDiv) {
+       contentDiv.update(this.options.escapeHtml ? this.content.escapeHTML() : this.content);
+     }
+     this.storeAndFixDimensions();
   },
   storeAndFixDimensions: function() {
     this.container.setStyle({width: 'auto', left: '0px', top: '0px'});
@@ -477,7 +488,7 @@ var TipClass = Class.create({
     this.abortHiding();
     if (this.visible) return;
 
-    Opentip.debug('Showing in ' + this.options.delay + 's.', 'ID:', this.id);
+    this.debug('Showing in ' + this.options.delay + 's.');
 
     if (this.options.group) Tips.abortShowingGroup(this.options.group);
 
@@ -496,7 +507,7 @@ var TipClass = Class.create({
   // If the tip is waiting to show (and only then), this will abort it.
   abortShowing: function() {
     if (this.waitingToShow) {
-      Opentip.debug('Aborting showing.', 'ID:', this.id);
+      this.debug('Aborting showing.');
       this.clearTimeouts();
       this.stopFollowingMousePosition();
       this.waitingToShow = false;
@@ -510,7 +521,7 @@ var TipClass = Class.create({
     this.clearTimeouts();
     if (this.visible) return;
 
-    Opentip.debug('Showing!', 'ID:', this.id);
+    this.debug('Showing!');
 
     if (this.options.group) Tips.hideGroup(this.options.group);
 
@@ -518,11 +529,15 @@ var TipClass = Class.create({
     this.visible = true;
     this.waitingToShow = false;
 
-    if (Object.isFunction(this.content)) {Opentip.debug('Executing content function...');this.content = this.content(this);}
+    if (Object.isFunction(this.content)) {
+      this.debug('Executing content function.');
+      this.content = this.content(this);
+    }
 
     if (!this.tooltipElement) this.buildElements();
+    this.updateContent();
 
-    if (this.options.ajax && !this.loaded) {this.loadAjax();}
+    if (this.options.ajax && !this.loaded) { this.loadAjax(); }
 
     this.searchAndActivateHideButtons();
 
@@ -595,23 +610,30 @@ var TipClass = Class.create({
   loadAjax: function() {
     if (this.loading) return;
     this.loading = true;
-    this.container.addClassName('loading');
-    var self = this;
+    this.container.addClassName('ot-loading');
+
+    this.debug('Loading content from ' + this.options.ajax.url + '.');
+
     new Ajax.Request(this.options.ajax.url,
-      Object.extend({onSuccess: function(transport) {
-        self.content = transport.responseText;
-        var content = self.container.down('.content');
-        if (content) {
-          content.update(self.content);
-          self.searchAndActivateHideButtons();
-        }
-        self.loaded = true;
-        self.loading = false;
-        self.container.removeClassName('loading');
-        self.storeAndFixDimensions();
-        self.position();
-        this.activateFirstInput();
-      }}, this.options.ajax.options || {}));
+      Object.extend({
+       onComplete: function() {
+         this.container.removeClassName('ot-loading');
+         this.loaded = true;
+         this.loading = false;
+         this.updateContent();
+         this.searchAndActivateHideButtons();
+         this.activateFirstInput();
+         this.position();
+       }.bind(this),
+       onSuccess: function(transport) {
+         this.debug('Loading successfull.');
+         this.content = transport.responseText;
+       }.bind(this),
+       onFailure: function() {
+         this.debug('There was a problem downloading the file.');
+         this.options.escapeHtml = false;
+         this.content = '<a class="close">There was a problem downloading the content.</a>';
+       }.bind(this)}, this.options.ajax.options || {}));
   },
   afterShowEffect: function() {
     this.activateFirstInput();
@@ -637,7 +659,7 @@ var TipClass = Class.create({
     this.abortShowing();
     if (!this.visible) return;
 
-    Opentip.debug('Hiding in ' + this.options.hideDelay + 's.', 'ID:', this.id);
+    this.debug('Hiding in ' + this.options.hideDelay + 's.');
 
     this.waitingToHide = true;
 
@@ -648,7 +670,7 @@ var TipClass = Class.create({
   },
   abortHiding: function() {
     if (this.waitingToHide) {
-      Opentip.debug('Aborting hiding.', 'ID:', this.id);
+      this.debug('Aborting hiding.');
       this.clearTimeouts();
       this.waitingToHide = false;
       this.setupObserversForVisibleTip();
@@ -658,7 +680,7 @@ var TipClass = Class.create({
     this.clearTimeouts();
     if (!this.visible) return;
 
-    Opentip.debug('Hiding!', 'ID:', this.id);
+    this.debug('Hiding!');
 
     this.visible = false;
 
@@ -890,7 +912,7 @@ var TipClass = Class.create({
 
       if (stemElement && !this.stemPositionsEqual(this.lastStemPosition, this.currentStemPosition)) {
 
-        Opentip.debug('Setting stem style');
+        this.debug('Setting stem style');
 
         this.lastStemPosition = this.currentStemPosition;
 
