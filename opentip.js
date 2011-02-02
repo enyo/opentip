@@ -39,6 +39,10 @@
  **/
 
 
+
+/**
+ * Namespace and helper functions for opentips.
+ */
 var Opentip = {
 
   Version: '1.2.8',
@@ -132,13 +136,19 @@ String.prototype.ot_ucfirst = function() {
 Opentip.load();
 
 
-Event.observe(window, Opentip.IEVersion() ? 'load' : 'dom:loaded', function() {Opentip.documentIsLoaded = true;});
+
+
+
+/**
+ * The standard style.
+ */
 
 Opentip.styles = {
   standard: {
     // This style contains all default values for other styles.
     // POSITION : [ 'left|right|center', 'top|bottom|middle' ]
     // COORDINATE : [ XVALUE, YVALUE ] (integers)
+    title: null,
     className: 'standard', // The class name to be used in the stylesheet
     stem: false, // false (no stem)   ||   true (stem at tipJoint position)   ||   POSITION (for stems in other directions)
     delay: null, // float (in seconds - if null, the default is used: 0.2 for mouseover, 0 for click)
@@ -160,7 +170,8 @@ Opentip.styles = {
     targetJoint: null, // POSITION (Ignored if target == null)   ||   null (targetJoint is the opposite of tipJoint)
     ajax: false, // Ajax options. eg: { url: 'yourUrl.html', options: { ajaxOptions... } } or { options: { ajaxOptions } /* This will use the href of the A element the tooltip is attached to */ }
     group: null, // You can group opentips together. So when a tooltip shows, it looks if there are others in the same group, and hides them.
-    escapeHtml: false
+    escapeHtml: false,
+    style: null
   },
   slick: {
     className: 'slick',
@@ -175,6 +186,60 @@ Opentip.styles = {
   }
 };
 Opentip.defaultStyle = 'standard'; // Change this to the style name you want your tooltips to have.
+
+
+
+
+
+/**
+ * On document load
+ */
+Event.observe(window, Opentip.IEVersion() ? 'load' : 'dom:loaded', function() {
+  Opentip.documentIsLoaded = true;
+  
+  
+  var htmlOptionNames = [];
+  for (var i in Opentip.styles.standard) {
+    htmlOptionNames.push(i.underscore().dasherize());
+  }
+
+  // Go through all elements, and look for elements that have inline element
+  // opentip definitions.
+  $$('[ot]').each(function(element) {
+    var options = {};
+    element = $(element);
+
+    var content = element.readAttribute('ot');
+
+    if (content === '' || content === 'true' || content === 'yes') {
+      content = element.readAttribute('title');
+      element.title = '';
+    }
+
+
+    content || (content = '');
+
+    htmlOptionNames.each(function(optionName) {
+      var optionValue;
+      if (optionValue = element.readAttribute('ot-' + optionName)) {
+        try {
+          optionValue = optionValue.evalJSON(); // Not using sanitize, to avoid the isJSON check.
+        }
+        catch (err) {
+          // Well it wasn't JSON.
+          // I'm not using isJSON() here, so it's possible to write: [ 'left', 'top' ], which
+          // isn't valid JSON.
+        }
+
+        options[optionName.camelize()] = optionValue;
+      }
+    });
+
+    element.addTip(content, options);
+  });
+});
+
+
 
 
 
@@ -274,9 +339,9 @@ var TipClass = Class.create({
     var options = {};
     this.content = '';
 
-    if      (typeof(arguments[2]) == 'object') {this.content = '';options = arguments[2];}
-    else if (typeof(arguments[3]) == 'object') {this.content = arguments[2];options = arguments[3];}
-    else if (typeof(arguments[4]) == 'object') {this.content = arguments[2];options = arguments[4];options.title = arguments[3];}
+    if      (typeof(arguments[2]) == 'object') { this.content = ''; options = arguments[2]; }
+    else if (typeof(arguments[3]) == 'object') { this.content = arguments[2]; options = arguments[3]; }
+    else if (typeof(arguments[4]) == 'object') { this.content = arguments[2]; options = arguments[4]; options.title = arguments[3]; }
     else {
       if (Object.isString(arguments[2]) || Object.isFunction(arguments[2])) this.content = arguments[2];
       if (Object.isString(arguments[3])) options.title = arguments[3];
