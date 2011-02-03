@@ -45,8 +45,8 @@
  */
 var Opentip = {
 
-  Version: '1.2.10',
-  REQUIRED_PROTOTYPE_VERSION: '1.6.0',
+  Version: '1.3.0',
+  REQUIRED_PROTOTYPE_VERSION: '1.7.0',
   REQUIRED_SCRIPTACULOUS_VERSION: '1.8.0',
   STICKS_OUT_TOP: 1,
   STICKS_OUT_BOTTOM: 2,
@@ -229,12 +229,11 @@ Event.observe(window, Opentip.IEVersion() ? 'load' : 'dom:loaded', function() {
       var optionValue;
       if (optionValue = element.readAttribute('ot-' + optionName)) {
         try {
-          optionValue = optionValue.evalJSON(); // Not using sanitize, to avoid the isJSON check.
+          // See if it's a JSON string.
+          optionValue = optionValue.gsub("'", '"').evalJSON();
         }
         catch (err) {
-          // Well it wasn't JSON.
-          // I'm not using isJSON() here, so it's possible to write: [ 'left', 'top' ], which
-          // isn't valid JSON.
+          // Well, it's not. 
         }
 
         options[optionName.camelize()] = optionValue;
