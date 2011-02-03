@@ -166,8 +166,10 @@ Opentip.styles = {
     offset: [ 0, 0 ], // COORDINATE
     containInViewport: true, // Whether the targetJoint/tipJoint should be changed if the tooltip is not in the viewport anymore.
     autoOffset: true, // If set to true, offsets are calculated automatically to position the tooltip. (pixels are added if there are stems for example)
-    showEffect: 'appear', // scriptaculous effect
+    showEffect: 'appear', // scriptaculous or CSS3 (in opentip.css) effect
+    fallbackShowEffect: 'appear', // At tip creation, this effect will override the showEffect, if useScriptaculousTransitions == true, and the showEffect does not exist.
     hideEffect: 'fade',
+    fallbackHideEffect: 'appear',
     showEffectDuration: 0.3,
     hideEffectDuration: 0.2,
     stemSize: 8, // integer
@@ -391,6 +393,16 @@ var TipClass = Class.create({
       else options.delay = 0
     }
 
+    if (Opentip.useScriptaculousTransitions) {
+      if ( ! Effect[options.showEffect.ot_ucfirst()]) {
+        this.debug('Using fallback show effect "' + options.fallbackShowEffect + '" instead of "' + options.showEffect + '"');
+        options.showEffect = options.fallbackShowEffect;
+      }
+      if ( ! Effect[options.hideEffect.ot_ucfirst()]) {
+        options.hideEffect = options.fallbackHideEffect;
+        this.debug('Using fallback hide effect "' + options.fallbackHideEffect + '" instead of "' + options.hideEffect + '"');
+      }
+    }
 
     if (options.targetJoint == null) {
       options.targetJoint = [];
