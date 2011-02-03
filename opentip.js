@@ -103,7 +103,7 @@ var Opentip = {
 
     // This is a prototype 1.6 bug, that doesn't apply the className to IE8 elements.
     // Thanks to Alexander Shakhnovsky for finding the bug, and pinpointing the problem.
-    if(attributes['className']) {
+    if(attributes && attributes['className']) {
       attributes['className'].split(' ').each(function(class_name){element.addClassName(class_name);});
     }
 
@@ -120,6 +120,7 @@ var Opentip = {
     return element;
   },
 
+
   /* Browser support testing */
   vendors: 'Khtml Ms O Moz Webkit'.split(' '),
   testDiv: document.createElement('div'),
@@ -135,8 +136,7 @@ var Opentip = {
 };
 
 String.prototype.ot_ucfirst = function() {
-    var element = $(this);
-    return element.replace(/^\w/, function(val) { return val.toUpperCase(); });
+    return this.replace(/^\w/, function(val) { return val.toUpperCase(); });
   };
 
 Opentip.load();
