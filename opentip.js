@@ -45,7 +45,7 @@
  */
 var Opentip = {
 
-  Version: '1.2.9',
+  Version: '1.2.10',
   REQUIRED_PROTOTYPE_VERSION: '1.6.0',
   REQUIRED_SCRIPTACULOUS_VERSION: '1.8.0',
   STICKS_OUT_TOP: 1,
@@ -100,7 +100,13 @@ var Opentip = {
     }
 
     var element = new Element(tagName, attributes || {});
-    
+
+    // This is a prototype 1.6 bug, that doesn't apply the className to IE8 elements.
+    // Thanks to Alexander Shakhnovsky for finding the bug, and pinpointing the problem.
+    if(attributes['className']) {
+      attributes['className'].split(' ').each(function(class_name){element.addClassName(class_name);});
+    }
+
     if (children) {
       if (Object.isArray(children)) {
         children.each(function(child) {
