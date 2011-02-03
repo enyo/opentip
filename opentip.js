@@ -394,13 +394,13 @@ var TipClass = Class.create({
     }
 
     if (Opentip.useScriptaculousTransitions) {
-      if ( ! Effect[options.showEffect.ot_ucfirst()]) {
+      if (options.showEffect && ! Effect[options.showEffect.ot_ucfirst()]) {
         this.debug('Using fallback show effect "' + options.fallbackShowEffect + '" instead of "' + options.showEffect + '"');
         options.showEffect = options.fallbackShowEffect;
       }
-      if ( ! Effect[options.hideEffect.ot_ucfirst()]) {
-        options.hideEffect = options.fallbackHideEffect;
+      if (options.hideEffect && ! Effect[options.hideEffect.ot_ucfirst()]) {
         this.debug('Using fallback hide effect "' + options.fallbackHideEffect + '" instead of "' + options.hideEffect + '"');
+        options.hideEffect = options.fallbackHideEffect;
       }
     }
 
