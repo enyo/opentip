@@ -76,12 +76,7 @@
 .ot-container .stem {
 	position: absolute;
 	overflow: hidden;
-}
-.ot-container .stem div {
-	background: no-repeat url("images/stems.cccccc.png");
-	position: absolute;
-	width: 320px;
-	height: 160px;
+    color: #cccccc; /* JS will read this property to draw the stem in the right color. */
 }
 
 
@@ -108,8 +103,8 @@
 .style-standard .opentip .title {
 	margin-bottom: 1px;
 }
-.style-standard .stem div {
-	background-image: url("images/stems.e3ca1b.png");
+.style-standard .stem {
+    color: #e3ca1b; /* JS will read this property to draw the stem in the right color. */
 }
 .style-standard .ot-buttons {
 	top: -9px;
@@ -146,8 +141,8 @@
 .style-rounded .opentip .content {
 	padding: 6px 10px;
 }
-.style-rounded .stem div {
-	background-image: url("images/stems.c3ddf0.png");
+.style-rounded .stem {
+  color: #c3ddf0;
 }
 .style-rounded .ot-buttons {
 	top: -13px;
@@ -178,8 +173,8 @@
 	padding: 6px 10px;
 	border-top: 1px solid #fefefe;
 }
-.style-slick .stem div {
-	background-image: url("images/stems.cccccc.png");
+.style-slick .stem {
+  color: #cccccc;
 }
 .style-slick .ot-buttons {
 	right: -11px;
@@ -218,7 +213,7 @@
 	color: #333333;
 }
 .style-glass .stem {
-	background-image: url("images/stems.ffffff.png");
+  color: #ffffff;
 }
 .style-glass .ot-buttons .close {
 	background-image: url("images/button.close.big.ffffff.png");
@@ -253,6 +248,8 @@
  	z-index:-1;/*must have*/
  	filter:mask();/*must have*/
 }
+
+/*
 .ot-container .stem div {
 	behavior: expression((this.runtimeStyle.behavior="none")&&(this.pngSet?this.pngSet=true:(this.nodeName == "IMG" && this.src.toLowerCase().indexOf('.png')>-1?(this.runtimeStyle.backgroundImage = "none",
 		this.runtimeStyle.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + this.src + "', sizingMethod='image')",
@@ -261,6 +258,7 @@
 		this.runtimeStyle.backgroundImage = "none")),this.pngSet=true)
 	);
 }
+*/
 .style-glass .opentip {
 	border: 1px solid #bbbbbb;
 }

@@ -119,6 +119,30 @@ var Opentip = {
     return element;
   },
 
+  // In the future every position attribute will go through this method.
+  sanitizePosition: function(arrayPosition) {
+    var position;
+    if (Object.isArray(arrayPosition)) {
+      var positionString = '';
+      if (arrayPosition[0] == 'center') {
+        positionString = arrayPosition[1];
+      }
+      else if (arrayPosition[1] == 'middle') {
+        positionString = arrayPosition[0];
+      }
+      else {
+        positionString = arrayPosition[1] + arrayPosition[0].capitalize();
+      }
+      if (Opentip.position[positionString] === undefined) throw 'Unknown position: ' + positionString;
+      position = Opentip.position[positionString];
+    }
+    else if (Object.isString(arrayPosition)) {
+      if (Opentip.position[arrayPosition] === undefined) throw 'Unknown position: ' + arrayPosition;
+      position = Opentip.position[arrayPosition];
+    }
+    return parseInt(position);
+  },
+
 
   /* Browser support testing */
   vendors: 'Khtml Ms O Moz Webkit'.split(' '),
@@ -195,6 +219,17 @@ Opentip.styles = {
 Opentip.defaultStyle = 'standard'; // Change this to the style name you want your tooltips to have.
 
 
+
+Opentip.position = {
+  top: 0,
+  topRight: 1,
+  right: 2,
+  bottomRight: 3,
+  bottom: 4,
+  bottomLeft: 5,
+  left: 6,
+  topLeft: 7
+};
 
 
 
@@ -497,7 +532,9 @@ var TipClass = Class.create({
   buildElements: function() {
     if (this.options.stem) {
       var stemOffset = '-' + this.options.stemSize + 'px';
-      this.container.appendChild(Opentip.element('div', {className: 'stem-container ' + this.options.stem[0] + ' ' + this.options.stem[1]}, Opentip.element('div', {className: 'stem'}, Opentip.element('div'))));
+      var stemCanvas;
+      this.container.appendChild(Opentip.element('div', {className: 'stem-container ' + this.options.stem[0] + ' ' + this.options.stem[1]}, stemCanvas = Opentip.element('canvas', {className: 'stem'})));
+//      if (typeof G_vmlCanvasManager !== undefined) G_vmlCanvasManager.initElement(stemCanvas);
     }
     var self = this;
     var content = [];
@@ -980,7 +1017,7 @@ var TipClass = Class.create({
     if (viewportOffset.top < 0) return Opentip.STICKS_OUT_TOP;
     if (viewportOffset.top + this.dimensions.height > document.viewport.getDimensions().height) return Opentip.STICKS_OUT_BOTTOM;
   },
-  getStemElement: function() {
+  getStemCanvas: function() {
     return this.container.down('.stem');
   },
   stemPositionsEqual: function(position1, position2) {
@@ -989,77 +1026,146 @@ var TipClass = Class.create({
   positionStem: function() {
     // Position stem
     if (this.options.stem) {
-      var stemElement = this.getStemElement();
+      
+      var canvasElement = this.getStemCanvas();
 
-      if (stemElement && !this.stemPositionsEqual(this.lastStemPosition, this.currentStemPosition)) {
+      if (canvasElement && !this.stemPositionsEqual(this.lastStemPosition, this.currentStemPosition)) {
 
         this.debug('Setting stem style');
 
         this.lastStemPosition = this.currentStemPosition;
 
-        var stem = this.currentStemPosition;
+        var stemPosition = Opentip.sanitizePosition(this.currentStemPosition);
         var stemSize = this.options.stemSize;
 
-        var stemsImageSize = [ 320, 160 ];
+        var rotationRad = stemPosition * Math.PI / 4; // Every number means 45deg
 
-        var style = {width: stemSize + 'px', height: stemSize + 'px'};
+        var baseThikness = Math.round(stemSize * 0.8);
 
-        style.left = style.top = '0';
+        var realDim = { w: baseThikness, h: stemSize };
 
-        switch (stem[0]) {
-          case 'center':style.width = stemSize * 2 + 'px'; // no break
-          case 'left':style.left = '-' + stemSize + 'px';break;
-        }
-        switch (stem[1]) {
-          case 'middle':style.height = stemSize * 2 + 'px'; // no break
-          case 'top':style.top = '-' + stemSize + 'px';break;
-        }
-
-        if (stem[0] != 'center' && stem[1] != 'middle') style.width = style.height = stemSize * 2 + 'px'; // Corners.
-
-        var imageStyle = {left: 0, top: 0};
-
-        switch (stem[0] + '-' + stem[1]) {
-          case 'left-middle':
-            imageStyle.left = '-' + Math.round(stemsImageSize[0] * (1/2)) + 'px';
-            imageStyle.top  = '-' + Math.round(stemsImageSize[1] * (1/2) - stemSize) + 'px';
-            break;
-          case 'center-top':
-            imageStyle.left = '-' + Math.round(stemsImageSize[0] * (3/4) - stemSize) + 'px';
-            break;
-          case 'center-bottom':
-            imageStyle.left = '-' + Math.round(stemsImageSize[0] * (3/4) - stemSize) + 'px';
-            imageStyle.top  = '-' + Math.round(stemsImageSize[1] - stemSize) + 'px';
-            break;
-          case 'right-middle':
-            imageStyle.left = '-' + Math.round(stemsImageSize[0] - stemSize) + 'px';
-            imageStyle.top  = '-' + Math.round(stemsImageSize[1] / 2 - stemSize) + 'px';
-            break;
-          case 'left-top':break;
-          case 'right-top':
-            imageStyle.left = '-'   + Math.round(stemsImageSize[0] * (1/2) - stemSize * 2) + 'px';
-            style.top = '-' + stemSize + 'px';
-            style.left = '-' + stemSize + 'px';
-            break;
-          case 'right-bottom':
-            imageStyle.left = '-'   + Math.round(stemsImageSize[0] * (1/2) - stemSize * 2) + 'px';
-            imageStyle.top  = '-' + Math.round(stemsImageSize[1] - stemSize*2) + 'px';
-            style.left = '-' + stemSize + 'px';
-            style.top = '-' + stemSize + 'px';
-            break;
-          case 'left-bottom':
-            imageStyle.top = '-' + Math.round(stemsImageSize[1] - stemSize * 2) + 'px';
-            style.left = '-' + stemSize + 'px';
-            style.top = '-' + stemSize + 'px';
-            break;
+        var isCorner = false;
+        if (stemPosition % 2 == 1) {
+          // Corner
+          isCorner = true;
+          var additionalWidth = Math.round(0.707106781 * baseThikness); // 0.707106781 == sqrt(2) / 2 to calculate the adjacent leg of the triangle
+          realDim = { w: stemSize + additionalWidth, h: stemSize + additionalWidth };
         }
 
-        stemElement.down('div').setStyle(imageStyle);
-        stemElement.setStyle(style);
-        stemElement._appliedStyle = true;
+        var drawDim = Object.clone(realDim); // The drawDim is so that I can draw without takin the rotation into calculation
+
+        if (stemPosition == Opentip.position.left || stemPosition == Opentip.position.right) {
+          // The canvas has to be rotated
+          realDim.h = drawDim.w;
+          realDim.w = drawDim.h;
+        }
+
+        canvasElement.width = realDim.w;
+        canvasElement.height = realDim.h;
+
+        // Now draw the stem.
+        var ctx = canvasElement.getContext('2d');
+
+        ctx.clearRect (0, 0, canvasElement.width, canvasElement.height);
+        ctx.beginPath();
+
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+
+        ctx.save();
+
+        ctx.translate(realDim.w / 2, realDim.h / 2);
+        var rotations = Math.floor(stemPosition / 2);
+        ctx.rotate(rotations * Math.PI / 2);
+        if (realDim.w == drawDim.w) { // This is a real hack because I don't know how to reset to 0,0
+          ctx.translate(-realDim.w / 2, -realDim.h / 2);
+        }
+        else {
+          ctx.translate(-realDim.h / 2, -realDim.w / 2);
+        }
+
+        if (isCorner) {
+          ctx.moveTo(additionalWidth, drawDim.h);
+          ctx.lineTo(drawDim.w, 0);
+          ctx.lineTo(0, drawDim.h - additionalWidth);
+        }
+        else {
+          ctx.moveTo(drawDim.w / 2 - baseThikness / 2, drawDim.h);
+          ctx.lineTo(drawDim.w / 2, 0);
+          ctx.lineTo(drawDim.w / 2 + baseThikness / 2, drawDim.h);
+        }
+        ctx.fill();
+        ctx.restore();
+
+
+        var style = { width: realDim.w + 'px', height: realDim.h + 'px', left: '', right: '', top: '', bottom: '' };
+
+        switch (stemPosition) {
+          case Opentip.position.top:
+            style.top = - realDim.h + 'px';
+            style.left = - Math.round(realDim.w / 2) + 'px';
+            break;
+          case Opentip.position.right:
+            style.top = - Math.round(realDim.h / 2) + 'px';
+            style.left = 0;
+            break;
+          case Opentip.position.bottom:
+            style.top = 0;
+            style.left = - Math.round(realDim.w / 2) + 'px';
+            break;
+          case Opentip.position.left:
+            style.top = - Math.round(realDim.h / 2) + 'px';
+            style.left = - realDim.w + 'px';
+            break;
+          case Opentip.position.topRight:
+            style.top = - stemSize + 'px';
+            style.left = - additionalWidth + 'px';
+            break;
+          case Opentip.position.bottomRight:
+            style.top = - additionalWidth + 'px';
+            style.left = - additionalWidth + 'px';
+            break;
+          case Opentip.position.bottomLeft:
+            style.top = - additionalWidth + 'px';
+            style.left = - stemSize + 'px';
+            break;
+          case Opentip.position.topLeft:
+            style.top = - stemSize + 'px';
+            style.left = - stemSize + 'px';
+            break;
+          default:
+            throw 'Unknown stem position: ' + stemPosition;
+        }
+
+        canvasElement.setStyle(style);
+
+        var stemContainer = canvasElement.up('.stem-container');
+        stemContainer.removeClassName('left').removeClassName('right').removeClassName('center').removeClassName('top').removeClassName('bottom').removeClassName('middle');
         
-        stemElement.up('.stem-container').removeClassName('left').removeClassName('right').removeClassName('center').removeClassName('top').removeClassName('bottom').removeClassName('middle').addClassName(stem[0] + ' ' + stem[1]);
+        switch (stemPosition) {
+          case Opentip.position.top: case Opentip.position.topLeft: case Opentip.position.topRight:
+            stemContainer.addClassName('top');
+            break;
+          case Opentip.position.bottom: case Opentip.position.bottomLeft: case Opentip.position.bottomRight:
+            stemContainer.addClassName('bottom');
+            break;
+          default:
+            stemContainer.addClassName('middle');
+            break;
+        }
+        switch (stemPosition) {
+          case Opentip.position.left: case Opentip.position.topLeft: case Opentip.position.bottomLeft:
+            stemContainer.addClassName('left');
+            break;
+          case Opentip.position.right: case Opentip.position.topRight: case Opentip.position.bottomRight:
+            stemContainer.addClassName('right');
+            break;
+          default:
+            stemContainer.addClassName('center');
+            break;
+        }
+
       }
+        
     }
   },
   ensureElementInterval: 1000, // In milliseconds, how often opentip should check for the existance of the element
