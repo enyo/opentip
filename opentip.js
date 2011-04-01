@@ -3,7 +3,6 @@
  **
  ** Copyright (c) 2009, Matthias Loitsch
  ** Graphics by Tjandra Mayerhold
- ** This is an upcoda project: http://www.upcoda.com
  **
  ** Permission is hereby granted, free of charge, to any person obtaining a copy
  ** of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +34,7 @@
  **
  ** $('elementId').addTip('Content', { options });
  **
- ** For a full documentation, please visit http://www.opentip.org/#documentation
+ ** For a full documentation, please visit http://www.opentip.org/documentation
  **/
 
 
