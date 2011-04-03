@@ -404,8 +404,17 @@
 		Testing the $(element).addTip() function multiple times.
 	</div>
 	<script type="text/javascript">
-		$('testMultipleAddtip').addTip('Right', { target: true, tipJoint: [ 'left', 'middle' ] });
-		$('testMultipleAddtip').addTip('Left', { target: true, tipJoint: [ 'right', 'middle' ] });
+        Opentip.styles.testMultipleAddtip = { target: true, stem: true, showOn: 'click', hideOn: 'click' };
+//		$('testMultipleAddtip').addTip('Right', { style: 'testMultipleAddtip', tipJoint: [ 'left', 'middle' ] });
+//		$('testMultipleAddtip').addTip('Left', { style: 'testMultipleAddtip', tipJoint: [ 'right', 'middle' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip',tipJoint: [ 'center', 'top' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip', tipJoint: [ 'right', 'top' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip', tipJoint: [ 'right', 'middle' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip', tipJoint: [ 'right', 'bottom' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip', tipJoint: [ 'center', 'bottom' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip', tipJoint: [ 'left', 'bottom' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip', tipJoint: [ 'left', 'middle' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip', tipJoint: [ 'left', 'top' ] });
 	</script>
 
 

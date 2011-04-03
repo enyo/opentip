@@ -1040,7 +1040,7 @@ var TipClass = Class.create({
 
         var rotationRad = stemPosition * Math.PI / 4; // Every number means 45deg
 
-        var baseThikness = Math.round(stemSize * 0.8);
+        var baseThikness = Math.round(stemSize * 1.5);
 
         var realDim = { w: baseThikness, h: stemSize };
 
@@ -1060,6 +1060,10 @@ var TipClass = Class.create({
           realDim.w = drawDim.h;
         }
 
+
+        var stemColor = canvasElement.getStyle('color') || 'black';
+        
+
         canvasElement.width = realDim.w;
         canvasElement.height = realDim.h;
 
@@ -1069,7 +1073,7 @@ var TipClass = Class.create({
         ctx.clearRect (0, 0, canvasElement.width, canvasElement.height);
         ctx.beginPath();
 
-        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        ctx.fillStyle = stemColor;
 
         ctx.save();
 
