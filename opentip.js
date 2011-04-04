@@ -534,7 +534,7 @@ var TipClass = Class.create({
       var stemOffset = '-' + this.options.stemSize + 'px';
       var stemCanvas;
       this.container.appendChild(Opentip.element('div', {className: 'stem-container ' + this.options.stem[0] + ' ' + this.options.stem[1]}, stemCanvas = Opentip.element('canvas', {className: 'stem'})));
-//      if (typeof G_vmlCanvasManager !== undefined) G_vmlCanvasManager.initElement(stemCanvas);
+      if (typeof G_vmlCanvasManager !== "undefined") G_vmlCanvasManager.initElement(stemCanvas);
     }
     var self = this;
     var content = [];
