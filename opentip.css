@@ -43,7 +43,7 @@
 .opentip .loadingIndication {
 	display: none;
 	padding: 10px 15px;
-	background: url("images/loading.gif") center center no-repeat;
+	background: url("loading.gif") center center no-repeat;
 	width: 25px;
 	height: 15px;
 }
@@ -58,14 +58,17 @@
 }
 
 .ot-buttons .close {
-	display: block;
-	text-decoration:none;
+  display: block;
 	width: 15px;
 	height: 15px;
-	background: url("images/button.close.small.ffffff.png") center center no-repeat;
+	display: block;
+	text-decoration: none;
 }
-.ot-buttons .close span {
-	display: none;
+.ot-buttons .close .canvas {
+    position: relative;
+    display: block;
+  color: white; /* Read by JS and applied to canvas */
+  background-color: rgba(0, 0, 0, 0.2);  /* Read by JS and applied to canvas */
 }
 
 .ot-container .stem-container {
@@ -115,16 +118,16 @@ Those are the different styles available in opentip.
     color: #e3ca1b; /* JS will read this property to draw the stem in the right color. */
 }
 .style-standard .ot-buttons {
-	top: -9px;
-	right: -10px;
+	top: -6px;
+	right: -6px;
 }
 .style-standard .ot-buttons .close {
-	background-color: rgba(0,0,0,0.2);
 	width: 21px;
 	height: 21px;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
+}
+.style-standard .ot-buttons .close .canvas {
+  background-color: rgba(255, 241, 143, 0.5);
+  color: #a2932B;
 }
 
 
@@ -153,16 +156,15 @@ Those are the different styles available in opentip.
   color: #c3ddf0;
 }
 .style-rounded .ot-buttons {
-	top: -13px;
-	right: -12px;
+	top: -3px;
+	right: -3px;
 }
 .style-rounded .ot-buttons .close {
-	background-color: #81B4DA;
 	width: 21px;
 	height: 21px;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
+}
+.style-rounded .ot-buttons .close .canvas {
+  background-color: #81B4DA;
 }
 
 .style-slick .opentip {
@@ -185,19 +187,17 @@ Those are the different styles available in opentip.
   color: #cccccc;
 }
 .style-slick .ot-buttons {
-	right: -11px;
-	top: -11px;
+	right: -7px;
+	top: -5px;
 }
 .style-slick .ot-buttons .close {
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	background-color: rgba(0, 0, 0, 0.1);
-	border: 1px solid #cccccc;
 	height: 19px;
 	width: 19px;
-
 }
+.style-slick .ot-buttons .close .canvas {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
 
 .style-glass .opentip {
 	background: white;
@@ -223,17 +223,17 @@ Those are the different styles available in opentip.
 .style-glass .stem {
   color: #ffffff;
 }
+.style-glass .ot-buttons {
+	right: -3px;
+	top: -3px;
+}
 .style-glass .ot-buttons .close {
-	background-image: url("images/button.close.big.ffffff.png");
-	border-radius: 0 5px 0 5px;
-	-moz-border-radius: 0 5px 0 5px;
-	-webkit-border-top-right-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-	background-color: #F7BA00;
 	width: 25px;
 	height: 25px;
 }
-
+.style-glass .ot-buttons .close .canvas {
+  background-color: #F7BA00;
+}
 
 /**
 

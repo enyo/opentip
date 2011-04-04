@@ -531,11 +531,11 @@ var TipClass = Class.create({
     if (Opentip.useScriptaculousTransitions) this.container.setStyle({display: 'none'});
   },
   buildElements: function() {
+    var stemCanvas;
+    var closeButtonCanvas;
     if (this.options.stem) {
       var stemOffset = '-' + this.options.stemSize + 'px';
-      var stemCanvas;
       this.container.appendChild(Opentip.element('div', {className: 'stem-container ' + this.options.stem[0] + ' ' + this.options.stem[1]}, stemCanvas = Opentip.element('canvas', {className: 'stem'})));
-      if (typeof G_vmlCanvasManager !== "undefined") G_vmlCanvasManager.initElement(stemCanvas);
     }
     var self = this;
     var content = [];
@@ -550,11 +550,64 @@ var TipClass = Class.create({
     this.container.appendChild(this.tooltipElement);
 
     var buttons = this.container.appendChild(Opentip.element('div', {className: 'ot-buttons'}));
-    if (this.options.hideTrigger == 'closeButton') buttons.appendChild(Opentip.element('a', {href: 'javascript:undefined', className: 'close'}, Opentip.element('span', 'x')));
+    var drawCloseButton = false;
+    if (this.options.hideTrigger == 'closeButton') {
+      buttons.appendChild(Opentip.element('a', {href: 'javascript:undefined', className: 'close'}, closeButtonCanvas = Opentip.element('canvas', { className: 'canvas' })));
+      // The canvas has to have a className assigned, because IE < 9 doesn't know the element, and won't assign any css to it.
+      drawCloseButton = true;
+    }
     
     if (Opentip.useIFrame()) this.iFrameElement = this.container.appendChild($(Opentip.element('iframe', {className: 'opentipIFrame', src: 'javascript:false;'})).setStyle({display: 'none', zIndex: 100}).setOpacity(0));
 
     document.body.appendChild(this.container);
+
+    if (typeof G_vmlCanvasManager !== "undefined") {
+      if (stemCanvas) G_vmlCanvasManager.initElement(stemCanvas);
+      if (closeButtonCanvas) G_vmlCanvasManager.initElement(closeButtonCanvas);
+    } 
+
+    if (drawCloseButton) this.drawCloseButton();
+  },
+  drawCloseButton: function() {
+    var canvasElement = this.container.down('.ot-buttons canvas');
+    var containerElement = this.container.down('.ot-buttons .close');
+    var size = parseInt(containerElement.getStyle('width')) || 20; // Opera 10 has a bug here.. it seems to never get the width right.
+
+    var crossColor = canvasElement.getStyle('color');
+    if ( ! crossColor || crossColor == 'transparent')  crossColor = 'white';
+
+    var backgroundColor = canvasElement.getStyle('backgroundColor');
+    if ( ! backgroundColor || backgroundColor == 'transparent') backgroundColor = 'rgba(0, 0, 0, 0.2)';
+    canvasElement.setStyle({backgroundColor: 'transparent'});
+
+    canvasElement.width = size;
+    canvasElement.height = size;
+
+    var ctx = canvasElement.getContext('2d');
+
+    ctx.clearRect (0, 0, size, size);
+
+    ctx.beginPath();
+
+    var padding = size / 2.95;
+    ctx.fillStyle = backgroundColor;
+    ctx.lineWidth = size / 5.26;
+    ctx.strokeStyle = crossColor;
+    ctx.lineCap = 'round';
+
+    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, false);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(padding, padding);
+    ctx.lineTo(size - padding, size - padding);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(size - padding, padding);
+    ctx.lineTo(padding, size - padding);
+    ctx.stroke();
+    
   },
   updateContent: function() {
      var contentDiv = this.container.down('.content');
