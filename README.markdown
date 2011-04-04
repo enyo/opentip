@@ -7,7 +7,7 @@ It supports:
 - Automatic content download with [AJAX][ajax]
 - Different styles
 - Automatic repositioning of the tooltip if it's not in the viewport of the browser anymore
-- All kind of triggers (The tooltip can be triggered by mouse over, click, form submit, … everything you can think of really)
+- All kind of triggers (The tooltip can be triggered by mouse over, click, form submit,... everything you can think of really)
 - CSS3 Animations if available. (If not, it uses scriptaculous if available).
 
 As of Version 1.2.6 Opentip does no longer depend on scriptaculous.
@@ -25,7 +25,7 @@ For the complete documentation please visit [www.opentip.org][opentip].
 
 ## Changelog
 
-Here's a list of major changes, so you know what to expect when you upgrade.
+Here's a list of major changes, so you know what to expect when you upgrade (Minor bugfixes are not listed here!).
 
 ### 1.3
 
@@ -33,6 +33,20 @@ Here's a list of major changes, so you know what to expect when you upgrade.
 
 
 
+
+## Future plans
+
+- Become library independant. I'm currently working on extracting all prototype functionality, so I can switch library easily. The next library
+  I'll support will be jquery, and then mootools.
+
+- Add more skins.
+
+- Add cooler loading animation.
+
+- Implement qunit tests.
+
+
+If you have ideas, please write me!
 
 
 ## Author
