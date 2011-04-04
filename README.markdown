@@ -22,6 +22,19 @@ Or the preferred external method:
 
 For the complete documentation please visit [www.opentip.org][opentip].
 
+
+## Changelog
+
+Here's a list of major changes, so you know what to expect when you upgrade.
+
+### 1.3
+
+- Stems are no longer images, but drawn with canvas. (I'm using [excanvas] for IE < 9). **Remember to include the excanvas.js file.**
+
+
+
+
+
 ## Author
 Opentip is written by Matthias Loitsch.<br>
 All graphics by Tjandra Mayerhold.
@@ -34,3 +47,4 @@ Licenced under the MIT Licence.
 [opentip]: http://www.opentip.org/
 [prototype]: http://www.prototypejs.org/
 [ajax]: http://en.wikipedia.org/wiki/Ajax_(programming)
+[excanvas]: http://code.google.com/p/explorercanvas/
