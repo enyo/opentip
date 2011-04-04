@@ -109,11 +109,11 @@ var Opentip = {
     if (children) {
       if (Object.isArray(children)) {
         children.each(function(child) {
-          element.insert({ bottom: child });
+          element.insert({bottom: child});
         });
       }
       else {
-        element.insert({ bottom: children });
+        element.insert({bottom: children});
       }
     }
     return element;
@@ -159,7 +159,7 @@ var Opentip = {
 };
 
 String.prototype.ot_ucfirst = function() {
-    return this.replace(/^\w/, function(val) { return val.toUpperCase(); });
+    return this.replace(/^\w/, function(val) {return val.toUpperCase();});
   };
 
 Opentip.load();
@@ -380,9 +380,9 @@ var TipClass = Class.create({
     var options = {};
     this.content = '';
 
-    if      (typeof(arguments[2]) == 'object') { this.content = ''; options = arguments[2]; }
-    else if (typeof(arguments[3]) == 'object') { this.content = arguments[2]; options = arguments[3]; }
-    else if (typeof(arguments[4]) == 'object') { this.content = arguments[2]; options = arguments[4]; options.title = arguments[3]; }
+    if      (typeof(arguments[2]) == 'object') {this.content = '';options = arguments[2];}
+    else if (typeof(arguments[3]) == 'object') {this.content = arguments[2];options = arguments[3];}
+    else if (typeof(arguments[4]) == 'object') {this.content = arguments[2];options = arguments[4];options.title = arguments[3];}
     else {
       if (Object.isString(arguments[2]) || Object.isFunction(arguments[2])) this.content = arguments[2];
       if (Object.isString(arguments[3])) options.title = arguments[3];
@@ -511,13 +511,14 @@ var TipClass = Class.create({
     this.setupObserversForHiddenTip();
   },
   deactivate: function() {
+    this.debug('Deactivating tooltip.');
     this.doHide();
     this.setupObserversForReallyHiddenTip();
   },
   buildContainer: function() {
     this.container = $(Opentip.element('div', {className: 'ot-container ot-completely-hidden style-' + this.options.className + (this.options.ajax ? ' ot-loading' : '') + (this.options.fixed ? ' ot-fixed' : '')}));
     if (Opentip.useCss3Transitions) {
-      this.container.setCss3Style({ 'transitionDuration': '0s' }); // To make sure the initial state doesn't fade
+      this.container.setCss3Style({'transitionDuration': '0s'}); // To make sure the initial state doesn't fade
 
       this.container.addClassName('ot-css3');
       if (this.options.showEffect) {
@@ -639,6 +640,9 @@ var TipClass = Class.create({
     this.clearTimeouts();
     if (this.visible) return;
 
+    // Thanks to Torsten Saam for this enhancement.
+    if ( ! this.triggerElementExists()) { this.deactivate(); return; }
+
     this.debug('Showing!');
 
     if (this.options.group) Tips.hideGroup(this.options.group);
@@ -655,7 +659,7 @@ var TipClass = Class.create({
     if (!this.tooltipElement) this.buildElements();
     this.updateContent();
 
-    if (this.options.ajax && !this.loaded) { this.loadAjax(); }
+    if (this.options.ajax && !this.loaded) {this.loadAjax();}
 
     this.searchAndActivateHideButtons();
 
@@ -702,12 +706,12 @@ var TipClass = Class.create({
 
     var startShowEffect = function() {
       if (Opentip.useCss3Transitions) {
-        this.container.setCss3Style({ 'transitionDuration': this.options.showEffectDuration + 's'});
+        this.container.setCss3Style({'transitionDuration': this.options.showEffectDuration + 's'});
       }
 
       this.container.removeClassName('ot-becoming-visible').addClassName('ot-visible');
       if (this.options.showEffect && this.options.showEffectDuration) {
-        this.visibilityStateTimeoutId = (function() { this.removeClassName('ot-visible').addClassName('ot-completely-visible'); }).bind(this.container).delay(this.options.showEffectDuration);
+        this.visibilityStateTimeoutId = (function() {this.removeClassName('ot-visible').addClassName('ot-completely-visible');}).bind(this.container).delay(this.options.showEffectDuration);
       }
       else {
         this.container.removeClassName('ot-visible').addClassName('ot-completely-visible');
@@ -825,13 +829,13 @@ var TipClass = Class.create({
     }
 
     if (Opentip.useCss3Transitions) {
-      this.container.setCss3Style({ 'transitionDuration': this.options.hideEffectDuration + 's' });
+      this.container.setCss3Style({'transitionDuration': this.options.hideEffectDuration + 's'});
     }
 
    this.container.removeClassName('ot-visible').removeClassName('ot-completely-visible').addClassName('ot-hidden');
    if (this.options.hideEffect && this.options.hideEffectDuration) {
      this.visibilityStateTimeoutId = (function() {
-       this.setCss3Style({ 'transitionDuration': '0s'});
+       this.setCss3Style({'transitionDuration': '0s'});
        this.removeClassName('ot-hidden').addClassName('ot-completely-hidden');
      }).bind(this.container).delay(this.options.showEffectDuration);
    }
@@ -1042,14 +1046,14 @@ var TipClass = Class.create({
 
         var baseThikness = Math.round(stemSize * 1.5);
 
-        var realDim = { w: baseThikness, h: stemSize };
+        var realDim = {w: baseThikness, h: stemSize};
 
         var isCorner = false;
         if (stemPosition % 2 == 1) {
           // Corner
           isCorner = true;
           var additionalWidth = Math.round(0.707106781 * baseThikness); // 0.707106781 == sqrt(2) / 2 to calculate the adjacent leg of the triangle
-          realDim = { w: stemSize + additionalWidth, h: stemSize + additionalWidth };
+          realDim = {w: stemSize + additionalWidth, h: stemSize + additionalWidth};
         }
 
         var drawDim = Object.clone(realDim); // The drawDim is so that I can draw without takin the rotation into calculation
@@ -1101,7 +1105,7 @@ var TipClass = Class.create({
         ctx.restore();
 
 
-        var style = { width: realDim.w + 'px', height: realDim.h + 'px', left: '', right: '', top: '', bottom: '' };
+        var style = {width: realDim.w + 'px', height: realDim.h + 'px', left: '', right: '', top: '', bottom: ''};
 
         switch (stemPosition) {
           case Opentip.position.top:
@@ -1172,10 +1176,13 @@ var TipClass = Class.create({
         
     }
   },
+  triggerElementExists: function(element) {
+    return this.triggerElement.parentNode && this.triggerElement.visible() && this.triggerElement.descendantOf(document.body);
+  },
   ensureElementInterval: 1000, // In milliseconds, how often opentip should check for the existance of the element
   ensureElement: function() { // Regularely checks if the element is still in the dom.
     this.deactivateElementEnsurance();
-    if (!this.triggerElement.parentNode || !this.triggerElement.visible() || !this.triggerElement.descendantOf(document.body)) {this.deactivate();}
+    if ( ! this.triggerElementExists()) {this.deactivate();}
     this.ensureElementTimeoutId = setTimeout(this.ensureElement.bind(this), this.ensureElementInterval);
   },
   deactivateElementEnsurance: function() {clearTimeout(this.ensureElementTimeoutId);}

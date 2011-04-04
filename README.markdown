@@ -53,6 +53,14 @@ If you have ideas, please write me!
 Opentip is written by Matthias Loitsch.<br>
 All graphics by Tjandra Mayerhold.
 
+### Contributors
+Thanks to the following people for providing bug reports, feature requests and sometimes fixes:
+
+- Torsten Saam
+- Aaron Peckham
+
+If I forgot somebody, please just tell me.
+
 ## License
 Copyright (c) 2009 Matthias Loitsch<br>
 Licenced under the MIT Licence.

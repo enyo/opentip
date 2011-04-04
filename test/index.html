@@ -452,6 +452,15 @@
       <div ot="Hi" ot-show-effect="condense" ot-hide-effect="puff">Testing the inline HTML options.</div>
       <div ot="Hi" ot-show-effect-duration="1" ot-hide-effect-duration="1" ot-show-effect="rotate" ot-hide-effect="rotate" ot-fallback-show-effect="appear" ot-fallback-hide-effect="fade">Testing fallback effects. Should appear/fade with CSS3 disabled.</div>
 	</div>
+
+    
+    <br />
+    
+	<div class="test">
+      When you hover the button, a tooltip appears after 1 seconds.<br />
+      If you click the button it gets removed from the dom, and the tooltip should no longer appear.<br />
+      <button onmouseover="javascript:Tips.add(this, event, 'hi ho', { delay: 2, hideOn: 'closeButton'});" onclick="javascript:this.remove();">click me to disappear</button>
+	</div>
     
 
 	<div id="helper" style="background: rgba(255, 0, 0, 0.2);position: absolute;"></div>
