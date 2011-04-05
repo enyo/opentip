@@ -58,6 +58,7 @@ Thanks to the following people for providing bug reports, feature requests and s
 
 - Torsten Saam
 - Aaron Peckham
+- Oguri
 
 If I forgot somebody, please just tell me.
 
