@@ -60,6 +60,8 @@ var Opentip = {
     Opentip.useCss3Transitions = Opentip.supports('transition');
     Opentip.useScriptaculousTransitions = ! Opentip.useCss3Transitions;
 
+    if (Opentip.useCss3Transitions) Opentip.debug('Using CSS3 transitions.');
+
     if((typeof Scriptaculous === 'undefined') || (typeof Effect === 'undefined') || (getComparableVersion(Scriptaculous.Version) < getComparableVersion(Opentip.REQUIRED_SCRIPTACULOUS_VERSION))) {
       Opentip.debug('No scriptaculous available. Disabling scriptaculous transitions.');
       Opentip.useScriptaculousTransitions = false;
