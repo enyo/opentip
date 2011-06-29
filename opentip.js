@@ -44,7 +44,7 @@
  */
 var Opentip = {
 
-  Version: '1.4.0',
+  Version: '1.4.1',
   REQUIRED_PROTOTYPE_VERSION: '1.6.0',
   REQUIRED_SCRIPTACULOUS_VERSION: '1.8.0',
   STICKS_OUT_TOP: 1,
@@ -382,9 +382,9 @@ var TipClass = Class.create({
     var options = {};
     this.content = '';
 
-    if      (typeof(arguments[2]) == 'object') {this.content = '';options = arguments[2];}
-    else if (typeof(arguments[3]) == 'object') {this.content = arguments[2];options = arguments[3];}
-    else if (typeof(arguments[4]) == 'object') {this.content = arguments[2];options = arguments[4];options.title = arguments[3];}
+    if      (typeof(arguments[2]) == 'object') {this.content = '';options = Object.clone(arguments[2]);}
+    else if (typeof(arguments[3]) == 'object') {this.content = arguments[2];options = Object.clone(arguments[3]);}
+    else if (typeof(arguments[4]) == 'object') {this.content = arguments[2];options = Object.clone(arguments[4]);options.title = arguments[3];}
     else {
       if (Object.isString(arguments[2]) || Object.isFunction(arguments[2])) this.content = arguments[2];
       if (Object.isString(arguments[3])) options.title = arguments[3];
