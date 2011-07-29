@@ -262,7 +262,7 @@ var Tips = {
       this.list = this.list.without(tip);
     }
   },
-  add: function(element, evt) {
+  add: function(element) {
     if (element._opentipAddedTips) {
       /* TODO: Now it just returns the first found... try to find the correct one. */
       var tip = this.list.find(function(t) {return (t.triggerElement === element);});
@@ -280,12 +280,20 @@ var Tips = {
       tipArguments.push(arg);
     });
 
+
+    // Creating the tooltip object, but not yet activating it, or creating the container elements.
+    var tooltip = new TipClass(tipArguments[0], tipArguments[1], tipArguments[2], tipArguments[3], tipArguments[4]);
+
+    this.append(tooltip);
+
     var self = this;
-    var createTip = function() {self.append(new TipClass(tipArguments[0], tipArguments[1], tipArguments[2], tipArguments[3], tipArguments[4]));}
+    var createTip = function() {
+      tooltip.create(tipArguments[1]); // Passing the event.
+    }
 
     Opentip.postponeCreation(createTip);
     
-    return;
+    return tooltip;
   },
   hideGroup: function(groupName) {
     this.list.findAll(function(t) {return (t.options.group == groupName);}).invoke('doHide');
@@ -295,7 +303,7 @@ var Tips = {
   }
 };
 
-var Tip = function() {Tips.add.apply(Tips, arguments);return;};
+var Tip = function() { return Tips.add.apply(Tips, arguments); };
 
 Element.addMethods({
   addTip: function(element) {
@@ -345,11 +353,11 @@ var TipClass = Class.create({
     var options = {};
     this.content = '';
 
-    if      (typeof(arguments[2]) == 'object') { this.content = ''; options = arguments[2]; }
-    else if (typeof(arguments[3]) == 'object') { this.content = arguments[2]; options = arguments[3]; }
-    else if (typeof(arguments[4]) == 'object') { this.content = arguments[2]; options = arguments[4]; options.title = arguments[3]; }
+    if      (typeof(arguments[2]) == 'object') { options = arguments[2]; }
+    else if (typeof(arguments[3]) == 'object') { this.setContent(arguments[2]); options = arguments[3]; }
+    else if (typeof(arguments[4]) == 'object') { this.setContent(arguments[2]); options = arguments[4]; options.title = arguments[3]; }
     else {
-      if (Object.isString(arguments[2]) || Object.isFunction(arguments[2])) this.content = arguments[2];
+      if (Object.isString(arguments[2]) || Object.isFunction(arguments[2])) this.setContent(arguments[2]);
       if (Object.isString(arguments[3])) options.title = arguments[3];
     }
 
@@ -411,9 +419,6 @@ var TipClass = Class.create({
 
     this.options = options;
 
-    this.buildContainer();
-
-
     this.options.showTriggerElementsWhenHidden = [];
 
     if (this.options.showOn && this.options.showOn != 'creation') {
@@ -424,6 +429,16 @@ var TipClass = Class.create({
 
 
     this.options.hideTriggerElements = [];
+  },
+  /**
+   * This builds the container, and sets the correct hide trigger.
+   * Since it's a problem for IE to create elements when the page is not fully
+   * loaded, this function has to be posponed until the website is fully loaded.
+   * 
+   * This function also activates the tooltip.
+  **/
+  create: function(evt) {
+    this.buildContainer();
 
     if (this.options.hideTrigger) {
       var hideOnEvent = null;
@@ -505,7 +520,7 @@ var TipClass = Class.create({
     if (this.options.title) headerContent.push(Opentip.element('div', {className: 'title'}, this.options.title));
 
     content.push(Opentip.element('div', {className: 'header'}, headerContent));
-    content.push($(Opentip.element('div', {className: 'content'}))); // Will be updated by updateContent()
+    content.push($(Opentip.element('div', {className: 'content'}))); // Will be updated by updateElementContent()
     if (this.options.ajax) {content.push($(Opentip.element('div', {className: 'loadingIndication'}, Opentip.element('span', 'Loading...'))));}
     this.tooltipElement = $(Opentip.element('div', {className: 'opentip'}, content));
 
@@ -518,12 +533,33 @@ var TipClass = Class.create({
 
     document.body.appendChild(this.container);
   },
-  updateContent: function() {
-     var contentDiv = this.container.down('.content');
-     if (contentDiv) {
-       contentDiv.update(this.options.escapeHtml ? this.content.escapeHTML() : this.content);
+  /**
+   * Sets the content of the tooltip.
+   * This can be a function or a string. The function will be executed, and the
+   * result used as new content of the tooltip.
+   * 
+   * If the tooltip is visible, this function calls updateElementContent()
+  **/
+  setContent: function(content) {
+    this.content = content;
+    if (this.visible) this.updateElementContent();
+  },
+  /**
+   * Actually updates the html element with the content.
+   * This function also evaluates the content function, if content is a function.
+  **/
+  updateElementContent: function() {
+    var contentDiv = this.container.down('.content');
+    if (contentDiv) {
+
+     if (Object.isFunction(this.content)) {
+       this.debug('Executing content function.');
+       this.content = this.content(this);
      }
-     this.storeAndFixDimensions();
+
+     contentDiv.update(this.options.escapeHtml ? this.content.escapeHTML() : this.content);
+    }
+    this.storeAndFixDimensions();
   },
   storeAndFixDimensions: function() {
     this.container.setStyle({width: 'auto', left: '0px', top: '0px'});
@@ -610,13 +646,8 @@ var TipClass = Class.create({
     this.visible = true;
     this.waitingToShow = false;
 
-    if (Object.isFunction(this.content)) {
-      this.debug('Executing content function.');
-      this.content = this.content(this);
-    }
-
     if (!this.tooltipElement) this.buildElements();
-    this.updateContent();
+    this.updateElementContent();
 
     if (this.options.ajax && !this.loaded) { this.loadAjax(); }
 
@@ -701,7 +732,7 @@ var TipClass = Class.create({
          this.container.removeClassName('ot-loading');
          this.loaded = true;
          this.loading = false;
-         this.updateContent();
+         this.updateElementContent();
          this.searchAndActivateHideButtons();
          this.activateFirstInput();
          this.position();

@@ -443,11 +443,30 @@
       <div ot="Hi" ot-show-effect-duration="1" ot-hide-effect-duration="1" ot-show-effect="rotate" ot-hide-effect="rotate" ot-fallback-show-effect="appear" ot-fallback-hide-effect="fade">Testing fallback effects. Should appear/fade with CSS3 disabled.</div>
 	</div>
     
+	<br />
+	<div class="test">
+      <div id="testUpdatingContent">Hover, then click.</div>
+      <button id="testDeactivateTooltip">Click to deactivate it.</button>
+      <button id="testActivateTooltip">Click to activate it.</button>
+	</div>
+    <script type="text/javascript">
+      var tipUpdatingContent = Tips.add($('testUpdatingContent'), 'Text', { hideDelay: 2 });
+      $('testUpdatingContent').observe('click', function() {
+        var ddd = new Date();
+        tipUpdatingContent.setContent('test' + ddd.getTime());
+      });
+      $('testDeactivateTooltip').observe('click', function() { tipUpdatingContent.deactivate(); });
+      $('testActivateTooltip').observe('click', function() { tipUpdatingContent.activate(); });
+    </script>
+    
+	<br />
+	<br />
 
 	<div id="helper" style="background: rgba(255, 0, 0, 0.2);position: absolute;"></div>
 
 
 
+    
 
 
 </div>
