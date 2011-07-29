@@ -44,7 +44,7 @@
  */
 var Opentip = {
 
-  Version: '1.3.1',
+  Version: '1.4.1',
   REQUIRED_PROTOTYPE_VERSION: '1.6.0',
   REQUIRED_SCRIPTACULOUS_VERSION: '1.8.0',
   STICKS_OUT_TOP: 1,
@@ -59,6 +59,8 @@ var Opentip = {
 
     Opentip.useCss3Transitions = Opentip.supports('transition');
     Opentip.useScriptaculousTransitions = ! Opentip.useCss3Transitions;
+
+    if (Opentip.useCss3Transitions) Opentip.debug('Using CSS3 transitions.');
 
     if((typeof Scriptaculous === 'undefined') || (typeof Effect === 'undefined') || (getComparableVersion(Scriptaculous.Version) < getComparableVersion(Opentip.REQUIRED_SCRIPTACULOUS_VERSION))) {
       Opentip.debug('No scriptaculous available. Disabling scriptaculous transitions.');
@@ -109,14 +111,38 @@ var Opentip = {
     if (children) {
       if (Object.isArray(children)) {
         children.each(function(child) {
-          element.insert({ bottom: child });
+          element.insert({bottom: child});
         });
       }
       else {
-        element.insert({ bottom: children });
+        element.insert({bottom: children});
       }
     }
     return element;
+  },
+
+  // In the future every position attribute will go through this method.
+  sanitizePosition: function(arrayPosition) {
+    var position;
+    if (Object.isArray(arrayPosition)) {
+      var positionString = '';
+      if (arrayPosition[0] == 'center') {
+        positionString = arrayPosition[1];
+      }
+      else if (arrayPosition[1] == 'middle') {
+        positionString = arrayPosition[0];
+      }
+      else {
+        positionString = arrayPosition[1] + arrayPosition[0].capitalize();
+      }
+      if (Opentip.position[positionString] === undefined) throw 'Unknown position: ' + positionString;
+      position = Opentip.position[positionString];
+    }
+    else if (Object.isString(arrayPosition)) {
+      if (Opentip.position[arrayPosition] === undefined) throw 'Unknown position: ' + arrayPosition;
+      position = Opentip.position[arrayPosition];
+    }
+    return parseInt(position);
   },
 
 
@@ -135,7 +161,7 @@ var Opentip = {
 };
 
 String.prototype.ot_ucfirst = function() {
-    return this.replace(/^\w/, function(val) { return val.toUpperCase(); });
+    return this.replace(/^\w/, function(val) {return val.toUpperCase();});
   };
 
 Opentip.load();
@@ -195,6 +221,17 @@ Opentip.styles = {
 Opentip.defaultStyle = 'standard'; // Change this to the style name you want your tooltips to have.
 
 
+
+Opentip.position = {
+  top: 0,
+  topRight: 1,
+  right: 2,
+  bottomRight: 3,
+  bottom: 4,
+  bottomLeft: 5,
+  left: 6,
+  topLeft: 7
+};
 
 
 
@@ -353,9 +390,9 @@ var TipClass = Class.create({
     var options = {};
     this.content = '';
 
-    if      (typeof(arguments[2]) == 'object') { options = arguments[2]; }
-    else if (typeof(arguments[3]) == 'object') { this.setContent(arguments[2]); options = arguments[3]; }
-    else if (typeof(arguments[4]) == 'object') { this.setContent(arguments[2]); options = arguments[4]; options.title = arguments[3]; }
+    if      (typeof(arguments[2]) == 'object') {options = Object.clone(arguments[2]);}
+    else if (typeof(arguments[3]) == 'object') {this.setContent(arguments[2]);options = Object.clone(arguments[3]);}
+    else if (typeof(arguments[4]) == 'object') {this.setContent(arguments[2]);options = Object.clone(arguments[4]);options.title = arguments[3];}
     else {
       if (Object.isString(arguments[2]) || Object.isFunction(arguments[2])) this.setContent(arguments[2]);
       if (Object.isString(arguments[3])) options.title = arguments[3];
@@ -491,13 +528,14 @@ var TipClass = Class.create({
     this.setupObserversForHiddenTip();
   },
   deactivate: function() {
+    this.debug('Deactivating tooltip.');
     this.doHide();
     this.setupObserversForReallyHiddenTip();
   },
   buildContainer: function() {
     this.container = $(Opentip.element('div', {className: 'ot-container ot-completely-hidden style-' + this.options.className + (this.options.ajax ? ' ot-loading' : '') + (this.options.fixed ? ' ot-fixed' : '')}));
     if (Opentip.useCss3Transitions) {
-      this.container.setCss3Style({ 'transitionDuration': '0s' }); // To make sure the initial state doesn't fade
+      this.container.setCss3Style({'transitionDuration': '0s'}); // To make sure the initial state doesn't fade
 
       this.container.addClassName('ot-css3');
       if (this.options.showEffect) {
@@ -510,9 +548,11 @@ var TipClass = Class.create({
     if (Opentip.useScriptaculousTransitions) this.container.setStyle({display: 'none'});
   },
   buildElements: function() {
+    var stemCanvas;
+    var closeButtonCanvas;
     if (this.options.stem) {
       var stemOffset = '-' + this.options.stemSize + 'px';
-      this.container.appendChild(Opentip.element('div', {className: 'stem-container ' + this.options.stem[0] + ' ' + this.options.stem[1]}, Opentip.element('div', {className: 'stem'}, Opentip.element('div'))));
+      this.container.appendChild(Opentip.element('div', {className: 'stem-container ' + this.options.stem[0] + ' ' + this.options.stem[1]}, stemCanvas = Opentip.element('canvas', {className: 'stem'})));
     }
     var self = this;
     var content = [];
@@ -527,11 +567,64 @@ var TipClass = Class.create({
     this.container.appendChild(this.tooltipElement);
 
     var buttons = this.container.appendChild(Opentip.element('div', {className: 'ot-buttons'}));
-    if (this.options.hideTrigger == 'closeButton') buttons.appendChild(Opentip.element('a', {href: 'javascript:undefined', className: 'close'}, Opentip.element('span', 'x')));
+    var drawCloseButton = false;
+    if (this.options.hideTrigger == 'closeButton') {
+      buttons.appendChild(Opentip.element('a', {href: 'javascript:undefined', className: 'close'}, closeButtonCanvas = Opentip.element('canvas', { className: 'canvas' })));
+      // The canvas has to have a className assigned, because IE < 9 doesn't know the element, and won't assign any css to it.
+      drawCloseButton = true;
+    }
     
     if (Opentip.useIFrame()) this.iFrameElement = this.container.appendChild($(Opentip.element('iframe', {className: 'opentipIFrame', src: 'javascript:false;'})).setStyle({display: 'none', zIndex: 100}).setOpacity(0));
 
     document.body.appendChild(this.container);
+
+    if (typeof G_vmlCanvasManager !== "undefined") {
+      if (stemCanvas) G_vmlCanvasManager.initElement(stemCanvas);
+      if (closeButtonCanvas) G_vmlCanvasManager.initElement(closeButtonCanvas);
+    } 
+
+    if (drawCloseButton) this.drawCloseButton();
+  },
+  drawCloseButton: function() {
+    var canvasElement = this.container.down('.ot-buttons canvas');
+    var containerElement = this.container.down('.ot-buttons .close');
+    var size = parseInt(containerElement.getStyle('width')) || 20; // Opera 10 has a bug here.. it seems to never get the width right.
+
+    var crossColor = canvasElement.getStyle('color');
+    if ( ! crossColor || crossColor == 'transparent')  crossColor = 'white';
+
+    var backgroundColor = canvasElement.getStyle('backgroundColor');
+    if ( ! backgroundColor || backgroundColor == 'transparent') backgroundColor = 'rgba(0, 0, 0, 0.2)';
+    canvasElement.setStyle({backgroundColor: 'transparent'});
+
+    canvasElement.width = size;
+    canvasElement.height = size;
+
+    var ctx = canvasElement.getContext('2d');
+
+    ctx.clearRect (0, 0, size, size);
+
+    ctx.beginPath();
+
+    var padding = size / 2.95;
+    ctx.fillStyle = backgroundColor;
+    ctx.lineWidth = size / 5.26;
+    ctx.strokeStyle = crossColor;
+    ctx.lineCap = 'round';
+
+    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, false);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(padding, padding);
+    ctx.lineTo(size - padding, size - padding);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(size - padding, padding);
+    ctx.lineTo(padding, size - padding);
+    ctx.stroke();
+    
   },
   /**
    * Sets the content of the tooltip.
@@ -638,6 +731,9 @@ var TipClass = Class.create({
     this.clearTimeouts();
     if (this.visible) return;
 
+    // Thanks to Torsten Saam for this enhancement.
+    if ( ! this.triggerElementExists()) { this.deactivate(); return; }
+
     this.debug('Showing!');
 
     if (this.options.group) Tips.hideGroup(this.options.group);
@@ -649,7 +745,7 @@ var TipClass = Class.create({
     if (!this.tooltipElement) this.buildElements();
     this.updateElementContent();
 
-    if (this.options.ajax && !this.loaded) { this.loadAjax(); }
+    if (this.options.ajax && !this.loaded) {this.loadAjax();}
 
     this.searchAndActivateHideButtons();
 
@@ -696,12 +792,12 @@ var TipClass = Class.create({
 
     var startShowEffect = function() {
       if (Opentip.useCss3Transitions) {
-        this.container.setCss3Style({ 'transitionDuration': this.options.showEffectDuration + 's'});
+        this.container.setCss3Style({'transitionDuration': this.options.showEffectDuration + 's'});
       }
 
       this.container.removeClassName('ot-becoming-visible').addClassName('ot-visible');
       if (this.options.showEffect && this.options.showEffectDuration) {
-        this.visibilityStateTimeoutId = (function() { this.removeClassName('ot-visible').addClassName('ot-completely-visible'); }).bind(this.container).delay(this.options.showEffectDuration);
+        this.visibilityStateTimeoutId = (function() {this.removeClassName('ot-visible').addClassName('ot-completely-visible');}).bind(this.container).delay(this.options.showEffectDuration);
       }
       else {
         this.container.removeClassName('ot-visible').addClassName('ot-completely-visible');
@@ -819,13 +915,13 @@ var TipClass = Class.create({
     }
 
     if (Opentip.useCss3Transitions) {
-      this.container.setCss3Style({ 'transitionDuration': this.options.hideEffectDuration + 's' });
+      this.container.setCss3Style({'transitionDuration': this.options.hideEffectDuration + 's'});
     }
 
    this.container.removeClassName('ot-visible').removeClassName('ot-completely-visible').addClassName('ot-hidden');
    if (this.options.hideEffect && this.options.hideEffectDuration) {
      this.visibilityStateTimeoutId = (function() {
-       this.setCss3Style({ 'transitionDuration': '0s'});
+       this.setCss3Style({'transitionDuration': '0s'});
        this.removeClassName('ot-hidden').addClassName('ot-completely-hidden');
      }).bind(this.container).delay(this.options.showEffectDuration);
    }
@@ -1011,7 +1107,7 @@ var TipClass = Class.create({
     if (viewportOffset.top < 0) return Opentip.STICKS_OUT_TOP;
     if (viewportOffset.top + this.dimensions.height > document.viewport.getDimensions().height) return Opentip.STICKS_OUT_BOTTOM;
   },
-  getStemElement: function() {
+  getStemCanvas: function() {
     return this.container.down('.stem');
   },
   stemPositionsEqual: function(position1, position2) {
@@ -1020,83 +1116,159 @@ var TipClass = Class.create({
   positionStem: function() {
     // Position stem
     if (this.options.stem) {
-      var stemElement = this.getStemElement();
+      
+      var canvasElement = this.getStemCanvas();
 
-      if (stemElement && !this.stemPositionsEqual(this.lastStemPosition, this.currentStemPosition)) {
+      if (canvasElement && !this.stemPositionsEqual(this.lastStemPosition, this.currentStemPosition)) {
 
         this.debug('Setting stem style');
 
         this.lastStemPosition = this.currentStemPosition;
 
-        var stem = this.currentStemPosition;
+        var stemPosition = Opentip.sanitizePosition(this.currentStemPosition);
         var stemSize = this.options.stemSize;
 
-        var stemsImageSize = [ 320, 160 ];
+        var rotationRad = stemPosition * Math.PI / 4; // Every number means 45deg
 
-        var style = {width: stemSize + 'px', height: stemSize + 'px'};
+        var baseThikness = Math.round(stemSize * 1.5);
 
-        style.left = style.top = '0';
+        var realDim = {w: baseThikness, h: stemSize};
 
-        switch (stem[0]) {
-          case 'center':style.width = stemSize * 2 + 'px'; // no break
-          case 'left':style.left = '-' + stemSize + 'px';break;
-        }
-        switch (stem[1]) {
-          case 'middle':style.height = stemSize * 2 + 'px'; // no break
-          case 'top':style.top = '-' + stemSize + 'px';break;
-        }
-
-        if (stem[0] != 'center' && stem[1] != 'middle') style.width = style.height = stemSize * 2 + 'px'; // Corners.
-
-        var imageStyle = {left: 0, top: 0};
-
-        switch (stem[0] + '-' + stem[1]) {
-          case 'left-middle':
-            imageStyle.left = '-' + Math.round(stemsImageSize[0] * (1/2)) + 'px';
-            imageStyle.top  = '-' + Math.round(stemsImageSize[1] * (1/2) - stemSize) + 'px';
-            break;
-          case 'center-top':
-            imageStyle.left = '-' + Math.round(stemsImageSize[0] * (3/4) - stemSize) + 'px';
-            break;
-          case 'center-bottom':
-            imageStyle.left = '-' + Math.round(stemsImageSize[0] * (3/4) - stemSize) + 'px';
-            imageStyle.top  = '-' + Math.round(stemsImageSize[1] - stemSize) + 'px';
-            break;
-          case 'right-middle':
-            imageStyle.left = '-' + Math.round(stemsImageSize[0] - stemSize) + 'px';
-            imageStyle.top  = '-' + Math.round(stemsImageSize[1] / 2 - stemSize) + 'px';
-            break;
-          case 'left-top':break;
-          case 'right-top':
-            imageStyle.left = '-'   + Math.round(stemsImageSize[0] * (1/2) - stemSize * 2) + 'px';
-            style.top = '-' + stemSize + 'px';
-            style.left = '-' + stemSize + 'px';
-            break;
-          case 'right-bottom':
-            imageStyle.left = '-'   + Math.round(stemsImageSize[0] * (1/2) - stemSize * 2) + 'px';
-            imageStyle.top  = '-' + Math.round(stemsImageSize[1] - stemSize*2) + 'px';
-            style.left = '-' + stemSize + 'px';
-            style.top = '-' + stemSize + 'px';
-            break;
-          case 'left-bottom':
-            imageStyle.top = '-' + Math.round(stemsImageSize[1] - stemSize * 2) + 'px';
-            style.left = '-' + stemSize + 'px';
-            style.top = '-' + stemSize + 'px';
-            break;
+        var isCorner = false;
+        if (stemPosition % 2 == 1) {
+          // Corner
+          isCorner = true;
+          var additionalWidth = Math.round(0.707106781 * baseThikness); // 0.707106781 == sqrt(2) / 2 to calculate the adjacent leg of the triangle
+          realDim = {w: stemSize + additionalWidth, h: stemSize + additionalWidth};
         }
 
-        stemElement.down('div').setStyle(imageStyle);
-        stemElement.setStyle(style);
-        stemElement._appliedStyle = true;
+        var drawDim = Object.clone(realDim); // The drawDim is so that I can draw without takin the rotation into calculation
+
+        if (stemPosition == Opentip.position.left || stemPosition == Opentip.position.right) {
+          // The canvas has to be rotated
+          realDim.h = drawDim.w;
+          realDim.w = drawDim.h;
+        }
+
+
+        var stemColor = canvasElement.getStyle('color') || 'black';
         
-        stemElement.up('.stem-container').removeClassName('left').removeClassName('right').removeClassName('center').removeClassName('top').removeClassName('bottom').removeClassName('middle').addClassName(stem[0] + ' ' + stem[1]);
+
+        canvasElement.width = realDim.w;
+        canvasElement.height = realDim.h;
+
+        // Now draw the stem.
+        var ctx = canvasElement.getContext('2d');
+
+        ctx.clearRect (0, 0, canvasElement.width, canvasElement.height);
+        ctx.beginPath();
+
+        ctx.fillStyle = stemColor;
+
+        ctx.save();
+
+        ctx.translate(realDim.w / 2, realDim.h / 2);
+        var rotations = Math.floor(stemPosition / 2);
+        ctx.rotate(rotations * Math.PI / 2);
+        if (realDim.w == drawDim.w) { // This is a real hack because I don't know how to reset to 0,0
+          ctx.translate(-realDim.w / 2, -realDim.h / 2);
+        }
+        else {
+          ctx.translate(-realDim.h / 2, -realDim.w / 2);
+        }
+
+        if (isCorner) {
+          ctx.moveTo(additionalWidth, drawDim.h);
+          ctx.lineTo(drawDim.w, 0);
+          ctx.lineTo(0, drawDim.h - additionalWidth);
+        }
+        else {
+          ctx.moveTo(drawDim.w / 2 - baseThikness / 2, drawDim.h);
+          ctx.lineTo(drawDim.w / 2, 0);
+          ctx.lineTo(drawDim.w / 2 + baseThikness / 2, drawDim.h);
+        }
+        ctx.fill();
+        ctx.restore();
+
+
+        var style = {width: realDim.w + 'px', height: realDim.h + 'px', left: '', right: '', top: '', bottom: ''};
+
+        switch (stemPosition) {
+          case Opentip.position.top:
+            style.top = - realDim.h + 'px';
+            style.left = - Math.round(realDim.w / 2) + 'px';
+            break;
+          case Opentip.position.right:
+            style.top = - Math.round(realDim.h / 2) + 'px';
+            style.left = 0;
+            break;
+          case Opentip.position.bottom:
+            style.top = 0;
+            style.left = - Math.round(realDim.w / 2) + 'px';
+            break;
+          case Opentip.position.left:
+            style.top = - Math.round(realDim.h / 2) + 'px';
+            style.left = - realDim.w + 'px';
+            break;
+          case Opentip.position.topRight:
+            style.top = - stemSize + 'px';
+            style.left = - additionalWidth + 'px';
+            break;
+          case Opentip.position.bottomRight:
+            style.top = - additionalWidth + 'px';
+            style.left = - additionalWidth + 'px';
+            break;
+          case Opentip.position.bottomLeft:
+            style.top = - additionalWidth + 'px';
+            style.left = - stemSize + 'px';
+            break;
+          case Opentip.position.topLeft:
+            style.top = - stemSize + 'px';
+            style.left = - stemSize + 'px';
+            break;
+          default:
+            throw 'Unknown stem position: ' + stemPosition;
+        }
+
+        canvasElement.setStyle(style);
+
+        var stemContainer = canvasElement.up('.stem-container');
+        stemContainer.removeClassName('left').removeClassName('right').removeClassName('center').removeClassName('top').removeClassName('bottom').removeClassName('middle');
+        
+        switch (stemPosition) {
+          case Opentip.position.top: case Opentip.position.topLeft: case Opentip.position.topRight:
+            stemContainer.addClassName('top');
+            break;
+          case Opentip.position.bottom: case Opentip.position.bottomLeft: case Opentip.position.bottomRight:
+            stemContainer.addClassName('bottom');
+            break;
+          default:
+            stemContainer.addClassName('middle');
+            break;
+        }
+        switch (stemPosition) {
+          case Opentip.position.left: case Opentip.position.topLeft: case Opentip.position.bottomLeft:
+            stemContainer.addClassName('left');
+            break;
+          case Opentip.position.right: case Opentip.position.topRight: case Opentip.position.bottomRight:
+            stemContainer.addClassName('right');
+            break;
+          default:
+            stemContainer.addClassName('center');
+            break;
+        }
+
       }
+        
     }
+  },
+  triggerElementExists: function(element) {
+    return this.triggerElement.parentNode && this.triggerElement.visible() && this.triggerElement.descendantOf(document.body);
   },
   ensureElementInterval: 1000, // In milliseconds, how often opentip should check for the existance of the element
   ensureElement: function() { // Regularely checks if the element is still in the dom.
     this.deactivateElementEnsurance();
-    if (!this.triggerElement.parentNode || !this.triggerElement.visible() || !this.triggerElement.descendantOf(document.body)) {this.deactivate();}
+    if ( ! this.triggerElementExists()) {this.deactivate();}
     this.ensureElementTimeoutId = setTimeout(this.ensureElement.bind(this), this.ensureElementInterval);
   },
   deactivateElementEnsurance: function() {clearTimeout(this.ensureElementTimeoutId);}

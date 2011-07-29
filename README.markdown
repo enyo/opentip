@@ -7,7 +7,7 @@ It supports:
 - Automatic content download with [AJAX][ajax]
 - Different styles
 - Automatic repositioning of the tooltip if it's not in the viewport of the browser anymore
-- All kind of triggers (The tooltip can be triggered by mouse over, click, form submit, … everything you can think of really)
+- All kind of triggers (The tooltip can be triggered by mouse over, click, form submit,... everything you can think of really)
 - CSS3 Animations if available. (If not, it uses scriptaculous if available).
 
 As of Version 1.2.6 Opentip does no longer depend on scriptaculous.
@@ -22,9 +22,45 @@ Or the preferred external method:
 
 For the complete documentation please visit [www.opentip.org][opentip].
 
+
+## Changelog
+
+Here's a list of major changes, so you know what to expect when you upgrade (Minor bugfixes are not listed here!).
+
+### 1.3
+
+- Stems are no longer images, but drawn with canvas. (I'm using [excanvas] for IE < 9). **Remember to include the excanvas.js file.**
+
+
+
+
+## Future plans
+
+- Become library independant. I'm currently working on extracting all prototype functionality, so I can switch library easily. The next library
+  I'll support will be jquery, and then mootools.
+
+- Add more skins.
+
+- Add cooler loading animation.
+
+- Implement qunit tests.
+
+
+If you have ideas, please write me!
+
+
 ## Author
 Opentip is written by Matthias Loitsch.<br>
 All graphics by Tjandra Mayerhold.
+
+### Contributors
+Thanks to the following people for providing bug reports, feature requests and sometimes fixes:
+
+- Torsten Saam
+- Aaron Peckham
+- Oguri
+
+If I forgot somebody, please just tell me.
 
 ## License
 Copyright (c) 2009 Matthias Loitsch<br>
@@ -34,3 +70,4 @@ Licenced under the MIT Licence.
 [opentip]: http://www.opentip.org/
 [prototype]: http://www.prototypejs.org/
 [ajax]: http://en.wikipedia.org/wiki/Ajax_(programming)
+[excanvas]: http://code.google.com/p/explorercanvas/

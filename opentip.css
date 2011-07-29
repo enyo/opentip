@@ -26,7 +26,7 @@
     -moz-transition-duration: 0.2s, 0.2s;
   }
   .ot-container.ot-completely-hidden {
-/*    display: none;*/
+    display: none;
   }
 .opentip {
 	position: relative;
@@ -43,7 +43,7 @@
 .opentip .loadingIndication {
 	display: none;
 	padding: 10px 15px;
-	background: url("images/loading.gif") center center no-repeat;
+	background: url("loading.gif") center center no-repeat;
 	width: 25px;
 	height: 15px;
 }
@@ -58,14 +58,17 @@
 }
 
 .ot-buttons .close {
-	display: block;
-	text-decoration:none;
+  display: block;
 	width: 15px;
 	height: 15px;
-	background: url("images/button.close.small.ffffff.png") center center no-repeat;
+	display: block;
+	text-decoration: none;
 }
-.ot-buttons .close span {
-	display: none;
+.ot-buttons .close .canvas {
+    position: relative;
+    display: block;
+  color: white; /* Read by JS and applied to canvas */
+  background-color: rgba(0, 0, 0, 0.2);  /* Read by JS and applied to canvas */
 }
 
 .ot-container .stem-container {
@@ -76,12 +79,8 @@
 .ot-container .stem {
 	position: absolute;
 	overflow: hidden;
-}
-.ot-container .stem div {
-	background: no-repeat url("images/stems.cccccc.png");
-	position: absolute;
-	width: 320px;
-	height: 160px;
+    color: #cccccc; /* JS will read this property to draw the stem in the right color. */
+/*    background: rgba(255, 0, 0, 0.5);*/
 }
 
 
@@ -94,7 +93,14 @@
 
 
 
-/**  Styles  **/
+/**
+
+Styles
+======
+
+Those are the different styles available in opentip.
+
+**/
 
 .style-standard .opentip {
 	border: 1px solid #f2e37b;
@@ -108,20 +114,20 @@
 .style-standard .opentip .title {
 	margin-bottom: 1px;
 }
-.style-standard .stem div {
-	background-image: url("images/stems.e3ca1b.png");
+.style-standard .stem {
+    color: #e3ca1b; /* JS will read this property to draw the stem in the right color. */
 }
 .style-standard .ot-buttons {
-	top: -9px;
-	right: -10px;
+	top: -6px;
+	right: -6px;
 }
 .style-standard .ot-buttons .close {
-	background-color: rgba(0,0,0,0.2);
 	width: 21px;
 	height: 21px;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
+}
+.style-standard .ot-buttons .close .canvas {
+  background-color: rgba(255, 241, 143, 0.5);
+  color: #a2932B;
 }
 
 
@@ -146,20 +152,19 @@
 .style-rounded .opentip .content {
 	padding: 6px 10px;
 }
-.style-rounded .stem div {
-	background-image: url("images/stems.c3ddf0.png");
+.style-rounded .stem {
+  color: #c3ddf0;
 }
 .style-rounded .ot-buttons {
-	top: -13px;
-	right: -12px;
+	top: -3px;
+	right: -3px;
 }
 .style-rounded .ot-buttons .close {
-	background-color: #81B4DA;
 	width: 21px;
 	height: 21px;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
+}
+.style-rounded .ot-buttons .close .canvas {
+  background-color: #81B4DA;
 }
 
 .style-slick .opentip {
@@ -178,23 +183,21 @@
 	padding: 6px 10px;
 	border-top: 1px solid #fefefe;
 }
-.style-slick .stem div {
-	background-image: url("images/stems.cccccc.png");
+.style-slick .stem {
+  color: #cccccc;
 }
 .style-slick .ot-buttons {
-	right: -11px;
-	top: -11px;
+	right: -7px;
+	top: -5px;
 }
 .style-slick .ot-buttons .close {
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	background-color: rgba(0, 0, 0, 0.1);
-	border: 1px solid #cccccc;
 	height: 19px;
 	width: 19px;
-
 }
+.style-slick .ot-buttons .close .canvas {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
 
 .style-glass .opentip {
 	background: white;
@@ -218,21 +221,27 @@
 	color: #333333;
 }
 .style-glass .stem {
-	background-image: url("images/stems.ffffff.png");
+  color: #ffffff;
+}
+.style-glass .ot-buttons {
+	right: -3px;
+	top: -3px;
 }
 .style-glass .ot-buttons .close {
-	background-image: url("images/button.close.big.ffffff.png");
-	border-radius: 0 5px 0 5px;
-	-moz-border-radius: 0 5px 0 5px;
-	-webkit-border-top-right-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-	background-color: #F7BA00;
 	width: 25px;
 	height: 25px;
 }
+.style-glass .ot-buttons .close .canvas {
+  background-color: #F7BA00;
+}
 
+/**
 
-/** IE 6 HACKS **/
+IE 6 HACKS
+==========
+
+**/
+
 /*\*/
 .ot-buttons {
 	z-index: 110;
@@ -253,14 +262,7 @@
  	z-index:-1;/*must have*/
  	filter:mask();/*must have*/
 }
-.ot-container .stem div {
-	behavior: expression((this.runtimeStyle.behavior="none")&&(this.pngSet?this.pngSet=true:(this.nodeName == "IMG" && this.src.toLowerCase().indexOf('.png')>-1?(this.runtimeStyle.backgroundImage = "none",
-		this.runtimeStyle.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + this.src + "', sizingMethod='image')",
-		this.src = "transparent.gif"):(this.origBg = this.origBg? this.origBg :this.currentStyle.backgroundImage.toString().replace('url("','').replace('")',''),
-		this.runtimeStyle.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + this.origBg + "', sizingMethod='crop')",
-		this.runtimeStyle.backgroundImage = "none")),this.pngSet=true)
-	);
-}
+
 .style-glass .opentip {
 	border: 1px solid #bbbbbb;
 }
@@ -365,39 +367,93 @@ with your .ot-show-effectName).
 
 
 
-/*
-
-.ot-container.ot-css3.ot-hidden.ot-show-condense { -webkit-transform: scale(5); }
-*/
 
 
 
-/*
-.ot-container.ot-css3.ot-hidden.ot-hide-fade { }
 
 
-@-webkit-keyframes shrink {
-	0% { opacity: 1; -webkit-transform: scale(1); }
-    90% { opacity: 0; -webkit-transform: scale(0.1); }
-	100% { opacity: 0; -webkit-transform: scale(0); }
-}
-.ot-container.ot-css3.ot-hidden.ot-hide-shrink { -webkit-animation-name: shrink; }
-
-@-webkit-keyframes blindUp {
-	0% { opacity: 1; -webkit-transform: scaleY(1); }
-    90% { opacity: 0; -webkit-transform: scaleY(0.1); }
-	100% { opacity: 0; -webkit-transform: scaleY(0); }
-}
-.ot-container.ot-css3.ot-hidden.ot-hide-blindUp { -webkit-animation-name: blindUp; }
-.ot-container.ot-css3.ot-hidden.ot-hide-slideUp { -webkit-animation-name: blindUp; }
 
 
-@-webkit-keyframes puff {
-	0% { opacity: 1; -webkit-transform: scale(1); }
-	100% { opacity: 0; -webkit-transform: scale(5); }
-}
-.ot-container.ot-css3.ot-hidden.ot-hide-puff { -webkit-animation-name: puff; }
 
+
+/**
+
+Content design
+==============
+
+Nicer input fields, etc...
 
 */
 
+
+.opentip label {
+	margin-bottom: 3px;
+	margin-top: 10px;
+	display: block;
+}
+.opentip input, .opentip textarea {
+	padding: 5px 6px;
+	border: 1px solid rgba(100, 100, 100, 0.2);
+	background: rgba(255,255,255,0.5);
+	display: block;
+	width: 100%;
+	margin: 3px 0 10px 0;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+.opentip input:focus, .opentip textarea:focus {
+	border-color: rgba(100, 100, 100, 0.2);
+	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.2);
+	-webkit-box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.opentip button {
+	margin-top: 20px;
+	display: block;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
+
+
+	border: 1px solid rgba(247, 186, 0, 0.8);
+	background: rgba(247, 186, 0, 0.9);
+	font-size: 14px;
+	line-height: 14px;
+	padding: 10px 10px;
+	position: relative;
+	color: rgba(255,255,255, 1);
+	text-shadow: 0 0 10px rgba(255,255,255,0.3);
+	text-align: center;
+	font-weight: bold;
+	font-family: serif;
+	font-style: italic;
+	text-decoration: none;
+	margin: 20px 0 0 0;
+	cursor: pointer;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	-moz-box-shadow: 0 0 4px rgba(0,0,0,0.2),
+	                 0 -2px 10px rgba(255, 255, 255, 0.4) inset;
+	-webkit-box-shadow: 0 0 4px rgba(0,0,0,0.2),
+	                 0 -2px 10px rgba(255, 255, 255, 0.4) inset;
+}
+.opentip button {
+	padding: 8px 6px;
+}
+.button:hover, button:hover {
+	-moz-box-shadow: 0 0 6px rgba(247, 192, 25, 1),
+	                 0 -2px 10px rgba(255, 255, 255, 0.6) inset;
+	text-shadow: 0 0 4px rgba(255,255,255,1);
+}
+
+
+
+/** IE 6 HACKS **/
+/*\*/
+.opentip input, .opentip textarea, .opentip button {
+	width: 200px;
+}
+/**/

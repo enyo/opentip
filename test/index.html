@@ -38,6 +38,8 @@
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/scriptaculous/1.8.3/scriptaculous.js"></script>
 
 	<script type="text/javascript" src="../opentip.js"></script>
+    <!--[if lt IE 9]><script src="../excanvas.js"></script><![endif]-->
+    <script src="../excanvas.js"></script>
 	<script type="text/javascript">
 //        Opentip.useCss3Transitions = false;
 //        Opentip.useScriptaculousTransitions = true;
@@ -404,8 +406,17 @@
 		Testing the $(element).addTip() function multiple times.
 	</div>
 	<script type="text/javascript">
-		$('testMultipleAddtip').addTip('Right', { target: true, tipJoint: [ 'left', 'middle' ] });
-		$('testMultipleAddtip').addTip('Left', { target: true, tipJoint: [ 'right', 'middle' ] });
+        Opentip.styles.testMultipleAddtip = { target: true, stem: true, showOn: 'click', hideOn: 'click' };
+//		$('testMultipleAddtip').addTip('Right', { style: 'testMultipleAddtip', tipJoint: [ 'left', 'middle' ] });
+//		$('testMultipleAddtip').addTip('Left', { style: 'testMultipleAddtip', tipJoint: [ 'right', 'middle' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip',tipJoint: [ 'center', 'top' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip', tipJoint: [ 'right', 'top' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip', tipJoint: [ 'right', 'middle' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip', tipJoint: [ 'right', 'bottom' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip', tipJoint: [ 'center', 'bottom' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip', tipJoint: [ 'left', 'bottom' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip', tipJoint: [ 'left', 'middle' ] });
+		$('testMultipleAddtip').addTip('Test', { style: 'testMultipleAddtip', tipJoint: [ 'left', 'top' ] });
 	</script>
 
 
@@ -441,6 +452,15 @@
       <a href="ajaxtest.html" ot="true" ot-show-on="click" ot-ajax="true" ot-stem="true" ot-tip-joint="[ 'center', 'bottom' ]">Testing AJAX. tip joint: center/bottom</a>
       <div ot="Hi" ot-show-effect="condense" ot-hide-effect="puff">Testing the inline HTML options.</div>
       <div ot="Hi" ot-show-effect-duration="1" ot-hide-effect-duration="1" ot-show-effect="rotate" ot-hide-effect="rotate" ot-fallback-show-effect="appear" ot-fallback-hide-effect="fade">Testing fallback effects. Should appear/fade with CSS3 disabled.</div>
+	</div>
+
+    
+    <br />
+    
+	<div class="test">
+      When you hover the button, a tooltip appears after 1 seconds.<br />
+      If you click the button it gets removed from the dom, and the tooltip should no longer appear.<br />
+      <button onmouseover="javascript:Tips.add(this, event, 'hi ho', { delay: 2, hideOn: 'closeButton'});" onclick="javascript:this.remove();">click me to disappear</button>
 	</div>
     
 	<br />
