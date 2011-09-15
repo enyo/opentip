@@ -480,31 +480,38 @@ var TipClass = Class.create({
     if (this.options.hideTrigger) {
       var hideOnEvent = null;
       var hideTriggerElement = null;
-      switch (this.options.hideTrigger) {
-        case 'trigger':
-          hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseout';
-          hideTriggerElement = this.triggerElement;
-          break;
-        case 'tip':
-          hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
-          hideTriggerElement = this.container;
-          break;
-        case 'target':
-          hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
-          hideTriggerElement = this.options.target;
-          break;
-        case 'closeButton':break;
-        default:
-          hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
-          hideTriggerElement = $(this.options.hideTrigger);
-          break;
+      
+      if(typeof(this.options.hideTrigger) == 'string'){
+        this.options.hideTrigger = [this.options.hideTrigger];
       }
-      if (hideTriggerElement) {
-        this.options.hideTriggerElements.push({element: hideTriggerElement, event: hideOnEvent});
-        if (hideOnEvent == 'mouseout') {
-          // When the hide trigger is mouseout, we have to attach a mouseover trigger to that element, so the tooltip doesn't disappear when
-          // hovering child elements. (Hovering children fires a mouseout mouseover event)
-          this.options.showTriggerElementsWhenVisible.push({element: hideTriggerElement, event: 'mouseover'});
+      
+      for(var i = 0; i < this.options.hideTrigger.length; i++){
+        switch (this.options.hideTrigger[i]) {
+          case 'trigger':
+            hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseout';
+            hideTriggerElement = this.triggerElement;
+            break;
+          case 'tip':
+            hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
+            hideTriggerElement = this.container;
+            break;
+          case 'target':
+            hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
+            hideTriggerElement = this.options.target;
+            break;
+          case 'closeButton':break;
+          default:
+            hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
+            hideTriggerElement = $(this.options.hideTrigger[i]);
+            break;
+        }
+        if (hideTriggerElement) {
+          this.options.hideTriggerElements.push({element: hideTriggerElement, event: hideOnEvent});
+          if (hideOnEvent == 'mouseout') {
+            // When the hide trigger is mouseout, we have to attach a mouseover trigger to that element, so the tooltip doesn't disappear when
+            // hovering child elements. (Hovering children fires a mouseout mouseover event)
+            this.options.showTriggerElementsWhenVisible.push({element: hideTriggerElement, event: 'mouseover'});
+          }
         }
       }
     }
