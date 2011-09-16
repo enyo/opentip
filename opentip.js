@@ -240,8 +240,8 @@ Opentip.position = {
  */
 Event.observe(window, Opentip.IEVersion() ? 'load' : 'dom:loaded', function() {
   Opentip.documentIsLoaded = true;
-  
-  
+
+
   var htmlOptionNames = [];
   for (var i in Opentip.styles.standard) {
     htmlOptionNames.push(i.underscore().dasherize());
@@ -271,7 +271,7 @@ Event.observe(window, Opentip.IEVersion() ? 'load' : 'dom:loaded', function() {
           optionValue = optionValue.gsub("'", '"').evalJSON();
         }
         catch (err) {
-          // Well, it's not. 
+          // Well, it's not.
         }
 
         options[optionName.camelize()] = optionValue;
@@ -329,7 +329,7 @@ var Tips = {
     }
 
     Opentip.postponeCreation(createTip);
-    
+
     return tooltip;
   },
   hideGroup: function(groupName) {
@@ -471,7 +471,7 @@ var TipClass = Class.create({
    * This builds the container, and sets the correct hide trigger.
    * Since it's a problem for IE to create elements when the page is not fully
    * loaded, this function has to be posponed until the website is fully loaded.
-   * 
+   *
    * This function also activates the tooltip.
   **/
   create: function(evt) {
@@ -480,12 +480,12 @@ var TipClass = Class.create({
     if (this.options.hideTrigger) {
       var hideOnEvent = null;
       var hideTriggerElement = null;
-      
-      if(typeof(this.options.hideTrigger) == 'string'){
+
+      if(typeof(this.options.hideTrigger) == 'string') {
         this.options.hideTrigger = [this.options.hideTrigger];
       }
-      
-      for(var i = 0; i < this.options.hideTrigger.length; i++){
+
+      for (var i = 0; i < this.options.hideTrigger.length; i++) {
         switch (this.options.hideTrigger[i]) {
           case 'trigger':
             hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseout';
@@ -575,12 +575,12 @@ var TipClass = Class.create({
 
     var buttons = this.container.appendChild(Opentip.element('div', {className: 'ot-buttons'}));
     var drawCloseButton = false;
-    if (this.options.hideTrigger == 'closeButton') {
+    if (this.options.hideTrigger && this.options.hideTrigger.indexOf('closeButton') >= 0) {
       buttons.appendChild(Opentip.element('a', {href: 'javascript:undefined', className: 'close'}, closeButtonCanvas = Opentip.element('canvas', { className: 'canvas' })));
       // The canvas has to have a className assigned, because IE < 9 doesn't know the element, and won't assign any css to it.
       drawCloseButton = true;
     }
-    
+
     if (Opentip.useIFrame()) this.iFrameElement = this.container.appendChild($(Opentip.element('iframe', {className: 'opentipIFrame', src: 'javascript:false;'})).setStyle({display: 'none', zIndex: 100}).setOpacity(0));
 
     document.body.appendChild(this.container);
@@ -588,7 +588,7 @@ var TipClass = Class.create({
     if (typeof G_vmlCanvasManager !== "undefined") {
       if (stemCanvas) G_vmlCanvasManager.initElement(stemCanvas);
       if (closeButtonCanvas) G_vmlCanvasManager.initElement(closeButtonCanvas);
-    } 
+    }
 
     if (drawCloseButton) this.drawCloseButton();
   },
@@ -631,13 +631,13 @@ var TipClass = Class.create({
     ctx.moveTo(size - padding, padding);
     ctx.lineTo(padding, size - padding);
     ctx.stroke();
-    
+
   },
   /**
    * Sets the content of the tooltip.
    * This can be a function or a string. The function will be executed, and the
    * result used as new content of the tooltip.
-   * 
+   *
    * If the tooltip is visible, this function calls updateElementContent()
   **/
   setContent: function(content) {
@@ -779,18 +779,18 @@ var TipClass = Class.create({
     /**
      * The next lines may seem a bit weird. I ran into some bizarre opera problems
      * while implementing the switch of the different states.
-     * 
+     *
      * This is what's happening here:
-     * 
+     *
      * I wanted to just remove ot-completely-hidden, and add ot-becoming-visible
      * (so the tip has the style it should have when it appears) and then switch
      * ot-becoming-visible with ot-visible so the transition can take place.
      * I then setup a timer to set ot-completely-visible when appropriate.
-     * 
+     *
      * I ran into problems with opera, which showed the tip for a frame because
      * apparently the -o-transforms are slower then just setting display: none
      * (or something...)
-     * 
+     *
      * So I have to 1) set ot-becoming-visible first, so the tip has the appropriate
      * CSS definitions set, 2) defer the removal of ot-completely-hidden, so it's
      * not invisible anymore, and 3) defer the rest of the process (setting ot-visible
@@ -819,7 +819,7 @@ var TipClass = Class.create({
       (startShowEffect).bind(this).defer(); // Has to be deferred, so the div has the class ot-becoming-visible.
     }).bind(this).defer();
 
-  
+
 
   },
   loadAjax: function() {
@@ -862,7 +862,7 @@ var TipClass = Class.create({
     else if (textarea) textarea.focus();
   },
   searchAndActivateHideButtons: function() {
-    if (this.options.hideTrigger == 'closeButton' || !this.options.hideTrigger) {
+    if (!this.options.hideTrigger || this.options.hideTrigger.indexOf('closeButton') >= 0) {
       this.options.hideTriggerElements = [];
       this.container.select('.close').each(function(el) {
         this.options.hideTriggerElements.push({element: el, event: 'click'});
@@ -912,7 +912,7 @@ var TipClass = Class.create({
     if (Opentip.useScriptaculousTransitions) {
       if (this.options.showEffect || this.options.hideEffect) this.cancelEffects();
 
-      if (!this.options.hideEffect || !this.container[this.options.hideEffect]) this.container.hide(); 
+      if (!this.options.hideEffect || !this.container[this.options.hideEffect]) this.container.hide();
       else {
         var effectOptions = {duration: this.options.hideEffectDuration, queue: this.queue};
         if(afterFinish && Object.isFunction(afterFinish)) effectOptions.afterFinish = afterFinish;
@@ -941,7 +941,7 @@ var TipClass = Class.create({
   followMousePosition:        function() {if (!this.options.fixed) $(document.body).observe('mousemove', this.bound.position);},
   stopFollowingMousePosition: function() {if (!this.options.fixed) $(document.body).stopObserving('mousemove', this.bound.position);},
   positionsEqual: function(position1, position2) {
-    return (position1.left == position2.left && position1.top == position2.top);  
+    return (position1.left == position2.left && position1.top == position2.top);
   },
   position: function(evt) {
     var evt = evt || this.lastEvt;
@@ -1040,8 +1040,8 @@ var TipClass = Class.create({
     if (!sticksOut[0] && !sticksOut[1]) return position;
 
     var tipJ = this.options.tipJoint.clone();
-    var trgJ = this.options.targetJoint.clone();    
-    
+    var trgJ = this.options.targetJoint.clone();
+
     var viewportScrollOffset = $(document.viewport).getScrollOffsets();
     var dimensions = this.dimensions;
     var viewportOffset = {left: position.left - viewportScrollOffset.left, top: position.top - viewportScrollOffset.top};
@@ -1118,12 +1118,12 @@ var TipClass = Class.create({
     return this.container.down('.stem');
   },
   stemPositionsEqual: function(position1, position2) {
-    return (position1 && position2 && position1[0] == position2[0] && position1[1] == position2[1]);  
+    return (position1 && position2 && position1[0] == position2[0] && position1[1] == position2[1]);
   },
   positionStem: function() {
     // Position stem
     if (this.options.stem) {
-      
+
       var canvasElement = this.getStemCanvas();
 
       if (canvasElement && !this.stemPositionsEqual(this.lastStemPosition, this.currentStemPosition)) {
@@ -1159,7 +1159,7 @@ var TipClass = Class.create({
 
 
         var stemColor = canvasElement.getStyle('color') || 'black';
-        
+
 
         canvasElement.width = realDim.w;
         canvasElement.height = realDim.h;
@@ -1241,7 +1241,7 @@ var TipClass = Class.create({
 
         var stemContainer = canvasElement.up('.stem-container');
         stemContainer.removeClassName('left').removeClassName('right').removeClassName('center').removeClassName('top').removeClassName('bottom').removeClassName('middle');
-        
+
         switch (stemPosition) {
           case Opentip.position.top: case Opentip.position.topLeft: case Opentip.position.topRight:
             stemContainer.addClassName('top');
@@ -1266,7 +1266,7 @@ var TipClass = Class.create({
         }
 
       }
-        
+
     }
   },
   triggerElementExists: function(element) {
