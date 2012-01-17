@@ -13,6 +13,11 @@ It supports:
 
 As of Version 1.2.6 Opentip does no longer depend on scriptaculous.
 
+
+The latest stable version is always in the **master** branch (which always points at the latest version tag).
+
+The latest development version is in the **develop** branch. Use only if you want to contribute or test features.
+
 ## Usage
 
     <div onmouseover="javascript:Tips.add(this, event, 'Content', { options });"></div>
