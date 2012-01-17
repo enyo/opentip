@@ -186,8 +186,8 @@ Opentip.styles = {
     hideDelay: 0.1, // --
     fixed: false, // If target is not null, elements are always fixed.
     showOn: 'mouseover', // string (the observe string of the trigger element, eg: click, mouseover, etc..)   ||   'creation' (the tooltip will show when being created)   ||   null if you want to handle it yourself.
-    hideTrigger: 'trigger', // 'trigger' | 'tip' | 'target' | 'closeButton' | ELEMENT | ELEMENT_ID
-    hideOn: null, // string (event eg: click)   ||   null (let Opentip decide)
+    hideTrigger: 'trigger', // 'trigger' | 'tip' | 'target' | 'closeButton' | ELEMENT | ELEMENT_ID      ||      array containing any of the previous
+    hideOn: null, // string (event eg: click)   ||   array of event strings if multiple hideTriggers     ||    null (let Opentip decide)
     offset: [ 0, 0 ], // COORDINATE
     containInViewport: true, // Whether the targetJoint/tipJoint should be changed if the tooltip is not in the viewport anymore.
     autoOffset: true, // If set to true, offsets are calculated automatically to position the tooltip. (pixels are added if there are stems for example)
@@ -481,28 +481,31 @@ var TipClass = Class.create({
       var hideOnEvent = null;
       var hideTriggerElement = null;
 
-      if(typeof(this.options.hideTrigger) == 'string') {
+      if (!(this.options.hideTrigger instanceof Array)) {
         this.options.hideTrigger = [this.options.hideTrigger];
       }
 
-      for (var i = 0; i < this.options.hideTrigger.length; i++) {
-        switch (this.options.hideTrigger[i]) {
+      this.options.hideTrigger.each(function(hideTrigger, i) {
+
+        var hideOnOption = (this.options.hideOn instanceof Array) ? this.options.hideOn[i] : this.options.hideOn;
+
+        switch (hideTrigger) {
           case 'trigger':
-            hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseout';
+            hideOnEvent = hideOnOption ? hideOnOption : 'mouseout';
             hideTriggerElement = this.triggerElement;
             break;
           case 'tip':
-            hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
+            hideOnEvent = hideOnOption ? hideOnOption : 'mouseover';
             hideTriggerElement = this.container;
             break;
           case 'target':
-            hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
+            hideOnEvent = hideOnOption ? hideOnOption : 'mouseover';
             hideTriggerElement = this.options.target;
             break;
           case 'closeButton':break;
           default:
-            hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
-            hideTriggerElement = $(this.options.hideTrigger[i]);
+            hideOnEvent = hideOnOption ? hideOnOption : 'mouseover';
+            hideTriggerElement = $(hideTrigger);
             break;
         }
         if (hideTriggerElement) {
@@ -513,7 +516,7 @@ var TipClass = Class.create({
             this.options.showTriggerElementsWhenVisible.push({element: hideTriggerElement, event: 'mouseover'});
           }
         }
-      }
+      }.bind(this));
     }
 
     this.activate();
