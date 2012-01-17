@@ -2,19 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<meta name="author" content="matthias loitsch" />
+	<meta name="author" content="matias meno" />
 
 	<title>Opentip tests</title>
 
 	<style type="text/css">
 		@import "../opentip.css";
-		
-		
+
+
 		body {
 			font-family: arial, sans-serif;
 			font-size: 14px;
 		}
-		
+
 		#container {
 			width: 980px;
 			border: 1px solid silver;
@@ -31,7 +31,7 @@
 			-moz-border-radius: 3px;
 			-webkit-border-radius: 3px;
 		}
-		
+
 	</style>
 
 	<script type="text/javascript" src="./prototype-1.7.0.0.js"></script>
@@ -197,10 +197,10 @@
 		}
 
 		var delay = 0;
-		
+
 		var d = function() { delay += 0.5; return delay - 0.5; }
-		
-		
+
+
 		Tips.add('testH', 'Multiple', { style: 'multiple', tipJoint: ['right', 'middle'], delay: d() });
 		Tips.add('testH', 'Multiple', { style: 'multiple', tipJoint: ['left',  'middle'], delay: d() });
 		Tips.add('testH', 'Multiple tips', { style: 'multiple', tipJoint: ['center', 'top'], delay: d() });
@@ -319,7 +319,7 @@
 
 	<div class="test">
 		Testing that 'showOnCreation' also works if the tooltip is already created, and shown again.
-		
+
 		<button onclick="javascript:Tips.add(this, event, 'This tooltip should appear every time', { showOn: 'creation' });">Click me!</button>
 
 	</div>
@@ -328,7 +328,7 @@
 
 	<div class="test">
 		Testing that 'hideTrigger' set to tip, works.
-		
+
 		<button onclick="javascript:Tips.add(this, event, 'This tooltip should disappear when mouseOut the tip.', { target: true, hideTrigger: 'tip', hideOn: 'mouseout' });">Click me!</button>
 
 	</div>
@@ -337,7 +337,7 @@
 
 	<div class="test">
 		Testing that the same event that shows can hide.
-		
+
 		<button onclick="javascript:Tips.add(this, event, 'This tooltip should disappear when you click again', { target: true, hideOn: 'click' });">Click me!</button>
 
 	</div>
@@ -347,7 +347,7 @@
 	<div class="test" id="groupTest">
 		Testing groups.
 		When you click on one of those buttons, the other tooltips created with any of those buttons should disappear.
-		
+
 		<script type="text/javascript">
 			Opentip.styles.grouped = {
 				stem: true,
@@ -358,7 +358,7 @@
 				group: 'myGroup'
 			}
 		</script>
-		
+
 		<button>Click me!</button>
 		<button>Click me!</button>
 		<button>Click me!</button>
@@ -374,7 +374,7 @@
 		Testing groups with hover.
 		Hover those (don't be scared to change rapidly) to see grouping in action.
         The hide trigger is the tip.
-		
+
 		<script type="text/javascript">
 			Opentip.styles.grouped2 = {
 				stem: true,
@@ -421,7 +421,7 @@
 
 
     <br />
-    
+
 	<div class="test">
       <a href="javascript:undefined;" id="testAppearFade">Appear / Fade</a><br />
       <a href="javascript:undefined;" id="testGrowShrink">Grow / Shrink</a><br />
@@ -444,7 +444,7 @@
       $('testRotate').addTip('Test', { showEffect: 'rotate',  hideEffect: 'rotate', style: 'effects', showOn: 'click', hideOn: 'click' })
     </script>
 
-    
+
 	<br />
 	<div class="test">
       <div ot="Hi this is a very simple tooltip.">Just defining ot.</div>
@@ -454,15 +454,15 @@
       <div ot="Hi" ot-show-effect-duration="1" ot-hide-effect-duration="1" ot-show-effect="rotate" ot-hide-effect="rotate" ot-fallback-show-effect="appear" ot-fallback-hide-effect="fade">Testing fallback effects. Should appear/fade with CSS3 disabled.</div>
 	</div>
 
-    
+
     <br />
-    
+
 	<div class="test">
       When you hover the button, a tooltip appears after 1 seconds.<br />
       If you click the button it gets removed from the dom, and the tooltip should no longer appear.<br />
       <button onmouseover="javascript:Tips.add(this, event, 'hi ho', { delay: 2, hideOn: 'closeButton'});" onclick="javascript:this.remove();">click me to disappear</button>
 	</div>
-    
+
 	<br />
 	<div class="test">
       <div id="testUpdatingContent">Hover, then click.</div>
@@ -478,7 +478,7 @@
       $('testDeactivateTooltip').observe('click', function() { tipUpdatingContent.deactivate(); });
       $('testActivateTooltip').observe('click', function() { tipUpdatingContent.activate(); });
     </script>
-    
+
 	<br />
 	<br />
 
@@ -486,7 +486,7 @@
 
 
 
-    
+
 
 
 </div>
