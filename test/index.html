@@ -479,6 +479,24 @@
       $('testActivateTooltip').observe('click', function() { tipUpdatingContent.activate(); });
     </script>
 
+    <br />
+    <div class="test" id="mtrigger">
+        Multiple hideTrigger
+    </div>
+
+    <script type="text/javascript">
+    $('mtrigger').addTip('You could mouseover here to read this text and mouseout than to hide or just forget and mouseout the trigger to hide in a second.', 'Title', {
+        fixed: true,
+        stem: true,
+        tipJoint: [ 'left', 'middle' ],
+        target: true,
+        hideTrigger: ['tip', 'trigger'],
+        hideDelay: 1,
+        hideOn: 'mouseout',
+    });
+    </script>
+
+
 	<br />
 	<br />
 

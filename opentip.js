@@ -480,31 +480,38 @@ var TipClass = Class.create({
     if (this.options.hideTrigger) {
       var hideOnEvent = null;
       var hideTriggerElement = null;
-      switch (this.options.hideTrigger) {
-        case 'trigger':
-          hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseout';
-          hideTriggerElement = this.triggerElement;
-          break;
-        case 'tip':
-          hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
-          hideTriggerElement = this.container;
-          break;
-        case 'target':
-          hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
-          hideTriggerElement = this.options.target;
-          break;
-        case 'closeButton':break;
-        default:
-          hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
-          hideTriggerElement = $(this.options.hideTrigger);
-          break;
+
+      if(typeof(this.options.hideTrigger) == 'string') {
+        this.options.hideTrigger = [this.options.hideTrigger];
       }
-      if (hideTriggerElement) {
-        this.options.hideTriggerElements.push({element: hideTriggerElement, event: hideOnEvent});
-        if (hideOnEvent == 'mouseout') {
-          // When the hide trigger is mouseout, we have to attach a mouseover trigger to that element, so the tooltip doesn't disappear when
-          // hovering child elements. (Hovering children fires a mouseout mouseover event)
-          this.options.showTriggerElementsWhenVisible.push({element: hideTriggerElement, event: 'mouseover'});
+
+      for (var i = 0; i < this.options.hideTrigger.length; i++) {
+        switch (this.options.hideTrigger[i]) {
+          case 'trigger':
+            hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseout';
+            hideTriggerElement = this.triggerElement;
+            break;
+          case 'tip':
+            hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
+            hideTriggerElement = this.container;
+            break;
+          case 'target':
+            hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
+            hideTriggerElement = this.options.target;
+            break;
+          case 'closeButton':break;
+          default:
+            hideOnEvent = this.options.hideOn ? this.options.hideOn : 'mouseover';
+            hideTriggerElement = $(this.options.hideTrigger[i]);
+            break;
+        }
+        if (hideTriggerElement) {
+          this.options.hideTriggerElements.push({element: hideTriggerElement, event: hideOnEvent});
+          if (hideOnEvent == 'mouseout') {
+            // When the hide trigger is mouseout, we have to attach a mouseover trigger to that element, so the tooltip doesn't disappear when
+            // hovering child elements. (Hovering children fires a mouseout mouseover event)
+            this.options.showTriggerElementsWhenVisible.push({element: hideTriggerElement, event: 'mouseover'});
+          }
         }
       }
     }
@@ -568,7 +575,7 @@ var TipClass = Class.create({
 
     var buttons = this.container.appendChild(Opentip.element('div', {className: 'ot-buttons'}));
     var drawCloseButton = false;
-    if (this.options.hideTrigger == 'closeButton') {
+    if (this.options.hideTrigger && this.options.hideTrigger.indexOf('closeButton') >= 0) {
       buttons.appendChild(Opentip.element('a', {href: 'javascript:undefined', className: 'close'}, closeButtonCanvas = Opentip.element('canvas', { className: 'canvas' })));
       // The canvas has to have a className assigned, because IE < 9 doesn't know the element, and won't assign any css to it.
       drawCloseButton = true;
@@ -855,7 +862,7 @@ var TipClass = Class.create({
     else if (textarea) textarea.focus();
   },
   searchAndActivateHideButtons: function() {
-    if (this.options.hideTrigger == 'closeButton' || !this.options.hideTrigger) {
+    if (!this.options.hideTrigger || this.options.hideTrigger.indexOf('closeButton') >= 0) {
       this.options.hideTriggerElements = [];
       this.container.select('.close').each(function(el) {
         this.options.hideTriggerElements.push({element: el, event: 'click'});
