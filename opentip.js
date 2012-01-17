@@ -578,7 +578,7 @@ var TipClass = Class.create({
 
     var buttons = this.container.appendChild(Opentip.element('div', {className: 'ot-buttons'}));
     var drawCloseButton = false;
-    if (this.options.hideTrigger && this.options.hideTrigger.indexOf('closeButton') >= 0) {
+    if (this.options.hideTrigger && this.options.hideTrigger.include('closeButton')) {
       buttons.appendChild(Opentip.element('a', {href: 'javascript:undefined', className: 'close'}, closeButtonCanvas = Opentip.element('canvas', { className: 'canvas' })));
       // The canvas has to have a className assigned, because IE < 9 doesn't know the element, and won't assign any css to it.
       drawCloseButton = true;
@@ -865,7 +865,7 @@ var TipClass = Class.create({
     else if (textarea) textarea.focus();
   },
   searchAndActivateHideButtons: function() {
-    if (!this.options.hideTrigger || this.options.hideTrigger.indexOf('closeButton') >= 0) {
+    if (!this.options.hideTrigger || this.options.hideTrigger.include('closeButton')) {
       this.options.hideTriggerElements = [];
       this.container.select('.close').each(function(el) {
         this.options.hideTriggerElements.push({element: el, event: 'click'});
