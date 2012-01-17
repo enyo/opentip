@@ -1,4 +1,4 @@
-# Opentip Version 1.4.2-dev
+# Opentip Version 1.4.2
 
 The [opentip][opentip]-class is a free opensource Java-Script tooltip class based on the [prototype][prototype] framework.
 
