@@ -1,4 +1,5 @@
-# Opentip
+# Opentip Version 1.4.2
+
 The [opentip][opentip]-class is a free opensource Java-Script tooltip class based on the [prototype][prototype] framework.
 
 It supports:
@@ -46,11 +47,16 @@ Here's a list of major changes, so you know what to expect when you upgrade (Min
 - Implement qunit tests.
 
 
-If you have ideas, please write me!
+If you have ideas, please contact me!
+
+
+## Tagging
+
+Tagging in this project is done with my [tag script](http://github.com/enyo/tag).
 
 
 ## Author
-Opentip is written by Matthias Loitsch.<br>
+Opentip is written by Matias Meno.<br>
 All graphics by Tjandra Mayerhold.
 
 ### Contributors
@@ -63,7 +69,7 @@ Thanks to the following people for providing bug reports, feature requests and s
 If I forgot somebody, please just tell me.
 
 ## License
-Copyright (c) 2009 Matthias Loitsch<br>
+Copyright (c) 2012 Matias Meno<br>
 Licenced under the MIT Licence.
 
 
