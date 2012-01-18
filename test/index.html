@@ -479,6 +479,24 @@
       $('testActivateTooltip').observe('click', function() { tipUpdatingContent.activate(); });
     </script>
 
+    <br />
+    <div class="test" id="mtrigger">
+        Multiple hideTrigger
+    </div>
+
+    <script type="text/javascript">
+    $('mtrigger').addTip('Tooltip disappears when you either click the trigger element or mouseout the tooltip', 'Title', {
+        fixed: true,
+        stem: true,
+        tipJoint: [ 'left', 'middle' ],
+        target: true,
+        hideTrigger: ['tip', 'trigger'],
+        hideDelay: 0.2,
+        hideOn: [ 'mouseout', 'click' ]
+    });
+    </script>
+
+
 	<br />
 	<br />
 
