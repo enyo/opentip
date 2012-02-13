@@ -707,6 +707,9 @@ var TipClass = Class.create({
     // Even though it is not yet visible, I already attach the observers, so the tooltip won't show if a hideEvent is triggered.
     this.setupObserversForVisibleTip();
 
+	// If content is from ajax, get it loading before waiting for any delays
+    if (this.options.ajax && !this.loaded) {this.loadAjax();}
+
     // So the tooltip is positioned as soon as it shows.
     this.followMousePosition();
     this.position(evt);
@@ -745,7 +748,8 @@ var TipClass = Class.create({
     if (!this.tooltipElement) this.buildElements();
     this.updateElementContent();
 
-    if (this.options.ajax && !this.loaded) {this.loadAjax();}
+	// Moved to show(), so it happens BEFORE waiting for delays
+    //if (this.options.ajax && !this.loaded) {this.loadAjax();}
 
     this.searchAndActivateHideButtons();
 
