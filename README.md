@@ -1,4 +1,4 @@
-# Opentip Version 1.4.2
+# Opentip Version 1.4.3-dev
 
 The [opentip][opentip]-class is a free opensource Java-Script tooltip class based on the [prototype][prototype] framework.
 
@@ -12,6 +12,11 @@ It supports:
 - CSS3 Animations if available. (If not, it uses scriptaculous if available).
 
 As of Version 1.2.6 Opentip does no longer depend on scriptaculous.
+
+
+The latest stable version is always in the **master** branch (which always points at the latest version tag).
+
+The latest development version is in the **develop** branch. Use only if you want to contribute or test features.
 
 ## Usage
 
@@ -60,11 +65,13 @@ Opentip is written by Matias Meno.<br>
 All graphics by Tjandra Mayerhold.
 
 ### Contributors
-Thanks to the following people for providing bug reports, feature requests and sometimes fixes:
+
+Thanks to the following people for providing bug reports, feature requests and fixes:
 
 - Torsten Saam
 - Aaron Peckham
 - Oguri
+- MaxKirillov
 
 If I forgot somebody, please just tell me.
 
