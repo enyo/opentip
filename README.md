@@ -1,4 +1,4 @@
-# Opentip Version 1.4.3
+# Opentip Version 1.4.4
 
 The [opentip][opentip]-class is a free opensource Java-Script tooltip class based on the [prototype][prototype] framework.
 
@@ -74,6 +74,10 @@ Thanks to the following people for providing bug reports, feature requests and f
 - MaxKirillov
 
 If I forgot somebody, please just tell me.
+
+### Related projects
+
+You might also be interested in my [formwatcher](http://www.formwatcher.org/).
 
 ## License
 Copyright (c) 2012 Matias Meno<br>

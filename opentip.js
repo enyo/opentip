@@ -44,7 +44,7 @@
  */
 var Opentip = {
 
-  Version: '1.4.3',
+  Version: '1.4.4',
   REQUIRED_PROTOTYPE_VERSION: '1.6.0',
   REQUIRED_SCRIPTACULOUS_VERSION: '1.8.0',
   STICKS_OUT_TOP: 1,
@@ -265,7 +265,7 @@ Event.observe(window, Opentip.IEVersion() ? 'load' : 'dom:loaded', function() {
 
     htmlOptionNames.each(function(optionName) {
       var optionValue;
-      if (optionValue = element.readAttribute('ot-' + optionName)) {
+      if (optionValue = element.readAttribute('data-ot-' + optionName)) {
         try {
           // See if it's a JSON string.
           optionValue = optionValue.gsub("'", '"').evalJSON();
