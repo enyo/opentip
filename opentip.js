@@ -249,11 +249,11 @@ Event.observe(window, Opentip.IEVersion() ? 'load' : 'dom:loaded', function() {
 
   // Go through all elements, and look for elements that have inline element
   // opentip definitions.
-  $$('[ot]').each(function(element) {
+  $$('[data-ot]').each(function(element) {
     var options = {};
     element = $(element);
 
-    var content = element.readAttribute('ot');
+    var content = element.readAttribute('data-ot');
 
     if (content === '' || content === 'true' || content === 'yes') {
       content = element.readAttribute('title');
