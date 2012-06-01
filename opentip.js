@@ -44,7 +44,7 @@
  */
 var Opentip = {
 
-  Version: '1.4.4-dev',
+  Version: '1.4.4',
   REQUIRED_PROTOTYPE_VERSION: '1.6.0',
   REQUIRED_SCRIPTACULOUS_VERSION: '1.8.0',
   STICKS_OUT_TOP: 1,
