@@ -265,7 +265,7 @@ Event.observe(window, Opentip.IEVersion() ? 'load' : 'dom:loaded', function() {
 
     htmlOptionNames.each(function(optionName) {
       var optionValue;
-      if (optionValue = element.readAttribute('ot-' + optionName)) {
+      if (optionValue = element.readAttribute('data-ot-' + optionName)) {
         try {
           // See if it's a JSON string.
           optionValue = optionValue.gsub("'", '"').evalJSON();

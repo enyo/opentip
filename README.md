@@ -75,6 +75,10 @@ Thanks to the following people for providing bug reports, feature requests and f
 
 If I forgot somebody, please just tell me.
 
+### Related projects
+
+You might also be interested in my [formwatcher](http://www.formwatcher.org/).
+
 ## License
 Copyright (c) 2012 Matias Meno<br>
 Licenced under the MIT Licence.
