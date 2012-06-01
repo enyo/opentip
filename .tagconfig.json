@@ -1,0 +1,16 @@
+{
+  "files": [
+    {
+      "name": "opentip.js",
+      "regexs": [
+        "Version: '###'"
+      ]
+    },
+    {
+      "name": "README.md",
+      "regexs": [
+        "Opentip Version ###"
+      ]
+    }
+  ]
+}
