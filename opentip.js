@@ -89,7 +89,21 @@ var Opentip = {
   postponeCreation: function(createFunction) {
     if (Opentip.documentIsLoaded || !Opentip.IEVersion()) createFunction();
     else {
-      Event.observe(window, 'load', createFunction); // Sorry IE users but... well: get another browser!
+      	// Can't observe the event normally, because it might already have fired (if user
+      	// setup the tip inside a separate window.onload event.
+    	// Additionally, on IE < 9, event observers can be fired in any order
+    	// (usually reverse), regardless of how they were registered. This leads to 
+    	// a tricky race condition if tips are created on load, as Opentip itself has
+    	// onload listeners. If Opentip's global listener fires after the other, this 
+    	// code block will be reached(since Opentip.documentIsLoaded is still false), but
+    	// you can't nest window load listeners in Prototype (inner one never fires), so
+    	// the createFunction() would never get called    	
+    	Opentip.loadCheckInterval = setTimeout(function(){
+    		if(document.readyState === "complete"){
+    			clearInterval(Opentip.loadCheckInterval);
+    			createFunction();
+    		}
+    	}, 25);
     }
   },
 
