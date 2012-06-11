@@ -20,11 +20,11 @@
       @import "css/general.css";
     </style>
 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/prototype/1.7.0.0/prototype.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/scriptaculous/1.8.2/scriptaculous.js"></script>
+    <script type="text/javascript" src="{{ url }}/js/prototype-1.7.js"></script>
+    <script type="text/javascript" src="{{ url }}/js/scriptaculous-1.9/scriptaculous.js?load=builder,effects"></script>
 
-    <script type="text/javascript" src="http://src.opentip.org/master/opentip.js?v=3"></script>
-    <script type="text/javascript" src="http://src.opentip.org/master/excanvas.js?v=3"></script>
+    <script type="text/javascript" src="{{ url }}/js/opentip.js"></script>
+    <script type="text/javascript" src="{{ url }}/js/excanvas.js"></script>
 
     <script type="text/javascript">
       Opentip.styles.codeSample = {
@@ -53,6 +53,8 @@
   </head>
   <body>
 
+  <a href="https://github.com/enyo/opentip"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+
   <!--[if lte IE 6]>
   <div style="border-bottom: 1px solid #c98F00;background: #FCE509; padding: 10px 15px; position: relative; color: #FF4900;">
     You are viewing this page in Internet Explorer 6. I recommend using a <a style="color: #ee3800;" href="http://www.mozilla.com/en-US/firefox/firefox.html">better browser</a>.
@@ -63,7 +65,7 @@
     <div id="header">
       <a href="./" class="logo"><span>Opentip</span></a>
     </div>
-    <div id="content">
+    <div id="main">
       {{ content }}
     </div>
     <div id="footer">

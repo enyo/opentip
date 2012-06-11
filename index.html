@@ -1,7 +1,8 @@
 ---
-layout: default
+layout: old
 title: The free tooltip
 ---
+    <div class="content">
       <h1>Opentip is a Javascript Class built on the Prototype framework. It provides easy to use tooltips. Yes - it's free, open source and comes with different styles!</h1>
       <div class="box">
         <h2>Demos</h2>
@@ -91,7 +92,7 @@ title: The free tooltip
         <div class="clear"></div>
       </div>
 
-      <?php include(dirname(__FILE__) . '/downloadButton.php'); ?>
+      {% include download-button.html %}
 
       <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.opentip.org%2F&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:750px; height:35px;"></iframe>
 
@@ -126,12 +127,16 @@ title: The free tooltip
     ajax: { url: 'address' },<br />
     etc...<br />
   });</code>
+        <br />
+        <br />
         <h2>jQuery</h2>
-        <p>I'm currently working on porting Opentip to jQuery. There is a lot to be done, but I guess it will be ready in 2012.</p>
+        <p>I'm currently working on porting Opentip to <a href="http://ender.no.de">ender</a>. There is a lot to be done, but I guess it will be ready in 2012.</p>
 
+        <br />
+        <br />
         <h2>Documentation</h2>
         <p>
-          For further information, please read the <a href="documentation.php">full documentation</a>!<br />
+          For further information, please read the <a href="documentation.html">full documentation</a>!<br />
           Have fun.
         </p>
 
@@ -149,47 +154,9 @@ title: The free tooltip
       </div>
 
 
-      <a id="contactLink" class="contact" name="contact" href="javascript:undefined">Contact me</a>
-      <script type="text/javascript">
-
-        var buildForm = function(tip) {
-          var name, email, message;
-
-          var submitForm = function() {
-            tip.hide();
-            var self = this;
-            new Ajax.Request('sendMessage.php', {
-                parameters: {
-                  name: name.getValue(),
-                  email: email.getValue(),
-                  message: message.getValue()
-                },
-                onSuccess: function(transport) {
-                  var content = transport.responseText;
-                  if (content) {
-                    alert(content);
-                  } else {
-                    self.reset();
-                    alert('Thanks.');
-                  }
-              }
-            });
-          }
 
 
-          return Opentip.element('form', { action: 'javascript:undefined' }, [
-            Opentip.element('label', 'Your name'),
-            name = Opentip.element('input', { type: 'text' }, ''),
-            Opentip.element('label', 'Your email'),
-            email = Opentip.element('input', { type: 'text' }, ''),
-            Opentip.element('label', 'Your message'),
-            message = Opentip.element('textarea', {}, ''),
-            Opentip.element('button', { type: 'submit' }, 'Send message')
-          ]).observe('submit', submitForm);
-        };
+      <p>If you have any questions, please use the <a href="https://github.com/enyo/opentip/issues">github issue tracker</a> or <a name="googleGroups" href="http://groups.google.com/group/opentip"><span>google groups</span></a></p>
+      
 
-        $('contactLink').addTip(buildForm, { style: 'glass', stem: true, showOn: 'click', target: true, tipJoint: [ 'center', 'top' ], hideTrigger: 'closeButton' });
-      </script>
-
-      <a id="googleGroupsLink" class="contact" target="_blank" name="googleGroups" href="http://groups.google.com/group/opentip"><span>Google groups</span></a>
-
+    </div>

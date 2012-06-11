@@ -61,7 +61,7 @@ ul {
 
 
 
-  #content, #documentation .content {
+  #main .content {
     background: #f4f4f4;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -69,10 +69,10 @@ ul {
     -webkit-box-shadow: 0 0 30px #062742;
   }
   
-  #content {
+  #main .content {
     padding: 50px;
   }
-    #content h1, #documentation h1 {
+    #main h1 {
       font-family: georgia, serif;
       font-size: 30px;
       line-height: 150%;
@@ -82,21 +82,21 @@ ul {
       margin: 0 0 50px 0;
     }
 
-    #content .box {
+    #main .box {
       background: white;
       -moz-border-radius: 5px;
       -webkit-border-radius: 5px;
       padding: 40px 45px;
       margin: 30px 0;
     }
-      #content .box h2 {
+      #main .box h2 {
         margin-bottom: 20px;
       }
       
-      #content .demoBox {
+      #main .demoBox {
         width: 800px;
       }
-      #content .demo {
+      #main .demo {
         float: left;
         -moz-border-radius:5px;
         background: #Edf4F7;
@@ -106,7 +106,7 @@ ul {
         min-height: 100px;
         margin-right: 10px;
       }
-        #content .demo .title {
+        #main .demo .title {
           font-family: georgia, serif;
           font-style: italic;
           font-weight: normal;
@@ -114,10 +114,10 @@ ul {
           margin-bottom: 10px;
           font-size: 16px;
         }
-        #content .demo .description {
+        #main .demo .description {
         
         }
-        #content .demo button {
+        #main .demo button {
           text-align: center;
           width: 210px;
           border: 1px solid #cccccc;
@@ -128,7 +128,7 @@ ul {
           margin-bottom: 5px;
           color: #333333;
         }
-        #content .demo input {
+        #main .demo input {
           border: 1px solid #cccccc;
           -moz-border-radius: 2px;
           -webkit-border-radius: 2px;
@@ -138,7 +138,7 @@ ul {
           color: #555555;
         }
 
-    #content a.contact {
+    #main a.contact {
       color: #0f5086;
       font-size: 20px;
       display: block;
@@ -148,12 +148,12 @@ ul {
       width: 200px;
     }
 
-    #content #googleGroupsLink {
+    #main #googleGroupsLink {
       background: url("../images/google_groups.gif") no-repeat top left;
       width: 141px;
       height: 30px;
     }
-    #content #googleGroupsLink span { display: none; }
+    #main #googleGroupsLink span { display: none; }
 
 
 
