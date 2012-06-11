@@ -832,26 +832,29 @@ var TipClass = Class.create({
 
     this.debug('Loading content from ' + this.options.ajax.url + '.');
 
-    new Ajax.Request(this.options.ajax.url,
-      Object.extend({
-       onComplete: function() {
-         this.container.removeClassName('ot-loading');
-         this.loaded = true;
-         this.loading = false;
-         this.updateElementContent();
-         this.searchAndActivateHideButtons();
-         this.activateFirstInput();
-         this.position();
-       }.bind(this),
-       onSuccess: function(transport) {
-         this.debug('Loading successfull.');
-         this.content = transport.responseText;
-       }.bind(this),
-       onFailure: function() {
-         this.debug('There was a problem downloading the file.');
-         this.options.escapeHtml = false;
-         this.content = '<a class="close">There was a problem downloading the content.</a>';
-       }.bind(this)}, this.options.ajax.options || {}));
+    var ajaxOptions = Object.extend({
+      onComplete: function() {
+        this.container.removeClassName('ot-loading');
+        this.loaded = true;
+        this.loading = false;
+        this.updateElementContent();
+        this.searchAndActivateHideButtons();
+        this.activateFirstInput();
+        this.position();
+      }.bind(this),
+      onSuccess: function(transport) {
+        this.debug('Loading successfull.');
+        this.content = transport.responseText;
+      }.bind(this),
+      onFailure: function() {
+        this.debug('There was a problem downloading the file.');
+        this.options.escapeHtml = false;
+        this.content = '<a class="close">There was a problem downloading the content.</a>';
+      }.bind(this),
+      method: 'get'
+    }, this.options.ajax.options || {})
+
+    new Ajax.Request(this.options.ajax.url, ajaxOptions);
   },
   afterShowEffect: function() {
     this.activateFirstInput();
