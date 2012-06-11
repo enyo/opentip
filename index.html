@@ -1,0 +1,195 @@
+---
+layout: default
+title: The free tooltip
+---
+      <h1>Opentip is a Javascript Class built on the Prototype framework. It provides easy to use tooltips. Yes - it's free, open source and comes with different styles!</h1>
+      <div class="box">
+        <h2>Demos</h2>
+
+        <div class="demoBox">
+          <div class="demo" id="stylesDemo">
+            <div class="title">Styles</div>
+            <div class="description">
+              We offer a view styles, and it's easy to create your own styles.
+            </div>
+          </div>
+          <script type="text/javascript">
+          // <![CDATA[
+            Tips.add('stylesDemo', 'That\'s the standard style.<br />It is simple, and fits with most websites.', 'Standard style', { style: 'standard', target: true, stem: true, tipJoint: [ 'left', 'middle' ] });
+            Tips.add('stylesDemo', 'That\'s the rounded style.<br />More... round.', 'Rounded style', { style: 'rounded', target: true, stem: true, tipJoint: [ 'left', 'bottom' ] });
+            Tips.add('stylesDemo', 'This is the slick style.<br />This one is polished and without color.', 'Slick style', { style: 'slick', target: true, stem: true, tipJoint: [ 'center', 'bottom' ] });
+            Tips.add('stylesDemo', 'This is the glass style.<br />The glass style takes more place but is... well, better looking.', 'Glass style', { style: 'glass', target: true, stem: true, tipJoint: [ 'center', 'top' ] });
+          // ]]>
+          </script>
+
+          <div class="demo" id="effectsDemo">
+            <div class="title">Effects</div>
+            <div class="description">
+              You can easily use any effect to make a tooltip appear or disappear. Opentip uses CSS3 or Scriptaculous to animate.
+            </div>
+          </div>
+          <script type="text/javascript">
+            if (Opentip.useCss3Transitions) {
+              Tips.add('effectsDemo', 'This one fades in.',   { showEffect: 'appear',    showEffectDuration: 1, hideEffectDuration: 1, delay: 0,   target: true, stem: true, tipJoint: [ 'center', 'bottom' ], targetJoint: [ 'center', 'top' ] });
+              Tips.add('effectsDemo', 'This one grows.',       { showEffect: 'grow', hideEffect: 'shrink',     showEffectDuration: 1, hideEffectDuration: 1, delay: 0.2, target: true, stem: true, tipJoint: [ 'left', 'middle' ], targetJoint: [ 'right',  'middle' ] });
+              Tips.add('effectsDemo', 'This one rotates.', { showEffect: 'rotate', hideEffect: 'rotate', showEffectDuration: 1, hideEffectDuration: 1, delay: 0.8, target: true, stem: true, tipJoint: [ 'center', 'top' ],    targetJoint: [ 'center', 'bottom' ] });
+              Tips.add('effectsDemo', 'This one kinda shrinks and stuff.', { showEffect: 'condense', hideEffect: 'puff', showEffectDuration: 1, hideEffectDuration: 1, delay: 1.2, target: true, stem: true, tipJoint: [ 'right', 'middle' ], targetJoint: [ 'left', 'middle' ] });
+            }
+            else {
+              Tips.add('effectsDemo', 'This one fades in.',   { showEffect: 'appear',    showEffectDuration: 1, delay: 0,   target: true, stem: true, tipJoint: [ 'center', 'bottom' ], targetJoint: [ 'center', 'top' ] });
+              Tips.add('effectsDemo', 'This one grows.',       { showEffect: 'grow',      showEffectDuration: 1, delay: 0.8, target: true, stem: true, tipJoint: [ 'left', 'middle' ], targetJoint: [ 'right',  'middle' ] });
+              Tips.add('effectsDemo', 'This one blinds down.', { showEffect: 'blindDown', showEffectDuration: 1, delay: 1.6, target: true, stem: true, tipJoint: [ 'left', 'top' ],    targetJoint: [ 'center', 'bottom' ] });
+            }
+          </script>
+
+          <div class="demo">
+            <div class="title">Events</div>
+            <div class="description">
+              <button id="demoTarget">Click me to make<br /> a tooltip appear</button><br />
+              <input id="eventDemo" type="text" value="Edit me..." />
+            </div>
+          </div>
+          <script type="text/javascript">
+          // <![CDATA[
+            $('demoTarget').addTip('Focus this input field to make me disappear.<br />You don\'t have to <em>click</em> into it: <strong>tabbing</strong> in the input field also works.',
+              { showOn: 'click', hideOn: 'focus', hideTrigger: 'eventDemo', target: 'eventDemo', tipJoint: [ 'center', 'top' ], stem: true });
+            $('eventDemo').addTip('This input field has changed!',
+              { showOn: 'change', hideTrigger: 'closeButton', target: 'eventDemo', tipJoint: [ 'right', 'middle' ], stem: true });
+
+            var demoTextTarget = 'This one has the <em>button</em> as target.<br />The <strong>target joint</strong> is the bottom left corner, and the <strong>tooltip joint</strong> is the top right corner';
+          // ]]>
+          </script>
+
+          <div class="demo" onmouseover="javascript:Tips.add(this, event, demoTextTarget, { style: 'slick', target: 'demoTarget', tipJoint: [ 'right', 'top' ], targetJoint: ['left', 'bottom'], stem: true });">
+            <div class="title">Joints &amp; targets</div>
+            <div class="description">
+              With joints and targets it's extremely easy to position your tooltips exactly where you want them.
+            </div>
+          </div>
+
+          <div class="demo" id="stemDemo">
+            <div class="title">Stems</div>
+            <div class="description">
+              If you activate a stem, it gets automatically positioned at the tooltip joint, but you can overrule the position.
+            </div>
+          </div>
+          <script type="text/javascript">
+            Tips.add('stemDemo', 'Stems',  { stem: [ 'right', 'bottom' ], stemSize: 20, tipJoint: [ 'center', 'bottom' ] });
+            Tips.add('stemDemo', 'are',   { stem: [ 'left', 'middle' ], stemSize: 12, tipJoint: [ 'left', 'middle' ] });
+            Tips.add('stemDemo', 'so',   { stem: [ 'center', 'bottom' ], stemSize: 8, tipJoint: [ 'right', 'middle' ] });
+            Tips.add('stemDemo', 'cool', { stem: [ 'right', 'top' ], stemSize: 4, tipJoint: [ 'right', 'top' ] });
+          </script>
+
+          <div class="demo" onmouseover="javascript:Tips.add(this, event, { ajax: { url: 'ajaxDemo.php' }});">
+            <div class="title">AJAX</div>
+            <div class="description">
+              By adding one option, your opentip automatically downloads content with Ajax.
+            </div>
+          </div>
+        </div>
+
+        <div class="clear"></div>
+      </div>
+
+      <?php include(dirname(__FILE__) . '/downloadButton.php'); ?>
+
+      <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.opentip.org%2F&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:750px; height:35px;"></iframe>
+
+
+
+      <div class="box">
+        <h2>Implementation</h2>
+        <p>
+          Creating a tooltip is really easy.<br />
+          The easiest way is to define the tooltip via element tags:
+        </p>
+        <code>&lt;div data-ot="<span class="string">Shown after 2 seconds.</span>" data-ot-delay="2.0"&gt;&lt;/div&gt;</code>
+        <p>
+          All options to define your tooltip can be passed like this. Just prefix them with data-ot- and use dashes (eg.: data-ot-show-effect="blindDown").
+        </p>
+        <p>
+          Or you can define it in the element event (be sure to pass the <strong>event</strong>):
+        </p>
+        <code>&lt;div onmouseover="javascript:Tips.add(this, event, <span class="string">'content'</span>, <span class="string">'optional title'</span>);"&gt;&lt;/div&gt;</code>
+        <p>
+          ...or create it externally. Following approaches are identical:
+        </p>
+        <code>Tips.add(<span class="string">'elementId'</span>, <span class="string">'content'</span>, <span class="string">'optional title'</span>);<br />
+  $(<span class="string">'elementId'</span>).addTip(<span class="string">'content'</span>, <span class="string">'optional title'</span>);</code>
+        <p>
+          To create a more complex tooltip, you pass an option object to the tooltip:
+        </p>
+        <code>$('elementId').addTip('content', {<br />
+    stem: true,<br />
+    tipJoint: [ 'bottom', 'top' ],<br />
+    showOn: 'click',<br />
+    ajax: { url: 'address' },<br />
+    etc...<br />
+  });</code>
+        <h2>jQuery</h2>
+        <p>I'm currently working on porting Opentip to jQuery. There is a lot to be done, but I guess it will be ready in 2012.</p>
+
+        <h2>Documentation</h2>
+        <p>
+          For further information, please read the <a href="documentation.php">full documentation</a>!<br />
+          Have fun.
+        </p>
+
+
+        <br />
+        <br />
+        <br />
+        <h2>Other</h2>
+        <p>
+          I'm currently rewriting Opentip to use <a href="http://ender.no.de/">Ender</a>. I'll be maintaining the prototype version as well but new features will go to the ender version.
+        </p>
+        <p>
+          You might also be interested in another project of mine: <a href="http://www.formwatcher.org/">www.formwatcher.org</a>.
+        </p>
+      </div>
+
+
+      <a id="contactLink" class="contact" name="contact" href="javascript:undefined">Contact me</a>
+      <script type="text/javascript">
+
+        var buildForm = function(tip) {
+          var name, email, message;
+
+          var submitForm = function() {
+            tip.hide();
+            var self = this;
+            new Ajax.Request('sendMessage.php', {
+                parameters: {
+                  name: name.getValue(),
+                  email: email.getValue(),
+                  message: message.getValue()
+                },
+                onSuccess: function(transport) {
+                  var content = transport.responseText;
+                  if (content) {
+                    alert(content);
+                  } else {
+                    self.reset();
+                    alert('Thanks.');
+                  }
+              }
+            });
+          }
+
+
+          return Opentip.element('form', { action: 'javascript:undefined' }, [
+            Opentip.element('label', 'Your name'),
+            name = Opentip.element('input', { type: 'text' }, ''),
+            Opentip.element('label', 'Your email'),
+            email = Opentip.element('input', { type: 'text' }, ''),
+            Opentip.element('label', 'Your message'),
+            message = Opentip.element('textarea', {}, ''),
+            Opentip.element('button', { type: 'submit' }, 'Send message')
+          ]).observe('submit', submitForm);
+        };
+
+        $('contactLink').addTip(buildForm, { style: 'glass', stem: true, showOn: 'click', target: true, tipJoint: [ 'center', 'top' ], hideTrigger: 'closeButton' });
+      </script>
+
+      <a id="googleGroupsLink" class="contact" target="_blank" name="googleGroups" href="http://groups.google.com/group/opentip"><span>Google groups</span></a>
+
