@@ -20,7 +20,14 @@
       @import "css/general.css";
     </style>
 
-    <script type="text/javascript" src="js/min.js"></script>
+    {% if site.safe %}
+      <script type="text/javascript" src="js/min.js"></script>
+    {% else %}
+      <script type="text/javascript" src="js/prototype-1.7.js"></script>
+      <script type="text/javascript" src="js/scriptaculous-1.9/scriptaculous.js?load=builder,effects"></script>
+      <script type="text/javascript" src="js/excanvas.js"></script>
+      <script type="text/javascript" src="js/opentip.js"></script>
+    {% endif %}
 
     <script type="text/javascript">
       Opentip.styles.codeSample = {
