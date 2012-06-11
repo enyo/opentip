@@ -852,7 +852,7 @@ var TipClass = Class.create({
         this.content = '<a class="close">There was a problem downloading the content.</a>';
       }.bind(this),
       method: 'get'
-    }, this.options.ajax.options || {})
+    }, this.options.ajax.options || {});
 
     new Ajax.Request(this.options.ajax.url, ajaxOptions);
   },
