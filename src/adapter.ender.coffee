@@ -2,36 +2,33 @@
 $ = ender
 
 
+# Augment ender
+$.ender {
+  opentip: (content, title, options) -> new Opentip this, content, title, options
+}, true
+
+
 class Adapter
 
   # Simply using $.domReady
-  domReady: $.domReady.apply $, arguments
+  domReady: (callback) -> $.domReady callback
 
 
   # Using bonzo to create html
   create: (html) -> $ html
 
-  # Mimics scriptaculous Builder.node behaviour
-  # element: (tagName, attributes, children) ->
-  #   if Object.isArray(attributes) or Object.isString(attributes) or Object.isElement(attributes)
-  #     children = attributes
-  #     attributes = null
-  #   element = new Element(tagName, attributes or {})
-    
-  #   # This is a prototype 1.6 bug, that doesn't apply the className to IE8 elements.
-  #   # Thanks to Alexander Shakhnovsky for finding the bug, and pinpointing the problem.
-  #   if attributes and attributes["className"]
-  #     attributes["className"].split(" ").each (class_name) ->
-  #       element.addClassName class_name
+  # Wraps the element in ender
+  wrap: (element) ->
+    element = $ element
+    throw new Error "Multiple elements provided." if element.length > 1
+    element
 
-  #   if children
-  #     if Object.isArray(children)
-  #       children.each (child) ->
-  #         element.insert bottom: child
-
-  #     else
-  #       element.insert bottom: children
-  #   element
+  # Creates a shallow copy of the object
+  clone: (object) ->
+    newObject = { }
+    for own key, val of object
+      newObject[key] = val
+    newObject
 
 
 

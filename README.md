@@ -29,14 +29,16 @@ Or the preferred external method:
 For the complete documentation please visit [www.opentip.org][opentip].
 
 
-## Changelog
+## Migrating from Opentip 1.x to 2.x
 
-Here's a list of major changes, so you know what to expect when you upgrade (Minor bugfixes are not listed here!).
+Those are the major changes you should look out for when migrating from 1.x to 2.x:
 
-### 1.3
-
-- Stems are no longer images, but drawn with canvas. (I'm using [excanvas] for IE < 9). **Remember to include the excanvas.js file.**
-
+- There's no `Tip` or `Tips` object anymore. Everything is done through
+- `Opentip` The recommend way to create opentips now is to call
+  `new Opentip(element, content, title, options)`, or with the framework of your choice
+  (eg, ender: $("#my-div").opentip(content, title options))
+- The isntantiation of new tips inside an event (eg: `onclick`, `onmouseover`) is no
+  longer supported! You will create new opentips everytime the event is fired.
 
 
 
