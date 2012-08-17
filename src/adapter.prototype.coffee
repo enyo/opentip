@@ -5,7 +5,7 @@ $ = ender
 class Adapter
 
   # Simply using $.domReady
-  domReady: (callback) -> Event.observe window, "dom:loaded"), callback
+  domReady: (callback) -> Event.observe window, "dom:loaded", callback
 
   # Using bonzo to create html
   create: (html) -> $ html

@@ -34,4 +34,12 @@ describe "Opentip", ->
 
 
   describe "setContent()", ->
-    it "should update the content if tooltip currently visible"
+    it "should update the content if tooltip currently visible", ->
+      opentip = new Opentip "div", "content"
+      stub = sinon.stub opentip, "updateElementContent"
+      opentip.visible = no
+      opentip.setContent "TEST"
+      opentip.visible = yes
+      opentip.setContent "TEST2"
+      expect(stub.callCount).to.equal 1
+

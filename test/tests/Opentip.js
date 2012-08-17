@@ -44,6 +44,15 @@ describe("Opentip", function() {
     });
   });
   return describe("setContent()", function() {
-    return it("should update the content if tooltip currently visible");
+    return it("should update the content if tooltip currently visible", function() {
+      var opentip, stub;
+      opentip = new Opentip("div", "content");
+      stub = sinon.stub(opentip, "updateElementContent");
+      opentip.visible = false;
+      opentip.setContent("TEST");
+      opentip.visible = true;
+      opentip.setContent("TEST2");
+      return expect(stub.callCount).to.equal(1);
+    });
   });
 });

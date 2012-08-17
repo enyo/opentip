@@ -95,6 +95,14 @@ class Opentip
     @options.title = title if title?
     @setContent content if content?
 
+    # If the url of an Ajax request is not set, get it from the link it's attached to.
+    if @options.ajax and not options.ajax.url?
+      if @adapter.tagName @triggerElement == "A"
+        @options.ajax = { } if typeof @options.ajax != "object"
+        @options.ajax.url = @adapter.attr @triggerElement, "href"
+      else 
+        options.ajax = off
+
 
 
   # This actually builds the tootlip and sets up observers
@@ -104,6 +112,8 @@ class Opentip
   # Sets the content and updates the HTML element if currently visible
   setContent: (@content) -> @updateElementContent() if @visible
 
+
+  updateElementContent: ->
 
 
 
@@ -236,14 +246,14 @@ Opentip.styles =
     # - `null` (targetJoint is the opposite of tipJoint)
     targetJoint: null 
 
-    # AJAX options.
+    # AJAX options object consisting of:
     #
-    # - **url**
-    # - **method**
+    #   - **url**
+    #   - **method**
     #
     # If opentip is attached to an `<a />` element, and no url is provided, it will use
     # The elements `href` attribute.
-    ajax: false
+    ajax: off
 
     # You can group opentips together. So when a tooltip shows, it looks if there are others in the same group, and hides them.
     group: null
