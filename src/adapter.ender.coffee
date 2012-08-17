@@ -17,11 +17,23 @@ class Adapter
   # Using bonzo to create html
   create: (html) -> $ html
 
+
+  # Element handling
+  # ----------------
+
   # Wraps the element in ender
   wrap: (element) ->
     element = $ element
     throw new Error "Multiple elements provided." if element.length > 1
     element
+
+  # Returns the tag name of the element
+  tagName: (element) -> element.get(0).tagName
+
+  # Returns the given attribute of element
+  attr: (element, attr) -> element.attr attr
+
+
 
   # Creates a shallow copy of the object
   clone: (object) ->

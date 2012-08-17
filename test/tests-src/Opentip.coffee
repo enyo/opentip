@@ -14,6 +14,8 @@ describe "Opentip", ->
       expect(console.debug.called).to.be.true
 
   describe "constructor()", ->
+    before ->
+      Opentip.adapter = Opentip.adapters.native
     describe "arguments", ->
       it "should be optional", ->
         opentip = new Opentip "div", "content"
@@ -32,6 +34,8 @@ describe "Opentip", ->
         expect(opentip.content).to.equal ""
         expect(opentip.options.title).to.equal undefined
 
+      it "should use the href attribute if ajax and an A element", ->
+        opentip = new Opentip ""
 
   describe "setContent()", ->
     it "should update the content if tooltip currently visible", ->

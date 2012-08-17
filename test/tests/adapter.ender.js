@@ -3,9 +3,9 @@ var $;
 
 $ = ender;
 
-describe("Native adapter", function() {
+describe("Ender adapter", function() {
   var adapter;
-  adapter = Opentip.adapters["native"];
+  adapter = Opentip.adapters.ender;
   return describe("DOM", function() {
     describe("create()", function() {
       return it("should properly create DOM elements from string", function() {

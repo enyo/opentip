@@ -1,8 +1,8 @@
 
 $ = ender
 
-describe "Native adapter", ->
-  adapter = Opentip.adapters.native
+describe "Ender adapter", ->
+  adapter = Opentip.adapters.ender
 
   describe "DOM", ->
     describe "create()", ->

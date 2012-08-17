@@ -20,8 +20,11 @@ describe("Opentip", function() {
     });
   });
   describe("constructor()", function() {
+    before(function() {
+      return Opentip.adapter = Opentip.adapters["native"];
+    });
     return describe("arguments", function() {
-      return it("should be optional", function() {
+      it("should be optional", function() {
         var opentip;
         opentip = new Opentip("div", "content");
         expect(opentip.content).to.equal("content");
@@ -40,6 +43,10 @@ describe("Opentip", function() {
         expect(opentip.options.hideOn).to.equal("click");
         expect(opentip.content).to.equal("");
         return expect(opentip.options.title).to.equal(void 0);
+      });
+      return it("should use the href attribute if ajax and an A element", function() {
+        var opentip;
+        return opentip = new Opentip("");
       });
     });
   });
