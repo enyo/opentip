@@ -21,25 +21,46 @@ describe("Generic adapter", function() {
           return adapter.domReady(done);
         });
       });
-      return describe("DOM", function() {
-        return describe("clone()", function() {
-          return it("should create a shallow copy", function() {
-            var obj, obj2;
-            obj = {
-              a: 1,
-              b: 2,
-              c: {
-                d: 3
-              }
-            };
-            obj2 = adapter.clone(obj);
-            expect(obj).to.not.equal(obj2);
-            expect(obj).to.eql(obj2);
-            obj2.a = 10;
-            expect(obj).to.not.eql(obj2);
-            expect(obj.a).to.equal(1);
-            obj2.c.d = 30;
-            return expect(obj.c.d).to.equal(30);
+      describe("clone()", function() {
+        return it("should create a shallow copy", function() {
+          var obj, obj2;
+          obj = {
+            a: 1,
+            b: 2,
+            c: {
+              d: 3
+            }
+          };
+          obj2 = adapter.clone(obj);
+          expect(obj).to.not.equal(obj2);
+          expect(obj).to.eql(obj2);
+          obj2.a = 10;
+          expect(obj).to.not.eql(obj2);
+          expect(obj.a).to.equal(1);
+          obj2.c.d = 30;
+          return expect(obj.c.d).to.equal(30);
+        });
+      });
+      return describe("extend()", function() {
+        return it("should copy all attributes from sources to target", function() {
+          var source1, source2, target;
+          target = {
+            a: 1,
+            b: 2,
+            c: 3
+          };
+          source1 = {
+            a: 10,
+            b: 20
+          };
+          source2 = {
+            a: 100
+          };
+          adapter.extend(target, source1, source2);
+          return expect(target).to.eql({
+            a: 100,
+            b: 20,
+            c: 3
           });
         });
       });

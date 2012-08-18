@@ -56,6 +56,18 @@ describe "Opentip", ->
 
       Opentip.adapter.observe.restore()
 
+    it "should take all options from selected style", ->
+      element = $("""<div></div>""").get(0)
+      opentip = new Opentip element, style: "glass", showOn: "click"
+
+      # Should have been set by the options
+      expect(opentip.options.showOn).to.equal "click"
+      # Should have been set by the glass theme
+      expect(opentip.options.className).to.equal "glass"
+      # Should have been set by the standard theme
+      expect(opentip.options.stemSize).to.equal 8
+
+
 
   describe "setContent()", ->
     it "should update the content if tooltip currently visible", ->

@@ -63,6 +63,12 @@ class Adapter
       newObject[key] = val
     newObject
 
+  # Copies all properties from sources to target
+  extend: (target, sources...) ->
+    for source in sources
+      for own key, val of source
+        target[key] = val
+    target
 
 # Create the adapter
 adapter = new Adapter

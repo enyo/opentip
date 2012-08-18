@@ -63,7 +63,7 @@ describe("Opentip", function() {
       });
       return expect(opentip.options.ajax).to.not.be.ok();
     });
-    return it("should disable a link if the event is onClick", function() {
+    it("should disable a link if the event is onClick", function() {
       var element, opentip;
       sinon.spy(Opentip.adapter, "observe");
       element = $("<a href=\"http://testlink\">link</a>").get(0);
@@ -74,6 +74,17 @@ describe("Opentip", function() {
       expect(Opentip.adapter.observe.getCall(0).args[1]).to.equal("click");
       expect(Opentip.adapter.observe.getCall(0).args[3]).to.be.ok();
       return Opentip.adapter.observe.restore();
+    });
+    return it("should take all options from selected style", function() {
+      var element, opentip;
+      element = $("<div></div>").get(0);
+      opentip = new Opentip(element, {
+        style: "glass",
+        showOn: "click"
+      });
+      expect(opentip.options.showOn).to.equal("click");
+      expect(opentip.options.className).to.equal("glass");
+      return expect(opentip.options.stemSize).to.equal(8);
     });
   });
   return describe("setContent()", function() {

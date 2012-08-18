@@ -83,6 +83,9 @@ class Opentip
 
     @content = ""
 
+    # Make sure to not overwrite the users options object
+    options = @adapter.clone options
+
     if typeof content == "object"
       options = content
       content = title = undefined
@@ -90,24 +93,37 @@ class Opentip
       options = title
       title = undefined
 
-    @options = @adapter.clone options
 
-    @options.title = title if title?
+    options.title = title if title?
     @setContent content if content?
 
     # If the url of an Ajax request is not set, get it from the link it's attached to.
-    if @options.ajax and not options.ajax.url?
+    if options.ajax and not options.ajax.url?
       if @adapter.tagName(@triggerElement) == "A"
-        @options.ajax = { } if typeof @options.ajax != "object"
-        @options.ajax.url = @adapter.attr @triggerElement, "href"
+        options.ajax = { } if typeof options.ajax != "object"
+        options.ajax.url = @adapter.attr @triggerElement, "href"
       else 
-        @options.ajax = off
+        options.ajax = off
 
     # If the event is 'click', no point in following a link
-    if @options.showOn == "click" && @adapter.tagName(@triggerElement) == "A"
+    if options.showOn == "click" && @adapter.tagName(@triggerElement) == "A"
       @adapter.observe @triggerElement, "click", (->), "stop propagation"
 
 
+    options.style = Opentip.defaultStyle unless options.style
+
+    # All options are based on the standard style
+    styleOptions = @adapter.extend { }, Opentip.styles.standard
+
+    optionSources = [ ]
+    # All options are based on the standard style
+    optionSources.push Opentip.styles.standard
+    optionSources.push Opentip.styles[options.style] unless options.style == "standard"
+    optionSources.push options
+
+    options = @adapter.extend { }, optionSources...
+
+    @options = options
 
   # This actually builds the tootlip and sets up observers
   build: ->
@@ -183,7 +199,7 @@ Opentip.styles =
     # - `ELEMENT` : element or element id
 
     # Will be set if provided in constructor
-    title: null
+    title: undefined
 
     # The class name to be added to the HTML element
     className: "standard"
