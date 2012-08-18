@@ -11,31 +11,18 @@ describe "Native adapter", ->
         expect(elements).to.be.an "object"
         expect(elements.length).to.equal 1
         expect(elements[0].className).to.equal "test"
+      it "the created elements should be wrapped", ->
+        elements = adapter.create """<div class="test"><span>HI</span></div>"""
+        wrapped = adapter.wrap elements
+        expect(elements).to.equal wrapped
 
     describe "wrap()", ->
-      it "should just return the element", ->
+      it "should wrap the element in an array", ->
         element = document.createElement "div"
         wrapped = adapter.wrap element
-        expect(element).to.equal wrapped
-
-    describe "tagName()", ->
-      it "should return the tagName of passed element", ->
-        element = document.createElement "div"
-        expect(adapter.tagName element).to.equal "DIV"
-
-    describe "attr()", ->
-      it "should return the attribute of passed element", ->
-        element = document.createElement "a"
-        element.setAttribute "class", "test-class"
-        element.setAttribute "href", "http://link"
-        expect(adapter.attr element, "class").to.equal "test-class"
-        expect(adapter.attr element, "href").to.equal "http://link"
+        expect(element).to.equal wrapped[0]
 
     describe "observe()", ->
-      it "should attach an event listener", (done) ->
-        element = document.createElement "a"
-        adapter.observe element, "click", -> done()
-        element.click()
       it "should handle stopPropagation"
 
 

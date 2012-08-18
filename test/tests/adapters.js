@@ -41,7 +41,7 @@ describe("Generic adapter", function() {
           return expect(obj.c.d).to.equal(30);
         });
       });
-      return describe("extend()", function() {
+      describe("extend()", function() {
         return it("should copy all attributes from sources to target", function() {
           var source1, source2, target;
           target = {
@@ -61,6 +61,91 @@ describe("Generic adapter", function() {
             a: 100,
             b: 20,
             c: 3
+          });
+        });
+      });
+      return describe("DOM", function() {
+        describe("tagName()", function() {
+          return it("should return the tagName of passed element", function() {
+            var element;
+            element = document.createElement("div");
+            return expect(adapter.tagName(element)).to.equal("DIV");
+          });
+        });
+        describe("attr()", function() {
+          it("should return the attribute of passed element", function() {
+            var element;
+            element = document.createElement("a");
+            element.setAttribute("class", "test-class");
+            element.setAttribute("href", "http://link");
+            expect(adapter.attr(element, "class")).to.equal("test-class");
+            return expect(adapter.attr(element, "href")).to.equal("http://link");
+          });
+          return it("should set the attribute of passed element", function() {
+            var element;
+            element = document.createElement("a");
+            adapter.attr(element, "class", "test-class");
+            adapter.attr(element, "href", "http://link");
+            expect(adapter.attr(element, "class")).to.equal("test-class");
+            return expect(adapter.attr(element, "href")).to.equal("http://link");
+          });
+        });
+        describe("addClass()", function() {
+          return it("should properly add the class", function() {
+            var element, val;
+            element = document.createElement("div");
+            adapter.addClass(element, "test");
+            adapter.addClass(element, "test2");
+            return expect((function() {
+              var _j, _len1, _ref, _results1;
+              _ref = element.classList;
+              _results1 = [];
+              for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+                val = _ref[_j];
+                _results1.push(val);
+              }
+              return _results1;
+            })()).to.eql(["test", "test2"]);
+          });
+        });
+        describe("removeClass()", function() {
+          return it("should properly add the class", function() {
+            var element, val;
+            element = document.createElement("div");
+            adapter.addClass(element, "test");
+            adapter.addClass(element, "test2");
+            adapter.removeClass(element, "test2");
+            expect((function() {
+              var _j, _len1, _ref, _results1;
+              _ref = element.classList;
+              _results1 = [];
+              for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+                val = _ref[_j];
+                _results1.push(val);
+              }
+              return _results1;
+            })()).to.eql(["test"]);
+            adapter.removeClass(element, "test");
+            return expect((function() {
+              var _j, _len1, _ref, _results1;
+              _ref = element.classList;
+              _results1 = [];
+              for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+                val = _ref[_j];
+                _results1.push(val);
+              }
+              return _results1;
+            })()).to.eql([]);
+          });
+        });
+        return describe("observe()", function() {
+          return it("should attach an event listener", function(done) {
+            var element;
+            element = document.createElement("a");
+            adapter.observe(element, "click", function() {
+              return done();
+            });
+            return element.click();
           });
         });
       });

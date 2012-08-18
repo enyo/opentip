@@ -2,6 +2,10 @@
 $ = ender
 
 describe "Opentip", ->
+  adapter = Opentip.adapters.native
+  beforeEach ->
+    Opentip.adapter = adapter
+
   describe "debug()", ->
     consoleDebug = console.debug
     beforeEach -> sinon.stub console, "debug"
@@ -17,20 +21,23 @@ describe "Opentip", ->
 
   describe "constructor()", ->
     before ->
-      Opentip.adapter = Opentip.adapters.native
+      sinon.stub Opentip::, "init"
+    after ->
+      Opentip::init.restore()
     it "arguments should be optional", ->
-      opentip = new Opentip "div", "content"
+      element = adapter.create "<div></div>"
+      opentip = new Opentip element, "content"
       expect(opentip.content).to.equal "content"
-      expect(opentip.triggerElement).to.equal "div"
+      expect(opentip.triggerElement).to.equal element
 
-      opentip = new Opentip "div", "content", "title", { hideOn: "click" }
+      opentip = new Opentip element, "content", "title", { hideOn: "click" }
       expect(opentip.content).to.equal "content"
-      expect(opentip.triggerElement).to.equal "div"
+      expect(opentip.triggerElement).to.equal element
       expect(opentip.options.hideOn).to.equal "click"
       expect(opentip.options.title).to.equal "title"
 
-      opentip = new Opentip "div", { hideOn: "click" }
-      expect(opentip.triggerElement).to.equal "div"
+      opentip = new Opentip element, { hideOn: "click" }
+      expect(opentip.triggerElement).to.equal element
       expect(opentip.options.hideOn).to.equal "click"
       expect(opentip.content).to.equal ""
       expect(opentip.options.title).to.equal undefined
@@ -46,15 +53,15 @@ describe "Opentip", ->
       expect(opentip.options.ajax).to.not.be.ok()
 
     it "should disable a link if the event is onClick", ->
-      sinon.spy Opentip.adapter, "observe"
+      sinon.spy adapter, "observe"
       element = $("""<a href="http://testlink">link</a>""").get(0)
       opentip = new Opentip element, showOn: "click"
 
-      expect(Opentip.adapter.observe.calledOnce).to.be.ok()
-      expect(Opentip.adapter.observe.getCall(0).args[1]).to.equal "click"
-      expect(Opentip.adapter.observe.getCall(0).args[3]).to.be.ok()
+      expect(adapter.observe.calledOnce).to.be.ok()
+      expect(adapter.observe.getCall(0).args[1]).to.equal "click"
+      expect(adapter.observe.getCall(0).args[3]).to.be.ok()
 
-      Opentip.adapter.observe.restore()
+      adapter.observe.restore()
 
     it "should take all options from selected style", ->
       element = document.createElement "div"
@@ -83,18 +90,18 @@ describe "Opentip", ->
       expect(opentip.options.stem).to.eql [ "left", "top" ]
 
     it "should use provided target", ->
-      element = document.createElement "div"
-      element2 = document.createElement "div"
+      element = adapter.create "<div></div>"
+      element2 = adapter.create "<div></div>"
       opentip = new Opentip element, target: element2
       expect(opentip.options.target).to.equal element2
 
     it "should take the triggerElement as target if target is just true", ->
-      element = document.createElement "div"
+      element = adapter.create "<div></div>"
       opentip = new Opentip element, target: yes
       expect(opentip.options.target).to.equal element
 
     it "currentStemPosition should be set to inital stemPosition", ->
-      element = document.createElement "div"
+      element = adapter.create "<div></div>"
       opentip = new Opentip element, stem: [ "left", "top" ]
       expect(opentip.currentStemPosition).to.eql [ "left", "top" ]
 
@@ -116,7 +123,7 @@ describe "Opentip", ->
 
 
     it "should setup all trigger elements", ->
-      element = document.createElement "div"
+      element = adapter.create "<div></div>"
       opentip = new Opentip element, showOn: "click"
       expect(opentip.showTriggerElementsWhenHidden).to.eql [ { event: "click", element: element } ]
       expect(opentip.showTriggerElementsWhenVisible).to.eql [ ]
@@ -129,11 +136,14 @@ describe "Opentip", ->
 
   describe "setContent()", ->
     it "should update the content if tooltip currently visible", ->
-      opentip = new Opentip "div", "content"
+      element = document.createElement "div"
+      opentip = new Opentip element, showOn: "click"
       stub = sinon.stub opentip, "updateElementContent"
       opentip.visible = no
       opentip.setContent "TEST"
+      expect(opentip.content).to.equal "TEST"
       opentip.visible = yes
       opentip.setContent "TEST2"
+      expect(opentip.content).to.equal "TEST2"
       expect(stub.callCount).to.equal 1
 

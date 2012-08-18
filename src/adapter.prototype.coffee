@@ -4,6 +4,8 @@ $ = ender
 
 class Adapter
 
+  name: "Prototype"
+
   # Simply using $.domReady
   domReady: (callback) -> Event.observe window, "dom:loaded", callback
 

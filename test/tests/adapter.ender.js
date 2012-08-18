@@ -28,11 +28,6 @@ describe("Ender adapter", function() {
       });
     });
     describe("tagName()", function() {
-      it("should return the tagName of passed native element", function() {
-        var element;
-        element = document.createElement("div");
-        return expect(adapter.tagName(element)).to.equal("DIV");
-      });
       return it("should return the tagName of passed ender element", function() {
         var element;
         element = $("div");
@@ -40,12 +35,6 @@ describe("Ender adapter", function() {
       });
     });
     describe("attr()", function() {
-      it("should return the attribute of passed native element", function() {
-        var element;
-        element = document.createElement("a");
-        element.setAttribute("href", "http://link");
-        return expect(adapter.attr(element, "href")).to.equal("http://link");
-      });
       return it("should return the attribute of passed ender element", function() {
         var element;
         element = $("<a href=\"http://link\"></a>");
@@ -53,14 +42,6 @@ describe("Ender adapter", function() {
       });
     });
     return describe("observe()", function() {
-      it("should observe given event on native element", function(done) {
-        var element;
-        element = document.createElement("a");
-        adapter.observe(element, "click", function() {
-          return done();
-        });
-        return element.click();
-      });
       it("should observe given event on ender element", function(done) {
         var element;
         element = $("<a>link</a>");

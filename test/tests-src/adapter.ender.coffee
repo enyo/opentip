@@ -22,27 +22,16 @@ describe "Ender adapter", ->
 
 
     describe "tagName()", ->
-      it "should return the tagName of passed native element", ->
-        element = document.createElement "div"
-        expect(adapter.tagName element).to.equal "DIV"
       it "should return the tagName of passed ender element", ->
         element = $ "div"
         expect(adapter.tagName element).to.equal "DIV"
 
     describe "attr()", ->
-      it "should return the attribute of passed native element", ->
-        element = document.createElement "a"
-        element.setAttribute "href", "http://link"
-        expect(adapter.attr element, "href").to.equal "http://link"
       it "should return the attribute of passed ender element", ->
         element = $ """<a href="http://link"></a>"""
         expect(adapter.attr element, "href").to.equal "http://link"
 
     describe "observe()", ->
-      it "should observe given event on native element", (done) ->
-        element = document.createElement "a"
-        adapter.observe element, "click", -> done()
-        element.click()
       it "should observe given event on ender element", (done) ->
         element = $ "<a>link</a>"
         adapter.observe element, "click", -> done()

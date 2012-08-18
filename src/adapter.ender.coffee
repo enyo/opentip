@@ -18,6 +18,8 @@ $.ender {
 # And now the class
 class Adapter
 
+  name: "Ender"
+
   # Simply using $.domReady
   domReady: (callback) -> $.domReady callback
 
@@ -41,8 +43,14 @@ class Adapter
   # Returns the tag name of the element
   tagName: (element) -> $(element).get(0).tagName
 
-  # Returns the given attribute of element
-  attr: (element, attr) -> $(element).attr attr
+  # Returns or sets the given attribute of element
+  attr: (element, attr, value) -> $(element).attr attr, value
+
+  # Add a class
+  addClass: (element, className) -> $(element).addClass className
+
+  # Remove a class
+  removeClass: (element, className) -> $(element).removeClass className
 
   # Observe given eventName
   observe: (element, eventName, observer, stopPropagation) ->

@@ -55,3 +55,45 @@ describe "Generic adapter", ->
             b: 20
             c: 3
 
+      describe "DOM", ->
+        describe "tagName()", ->
+          it "should return the tagName of passed element", ->
+            element = document.createElement "div"
+            expect(adapter.tagName element).to.equal "DIV"
+
+        describe "attr()", ->
+          it "should return the attribute of passed element", ->
+            element = document.createElement "a"
+            element.setAttribute "class", "test-class"
+            element.setAttribute "href", "http://link"
+            expect(adapter.attr element, "class").to.equal "test-class"
+            expect(adapter.attr element, "href").to.equal "http://link"
+          it "should set the attribute of passed element", ->
+            element = document.createElement "a"
+            adapter.attr element, "class", "test-class"
+            adapter.attr element, "href", "http://link"
+            expect(adapter.attr element, "class").to.equal "test-class"
+            expect(adapter.attr element, "href").to.equal "http://link"
+
+        describe "addClass()", ->
+          it "should properly add the class", ->
+            element = document.createElement "div"
+            adapter.addClass element, "test"
+            adapter.addClass element, "test2"
+            expect(val for val in element.classList).to.eql [ "test", "test2" ]
+
+        describe "removeClass()", ->
+          it "should properly add the class", ->
+            element = document.createElement "div"
+            adapter.addClass element, "test"
+            adapter.addClass element, "test2"
+            adapter.removeClass element, "test2"
+            expect(val for val in element.classList).to.eql [ "test" ]
+            adapter.removeClass element, "test"
+            expect(val for val in element.classList).to.eql [ ]
+
+        describe "observe()", ->
+          it "should attach an event listener", (done) ->
+            element = document.createElement "a"
+            adapter.observe element, "click", -> done()
+            element.click()

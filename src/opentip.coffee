@@ -68,7 +68,10 @@ class Opentip
 
     @adapter = Opentip.adapter
 
-    @triggerElement = element = @adapter.wrap element
+    @triggerElement = @adapter.wrap element
+
+    throw new Error "You can't call Opentip on multiple elements." if @triggerElement.length > 1
+    throw new Error "Invalid element." if @triggerElement.length < 1
 
     # AJAX
     @loaded = no
@@ -164,9 +167,78 @@ class Opentip
 
     @options = options
 
+    # Build the HTML elements when the dom is ready.
+    @adapter.domReady => @init()
 
-  # This actually builds the tootlip and sets up observers
-  build: ->
+
+  # Initializes the tooltip by creating the container and setting up the event
+  # listeners.
+  #
+  # This does not yet create all elements. They are created when the tooltip
+  # actually shows for the first time.
+  #
+  # This function activates the tooltip as well.
+  init: ->
+    @buildContainer()
+
+    if @options.hideTrigger
+
+      @options.hideTrigger = [ @options.hideTrigger ] unless @options.hideTrigger instanceof Array
+
+      for hideTrigger, i in @options.hideTrigger
+        hideOnEvent = null
+        hideTriggerElement = null
+
+        hideOn = if @options.hideOn instanceof Array then @options.hideOn[i] else @options.hideOn
+
+        if typeof hideTrigger == "string"
+          switch hideTrigger
+            when "trigger"
+              hideOnEvent = hideOn || "mouseout"
+              hideTriggerElement = @triggerElement
+            when "tip"
+              hideOnEvent = hideOn || "mouseover"
+              hideTriggerElement = @container
+            when "target"
+              hideOnEvent = hideOn || "mouseover"
+              hideTriggerElement = this.options.target
+            when "closeButton"
+              # The close button gets handled later
+            else
+              throw new Error "Unknown hide trigger: #{hideTrigger}."
+        else
+          hideOnEvent = hideOn || "mouseover"
+          hideTriggerElement = @adapter.wrap hideTrigger
+
+        if hideTriggerElement
+          @hideTriggerElements.push
+            element: hideTriggerElement
+            event: hideOnEvent
+
+          if hideOnEvent == "mouseout"
+            # When the hide trigger is mouseout, we have to attach a mouseover
+            # trigger to that element, so the tooltip doesn't disappear when
+            # hovering child elements. (Hovering children fires a mouseout
+            # mouseover event)
+            @showTriggerElementsWhenVisible.push
+              element: hideTriggerElement
+              event: "mouseover"
+
+    @activate()
+
+    @show() if @options.showOn == "creation"
+
+  # This just builds the opentip container, which is the absolute minimum to
+  # attach events to it.
+  #
+  # The actual creation of the elements is in buildElements()
+  buildContainer: ->
+    @container = @adapter.create """<div class="ot-container ot-completely-hidden style-#{@options.className}"></div>"""
+
+    @adapter.addClass @container, "ot-loading" if @options.ajax
+    @adapter.addClass @container, "ot-fixed" if @options.fixed
+    @adapter.addClass @container, "ot-show-#{@options.showEffect}" if @options.showEffect
+    @adapter.addClass @container, "ot-hide-#{@options.hideEffect}" if @options.hideEffect
 
 
   # Sets the content and updates the HTML element if currently visible
@@ -175,6 +247,8 @@ class Opentip
 
   updateElementContent: ->
 
+
+  activate: ->
 
 
 # Utils

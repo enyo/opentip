@@ -4,6 +4,11 @@ var $;
 $ = ender;
 
 describe("Opentip", function() {
+  var adapter;
+  adapter = Opentip.adapters["native"];
+  beforeEach(function() {
+    return Opentip.adapter = adapter;
+  });
   describe("debug()", function() {
     var consoleDebug;
     consoleDebug = console.debug;
@@ -24,24 +29,28 @@ describe("Opentip", function() {
   });
   describe("constructor()", function() {
     before(function() {
-      return Opentip.adapter = Opentip.adapters["native"];
+      return sinon.stub(Opentip.prototype, "init");
+    });
+    after(function() {
+      return Opentip.prototype.init.restore();
     });
     it("arguments should be optional", function() {
-      var opentip;
-      opentip = new Opentip("div", "content");
+      var element, opentip;
+      element = adapter.create("<div></div>");
+      opentip = new Opentip(element, "content");
       expect(opentip.content).to.equal("content");
-      expect(opentip.triggerElement).to.equal("div");
-      opentip = new Opentip("div", "content", "title", {
+      expect(opentip.triggerElement).to.equal(element);
+      opentip = new Opentip(element, "content", "title", {
         hideOn: "click"
       });
       expect(opentip.content).to.equal("content");
-      expect(opentip.triggerElement).to.equal("div");
+      expect(opentip.triggerElement).to.equal(element);
       expect(opentip.options.hideOn).to.equal("click");
       expect(opentip.options.title).to.equal("title");
-      opentip = new Opentip("div", {
+      opentip = new Opentip(element, {
         hideOn: "click"
       });
-      expect(opentip.triggerElement).to.equal("div");
+      expect(opentip.triggerElement).to.equal(element);
       expect(opentip.options.hideOn).to.equal("click");
       expect(opentip.content).to.equal("");
       return expect(opentip.options.title).to.equal(void 0);
@@ -65,15 +74,15 @@ describe("Opentip", function() {
     });
     it("should disable a link if the event is onClick", function() {
       var element, opentip;
-      sinon.spy(Opentip.adapter, "observe");
+      sinon.spy(adapter, "observe");
       element = $("<a href=\"http://testlink\">link</a>").get(0);
       opentip = new Opentip(element, {
         showOn: "click"
       });
-      expect(Opentip.adapter.observe.calledOnce).to.be.ok();
-      expect(Opentip.adapter.observe.getCall(0).args[1]).to.equal("click");
-      expect(Opentip.adapter.observe.getCall(0).args[3]).to.be.ok();
-      return Opentip.adapter.observe.restore();
+      expect(adapter.observe.calledOnce).to.be.ok();
+      expect(adapter.observe.getCall(0).args[1]).to.equal("click");
+      expect(adapter.observe.getCall(0).args[3]).to.be.ok();
+      return adapter.observe.restore();
     });
     it("should take all options from selected style", function() {
       var element, opentip;
@@ -115,8 +124,8 @@ describe("Opentip", function() {
     });
     it("should use provided target", function() {
       var element, element2, opentip;
-      element = document.createElement("div");
-      element2 = document.createElement("div");
+      element = adapter.create("<div></div>");
+      element2 = adapter.create("<div></div>");
       opentip = new Opentip(element, {
         target: element2
       });
@@ -124,7 +133,7 @@ describe("Opentip", function() {
     });
     it("should take the triggerElement as target if target is just true", function() {
       var element, opentip;
-      element = document.createElement("div");
+      element = adapter.create("<div></div>");
       opentip = new Opentip(element, {
         target: true
       });
@@ -132,7 +141,7 @@ describe("Opentip", function() {
     });
     it("currentStemPosition should be set to inital stemPosition", function() {
       var element, opentip;
-      element = document.createElement("div");
+      element = adapter.create("<div></div>");
       opentip = new Opentip(element, {
         stem: ["left", "top"]
       });
@@ -170,7 +179,7 @@ describe("Opentip", function() {
     });
     return it("should setup all trigger elements", function() {
       var element, opentip;
-      element = document.createElement("div");
+      element = adapter.create("<div></div>");
       opentip = new Opentip(element, {
         showOn: "click"
       });
@@ -192,13 +201,18 @@ describe("Opentip", function() {
   });
   return describe("setContent()", function() {
     return it("should update the content if tooltip currently visible", function() {
-      var opentip, stub;
-      opentip = new Opentip("div", "content");
+      var element, opentip, stub;
+      element = document.createElement("div");
+      opentip = new Opentip(element, {
+        showOn: "click"
+      });
       stub = sinon.stub(opentip, "updateElementContent");
       opentip.visible = false;
       opentip.setContent("TEST");
+      expect(opentip.content).to.equal("TEST");
       opentip.visible = true;
       opentip.setContent("TEST2");
+      expect(opentip.content).to.equal("TEST2");
       return expect(stub.callCount).to.equal(1);
     });
   });

@@ -8,48 +8,29 @@ describe("Native adapter", function() {
   adapter = Opentip.adapters["native"];
   return describe("DOM", function() {
     describe("create()", function() {
-      return it("should properly create DOM elements from string", function() {
+      it("should properly create DOM elements from string", function() {
         var elements;
         elements = adapter.create("<div class=\"test\"><span>HI</span></div>");
         expect(elements).to.be.an("object");
         expect(elements.length).to.equal(1);
         return expect(elements[0].className).to.equal("test");
       });
+      return it("the created elements should be wrapped", function() {
+        var elements, wrapped;
+        elements = adapter.create("<div class=\"test\"><span>HI</span></div>");
+        wrapped = adapter.wrap(elements);
+        return expect(elements).to.equal(wrapped);
+      });
     });
     describe("wrap()", function() {
-      return it("should just return the element", function() {
+      return it("should wrap the element in an array", function() {
         var element, wrapped;
         element = document.createElement("div");
         wrapped = adapter.wrap(element);
-        return expect(element).to.equal(wrapped);
-      });
-    });
-    describe("tagName()", function() {
-      return it("should return the tagName of passed element", function() {
-        var element;
-        element = document.createElement("div");
-        return expect(adapter.tagName(element)).to.equal("DIV");
-      });
-    });
-    describe("attr()", function() {
-      return it("should return the attribute of passed element", function() {
-        var element;
-        element = document.createElement("a");
-        element.setAttribute("class", "test-class");
-        element.setAttribute("href", "http://link");
-        expect(adapter.attr(element, "class")).to.equal("test-class");
-        return expect(adapter.attr(element, "href")).to.equal("http://link");
+        return expect(element).to.equal(wrapped[0]);
       });
     });
     return describe("observe()", function() {
-      it("should attach an event listener", function(done) {
-        var element;
-        element = document.createElement("a");
-        adapter.observe(element, "click", function() {
-          return done();
-        });
-        return element.click();
-      });
       return it("should handle stopPropagation");
     });
   });
