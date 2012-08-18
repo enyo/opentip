@@ -130,13 +130,27 @@ describe("Opentip", function() {
       });
       return expect(opentip.options.target).to.equal(element);
     });
-    return it("currentStemPosition should be set to inital stemPosition", function() {
+    it("currentStemPosition should be set to inital stemPosition", function() {
       var element, opentip;
       element = document.createElement("div");
       opentip = new Opentip(element, {
         stem: ["left", "top"]
       });
       return expect(opentip.currentStemPosition).to.eql(["left", "top"]);
+    });
+    return it("delay should be automatically set if none provided", function() {
+      var element, opentip;
+      element = document.createElement("div");
+      opentip = new Opentip(element, {
+        delay: null,
+        showOn: "click"
+      });
+      expect(opentip.options.delay).to.equal(0);
+      opentip = new Opentip(element, {
+        delay: null,
+        showOn: "mouseover"
+      });
+      return expect(opentip.options.delay).to.equal(0.2);
     });
   });
   return describe("setContent()", function() {

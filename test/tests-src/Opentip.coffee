@@ -98,6 +98,13 @@ describe "Opentip", ->
       opentip = new Opentip element, stem: [ "left", "top" ]
       expect(opentip.currentStemPosition).to.eql [ "left", "top" ]
 
+    it "delay should be automatically set if none provided", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, delay: null, showOn: "click"
+      expect(opentip.options.delay).to.equal 0
+      opentip = new Opentip element, delay: null, showOn: "mouseover"
+      expect(opentip.options.delay).to.equal 0.2
+
 
 
   describe "setContent()", ->

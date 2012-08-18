@@ -137,6 +137,8 @@ class Opentip
 
     @currentStemPosition = options.stem
 
+    unless options.delay?
+      options.delay = if options.showOn == "mouseover" then 0.2 else 0
 
     @options = options
 
