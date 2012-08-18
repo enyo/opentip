@@ -15,8 +15,8 @@ describe "Native adapter", ->
     describe "wrap()", ->
       it "should just return the element", ->
         element = document.createElement "div"
-        element2 = adapter.wrap element
-        expect(element).to.equal element2
+        wrapped = adapter.wrap element
+        expect(element).to.equal wrapped
 
     describe "tagName()", ->
       it "should return the tagName of passed element", ->

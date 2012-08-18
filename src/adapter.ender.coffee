@@ -1,4 +1,9 @@
+# Ender Opentip Adapter
+# =====================
+#
+# Uses ender packages
 
+# Because $ is my favorite character
 $ = ender
 
 
@@ -8,11 +13,15 @@ $.ender {
 }, true
 
 
+# And now the class
 class Adapter
 
   # Simply using $.domReady
   domReady: (callback) -> $.domReady callback
 
+
+  # DOM
+  # ===
 
   # Using bonzo to create html
   create: (html) -> $ html
@@ -28,12 +37,15 @@ class Adapter
     element
 
   # Returns the tag name of the element
-  tagName: (element) -> element.get(0).tagName
+  tagName: (element) -> $(element).get(0).tagName
 
   # Returns the given attribute of element
-  attr: (element, attr) -> element.attr attr
+  attr: (element, attr) -> $(element).attr attr
 
 
+
+  # Utility functions
+  # =================
 
   # Creates a shallow copy of the object
   clone: (object) ->
@@ -43,8 +55,10 @@ class Adapter
     newObject
 
 
-
+# Create the adapter
 adapter = new Adapter
 
+# Add the adapter to the list
 Opentip.adapters.ender = adapter
+# Set as adapter in use
 Opentip.adapter = adapter

@@ -18,10 +18,10 @@ describe("Native adapter", function() {
     });
     describe("wrap()", function() {
       return it("should just return the element", function() {
-        var element, element2;
+        var element, wrapped;
         element = document.createElement("div");
-        element2 = adapter.wrap(element);
-        return expect(element).to.equal(element2);
+        wrapped = adapter.wrap(element);
+        return expect(element).to.equal(wrapped);
       });
     });
     describe("tagName()", function() {

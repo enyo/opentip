@@ -1,5 +1,9 @@
 
-
+# Native Opentip Adapter
+# ======================
+#
+# Use this adapter if you don't use a framework like jQuery and you don't
+# really care about oldschool browser compatibility.
 class Adapter
 
   # Invoke callback as soon as dom is ready
@@ -47,7 +51,10 @@ class Adapter
 
 
 
+# Create the adapter
 adapter = new Adapter
 
+# Add the adapter to the list
 Opentip.adapters.native = adapter
+# Set as adapter in use
 Opentip.adapter = adapter

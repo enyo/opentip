@@ -17,27 +17,36 @@ describe("Ender adapter", function() {
       });
     });
     describe("wrap()", function() {
-      return it("should just return the element", function() {
-        var element, element2;
+      return it("should return a bonzo element", function() {
+        var element, wrapped;
         element = document.createElement("div");
-        element2 = adapter.wrap(element);
-        return expect(element).to.equal(element2);
+        wrapped = adapter.wrap(element);
+        expect(element).to.not.equal(wrapped);
+        return expect(element).to.equal(wrapped.get(0));
       });
     });
     describe("tagName()", function() {
-      return it("should return the tagName of passed element", function() {
+      it("should return the tagName of passed native element", function() {
         var element;
         element = document.createElement("div");
         return expect(adapter.tagName(element)).to.equal("DIV");
       });
+      return it("should return the tagName of passed ender element", function() {
+        var element;
+        element = $("div");
+        return expect(adapter.tagName(element)).to.equal("DIV");
+      });
     });
     return describe("attr()", function() {
-      return it("should return the attribute of passed element", function() {
+      it("should return the attribute of passed native element", function() {
         var element;
         element = document.createElement("a");
-        element.setAttribute("class", "test-class");
         element.setAttribute("href", "http://link");
-        expect(adapter.attr(element, "class")).to.equal("test-class");
+        return expect(adapter.attr(element, "href")).to.equal("http://link");
+      });
+      return it("should return the attribute of passed ender element", function() {
+        var element;
+        element = $("<a href=\"http://link\"></a>");
         return expect(adapter.attr(element, "href")).to.equal("http://link");
       });
     });
