@@ -67,6 +67,11 @@ describe "Opentip", ->
       # Should have been set by the standard theme
       expect(opentip.options.stemSize).to.equal 8
 
+    it "should set the options to fixed if a target is provided", ->
+      element = $("""<div></div>""").get(0)
+      opentip = new Opentip element, target: yes, fixed: no
+      expect(opentip.options.fixed).to.be.ok()
+
 
 
   describe "setContent()", ->

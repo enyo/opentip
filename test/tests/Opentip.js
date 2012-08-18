@@ -75,7 +75,7 @@ describe("Opentip", function() {
       expect(Opentip.adapter.observe.getCall(0).args[3]).to.be.ok();
       return Opentip.adapter.observe.restore();
     });
-    return it("should take all options from selected style", function() {
+    it("should take all options from selected style", function() {
       var element, opentip;
       element = $("<div></div>").get(0);
       opentip = new Opentip(element, {
@@ -85,6 +85,15 @@ describe("Opentip", function() {
       expect(opentip.options.showOn).to.equal("click");
       expect(opentip.options.className).to.equal("glass");
       return expect(opentip.options.stemSize).to.equal(8);
+    });
+    return it("should set the options to fixed if a target is provided", function() {
+      var element, opentip;
+      element = $("<div></div>").get(0);
+      opentip = new Opentip(element, {
+        target: true,
+        fixed: false
+      });
+      return expect(opentip.options.fixed).to.be.ok();
     });
   });
   return describe("setContent()", function() {

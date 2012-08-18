@@ -94,8 +94,24 @@ class Opentip
       title = undefined
 
 
+    # Now build the complete options object from the styles
+
     options.title = title if title?
     @setContent content if content?
+
+    options.style = Opentip.defaultStyle unless options.style
+
+    # All options are based on the standard style
+    styleOptions = @adapter.extend { }, Opentip.styles.standard
+
+    optionSources = [ ]
+    # All options are based on the standard style
+    optionSources.push Opentip.styles.standard
+    optionSources.push Opentip.styles[options.style] unless options.style == "standard"
+    optionSources.push options
+
+    options = @adapter.extend { }, optionSources...
+
 
     # If the url of an Ajax request is not set, get it from the link it's attached to.
     if options.ajax and not options.ajax.url?
@@ -110,18 +126,8 @@ class Opentip
       @adapter.observe @triggerElement, "click", (->), "stop propagation"
 
 
-    options.style = Opentip.defaultStyle unless options.style
+    options.fixed = yes if options.target
 
-    # All options are based on the standard style
-    styleOptions = @adapter.extend { }, Opentip.styles.standard
-
-    optionSources = [ ]
-    # All options are based on the standard style
-    optionSources.push Opentip.styles.standard
-    optionSources.push Opentip.styles[options.style] unless options.style == "standard"
-    optionSources.push options
-
-    options = @adapter.extend { }, optionSources...
 
     @options = options
 
