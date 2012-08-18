@@ -271,6 +271,7 @@ class Opentip
   _setupObservers: ->
 
   prepareToShow: ->
+    console.log "HI"
   show: ->
   prepareToHide: ->
   hide: ->

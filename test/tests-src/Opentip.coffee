@@ -134,6 +134,15 @@ describe "Opentip", ->
       expect(opentip.hideTriggerElements).to.eql [ ]
 
 
+  describe "init()", ->
+    describe "showOn == creation", ->
+      element = document.createElement "div"
+      beforeEach -> sinon.stub Opentip::, "prepareToShow"
+      afterEach -> Opentip::prepareToShow.restore()
+      it "should immediately call prepareToShow()", ->
+        opentip = new Opentip element, showOn: "creation"
+        expect(opentip.prepareToShow.callCount).to.equal 1
+
   describe "setContent()", ->
     it "should update the content if tooltip currently visible", ->
       element = document.createElement "div"
@@ -164,7 +173,5 @@ describe "Opentip", ->
       expect(enderElement.hasClass "style-glass").to.be.ok()
       expect(enderElement.hasClass "show-effect-appear").to.be.ok()
       expect(enderElement.hasClass "hide-effect-fade").to.be.ok()
-
-
 
 

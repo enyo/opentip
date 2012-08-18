@@ -199,6 +199,25 @@ describe("Opentip", function() {
       return expect(opentip.hideTriggerElements).to.eql([]);
     });
   });
+  describe("init()", function() {
+    return describe("showOn == creation", function() {
+      var element;
+      element = document.createElement("div");
+      beforeEach(function() {
+        return sinon.stub(Opentip.prototype, "prepareToShow");
+      });
+      afterEach(function() {
+        return Opentip.prototype.prepareToShow.restore();
+      });
+      return it("should immediately call prepareToShow()", function() {
+        var opentip;
+        opentip = new Opentip(element, {
+          showOn: "creation"
+        });
+        return expect(opentip.prepareToShow.callCount).to.equal(1);
+      });
+    });
+  });
   describe("setContent()", function() {
     return it("should update the content if tooltip currently visible", function() {
       var element, opentip, stub;
