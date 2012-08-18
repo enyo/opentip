@@ -36,7 +36,6 @@ describe "Ender adapter", ->
         element = $ "<a>link</a>"
         adapter.observe element, "click", -> done()
         element.get(0).click()
-      it "should handle stopPropagation"
 
 
 

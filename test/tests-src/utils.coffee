@@ -2,15 +2,14 @@
 describe "utils", ->
 
   describe "sanitizePosition()", ->
-    it "should properly parse all 8 possible positions", ->
-      expect(Opentip::sanitizePosition [ "center", "top" ]).to.equal Opentip.position.top
-      expect(Opentip::sanitizePosition [ "right", "top" ]).to.equal Opentip.position.topRight
-      expect(Opentip::sanitizePosition [ "right", "middle" ]).to.equal Opentip.position.right
-      expect(Opentip::sanitizePosition [ "right", "bottom" ]).to.equal Opentip.position.bottomRight
-      expect(Opentip::sanitizePosition [ "center", "bottom" ]).to.equal Opentip.position.bottom
-      expect(Opentip::sanitizePosition [ "left", "bottom" ]).to.equal Opentip.position.bottomLeft
-      expect(Opentip::sanitizePosition [ "left", "middle" ]).to.equal Opentip.position.left
-      expect(Opentip::sanitizePosition [ "left", "top" ]).to.equal Opentip.position.topLeft
+    it "should properly camelize positions", ->
+      expect(Opentip::sanitizePosition "top-left").to.equal "topLeft"
+      expect(Opentip::sanitizePosition "top-Right").to.equal "topRight"
+      expect(Opentip::sanitizePosition "BOTTOM left").to.equal "bottomLeft"
+    it "should handle any order of positions", ->
+      expect(Opentip::sanitizePosition "right bottom").to.equal "bottomRight"
+      expect(Opentip::sanitizePosition "left left middle").to.equal "left"
+      expect(Opentip::sanitizePosition "left - top").to.equal "topLeft"
 
   describe "ucfirst()", ->
     it "should transform the first character to uppercase", ->

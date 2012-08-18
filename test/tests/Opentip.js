@@ -107,19 +107,19 @@ describe("Opentip", function() {
       var element, opentip;
       element = document.createElement("div");
       opentip = new Opentip(element, {
-        stem: ["center", "bottom"],
-        tipJoin: ["left", "top"]
+        stem: "bottom",
+        tipJoin: "topLeft"
       });
-      return expect(opentip.options.stem).to.eql(["center", "bottom"]);
+      return expect(opentip.options.stem).to.eql("bottom");
     });
     it("should take the tipJoint as stem if stem is just true", function() {
       var element, opentip;
       element = document.createElement("div");
       opentip = new Opentip(element, {
         stem: true,
-        tipJoin: ["left", "top"]
+        tipJoint: "top left"
       });
-      return expect(opentip.options.stem).to.eql(["left", "top"]);
+      return expect(opentip.options.stem).to.eql("topLeft");
     });
     it("should use provided target", function() {
       var element, element2, opentip;
@@ -142,9 +142,9 @@ describe("Opentip", function() {
       var element, opentip;
       element = adapter.create("<div></div>");
       opentip = new Opentip(element, {
-        stem: ["left", "top"]
+        stem: "topLeft"
       });
-      return expect(opentip.currentStemPosition).to.eql(["left", "top"]);
+      return expect(opentip.currentStemPosition).to.eql("topLeft");
     });
     it("delay should be automatically set if none provided", function() {
       var element, opentip;
@@ -164,17 +164,17 @@ describe("Opentip", function() {
       var element, opentip;
       element = document.createElement("div");
       opentip = new Opentip(element, {
-        tipJoint: ["left", "middle"]
+        tipJoint: "left"
       });
-      expect(opentip.options.targetJoint).to.eql(["right", "middle"]);
+      expect(opentip.options.targetJoint).to.eql("right");
       opentip = new Opentip(element, {
-        tipJoint: ["center", "top"]
+        tipJoint: "top"
       });
-      expect(opentip.options.targetJoint).to.eql(["center", "bottom"]);
+      expect(opentip.options.targetJoint).to.eql("bottom");
       opentip = new Opentip(element, {
-        tipJoint: ["right", "bottom"]
+        tipJoint: "bottomRight"
       });
-      return expect(opentip.options.targetJoint).to.eql(["left", "top"]);
+      return expect(opentip.options.targetJoint).to.eql("topLeft");
     });
     return it("should setup all trigger elements", function() {
       var element, opentip;

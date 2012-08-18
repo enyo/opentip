@@ -80,13 +80,13 @@ describe "Opentip", ->
 
     it "should use provided stem", ->
       element = document.createElement "div"
-      opentip = new Opentip element, stem: [ "center", "bottom" ], tipJoin: [ "left", "top" ]
-      expect(opentip.options.stem).to.eql [ "center", "bottom" ]
+      opentip = new Opentip element, stem: "bottom", tipJoin: "topLeft"
+      expect(opentip.options.stem).to.eql "bottom"
 
     it "should take the tipJoint as stem if stem is just true", ->
       element = document.createElement "div"
-      opentip = new Opentip element, stem: yes, tipJoin: [ "left", "top" ]
-      expect(opentip.options.stem).to.eql [ "left", "top" ]
+      opentip = new Opentip element, stem: yes, tipJoint: "top left"
+      expect(opentip.options.stem).to.eql "topLeft"
 
     it "should use provided target", ->
       element = adapter.create "<div></div>"
@@ -101,8 +101,8 @@ describe "Opentip", ->
 
     it "currentStemPosition should be set to inital stemPosition", ->
       element = adapter.create "<div></div>"
-      opentip = new Opentip element, stem: [ "left", "top" ]
-      expect(opentip.currentStemPosition).to.eql [ "left", "top" ]
+      opentip = new Opentip element, stem: "topLeft"
+      expect(opentip.currentStemPosition).to.eql "topLeft"
 
     it "delay should be automatically set if none provided", ->
       element = document.createElement "div"
@@ -113,12 +113,12 @@ describe "Opentip", ->
 
     it "the targetJoint should be the inverse of the tipJoint if none provided", ->
       element = document.createElement "div"
-      opentip = new Opentip element, tipJoint: [ "left", "middle" ]
-      expect(opentip.options.targetJoint).to.eql [ "right", "middle" ]
-      opentip = new Opentip element, tipJoint: [ "center", "top" ]
-      expect(opentip.options.targetJoint).to.eql [ "center", "bottom" ]
-      opentip = new Opentip element, tipJoint: [ "right", "bottom" ]
-      expect(opentip.options.targetJoint).to.eql [ "left", "top" ]
+      opentip = new Opentip element, tipJoint: "left"
+      expect(opentip.options.targetJoint).to.eql "right"
+      opentip = new Opentip element, tipJoint: "top"
+      expect(opentip.options.targetJoint).to.eql "bottom"
+      opentip = new Opentip element, tipJoint: "bottomRight"
+      expect(opentip.options.targetJoint).to.eql "topLeft"
 
 
     it "should setup all trigger elements", ->

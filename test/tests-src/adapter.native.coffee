@@ -22,7 +22,4 @@ describe "Native adapter", ->
         wrapped = adapter.wrap element
         expect(element).to.equal wrapped[0]
 
-    describe "observe()", ->
-      it "should handle stopPropagation"
-
 

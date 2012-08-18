@@ -2,15 +2,15 @@
 
 describe("utils", function() {
   describe("sanitizePosition()", function() {
-    return it("should properly parse all 8 possible positions", function() {
-      expect(Opentip.prototype.sanitizePosition(["center", "top"])).to.equal(Opentip.position.top);
-      expect(Opentip.prototype.sanitizePosition(["right", "top"])).to.equal(Opentip.position.topRight);
-      expect(Opentip.prototype.sanitizePosition(["right", "middle"])).to.equal(Opentip.position.right);
-      expect(Opentip.prototype.sanitizePosition(["right", "bottom"])).to.equal(Opentip.position.bottomRight);
-      expect(Opentip.prototype.sanitizePosition(["center", "bottom"])).to.equal(Opentip.position.bottom);
-      expect(Opentip.prototype.sanitizePosition(["left", "bottom"])).to.equal(Opentip.position.bottomLeft);
-      expect(Opentip.prototype.sanitizePosition(["left", "middle"])).to.equal(Opentip.position.left);
-      return expect(Opentip.prototype.sanitizePosition(["left", "top"])).to.equal(Opentip.position.topLeft);
+    it("should properly camelize positions", function() {
+      expect(Opentip.prototype.sanitizePosition("top-left")).to.equal("topLeft");
+      expect(Opentip.prototype.sanitizePosition("top-Right")).to.equal("topRight");
+      return expect(Opentip.prototype.sanitizePosition("BOTTOM left")).to.equal("bottomLeft");
+    });
+    return it("should handle any order of positions", function() {
+      expect(Opentip.prototype.sanitizePosition("right bottom")).to.equal("bottomRight");
+      expect(Opentip.prototype.sanitizePosition("left left middle")).to.equal("left");
+      return expect(Opentip.prototype.sanitizePosition("left - top")).to.equal("topLeft");
     });
   });
   return describe("ucfirst()", function() {

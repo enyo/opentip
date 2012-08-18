@@ -22,16 +22,13 @@ describe("Native adapter", function() {
         return expect(elements).to.equal(wrapped);
       });
     });
-    describe("wrap()", function() {
+    return describe("wrap()", function() {
       return it("should wrap the element in an array", function() {
         var element, wrapped;
         element = document.createElement("div");
         wrapped = adapter.wrap(element);
         return expect(element).to.equal(wrapped[0]);
       });
-    });
-    return describe("observe()", function() {
-      return it("should handle stopPropagation");
     });
   });
 });

@@ -115,6 +115,13 @@ class Opentip
     options = @adapter.extend { }, optionSources...
 
 
+    # Sanitize all positions
+    options[prop] = @sanitizePosition options[prop] for prop in [
+      "tipJoint"
+      "targetJoint"
+      "stem"
+    ]
+
     # If the url of an Ajax request is not set, get it from the link it's attached to.
     if options.ajax and not options.ajax.url?
       if @adapter.tagName(@triggerElement) == "A"
@@ -146,12 +153,7 @@ class Opentip
     unless options.delay?
       options.delay = if options.showOn == "mouseover" then 0.2 else 0
 
-    unless options.targetJoint?
-      options.targetJoint = [ ]
-      # left -> right, right -> left, center -> center
-      options.targetJoint[0] = if options.tipJoint[0] == "left" then "right" else if options.tipJoint[0] == "right" then "left" else "center"
-      # top -> bottom, bottom -> top, middle -> middle
-      options.targetJoint[1] = if options.tipJoint[1] == "top" then "bottom" else if options.tipJoint[1] == "bottom" then "top" else "middle"
+    options.targetJoint = @flipPosition options.tipJoint unless options.targetJoint?
 
     # Used to show the opentip obviously
     @showTriggersWhenHidden = [ ]
@@ -321,40 +323,62 @@ class Opentip
 
   show: ->
 
+  _abortShowing: ->
+
   prepareToHide: ->
 
   hide: ->
+
+  _abortHiding: ->
 
   reposition: ->
 
 # Utils
 # -----
 
-Opentip::ucfirst = (string) -> string.charAt(0).toUpperCase() + string.slice(1)
+Opentip::ucfirst = (string) ->
+  return "" unless string?
+  string.charAt(0).toUpperCase() + string.slice(1)
 
-# In the future every position attribute will go through this method.
-Opentip::sanitizePosition = (arrayPosition) ->
-  if arrayPosition instanceof Array
-    positionString = ""
-    if arrayPosition[0] is "center"
-      positionString = arrayPosition[1]
-    else if arrayPosition[1] is "middle"
-      positionString = arrayPosition[0]
-    else
-      positionString = arrayPosition[1] + @ucfirst arrayPosition[0]
-  else if typeof arrayPosition == "string"
-    positionString = arrayPosition
+# Every position goes through this function
+#
+# Accepts positions in nearly every form.
+#
+#   - "top left"
+#   - "topLeft"
+#   - "top-left"
+#   - "RIGHT to TOP"
+# 
+# All that counts is that the words top, bottom, left or right are present.
+Opentip::sanitizePosition = (position) ->
+  return position if typeof position == "boolean"
+  return null unless position
+
+  position = position.toLowerCase()
+
+  verticalPosition = i for i in [ "top", "bottom" ] when ~position.indexOf i
+  horizontalPosition = i for i in [ "left", "right" ] when ~position.indexOf i
+  horizontalPosition = @ucfirst horizontalPosition if verticalPosition
+
+  position = "#{verticalPosition ? ""}#{horizontalPosition ? ""}"
   
-  position = Opentip.position[positionString]
-  
-  throw "Unknown position: " + positionString unless position?
+  throw "Unknown position: " + position unless Opentip.position[position]?
+
   position
+
+# Turns topLeft into bottomRight
+Opentip::flipPosition = (position) ->
+  positionIdx = Opentip.position[position]
+  # There are 8 positions, and smart as I am I layed them out in a circle.
+  flippedIndex = (positionIdx + 4) % 8
+  Opentip.positions[flippedIndex]
+
+
+
 
 
 # Just forwards to console.debug if @debugging is true and console.debug exists.
 Opentip::debug = -> console.debug.apply console, arguments if @debugging and console?.debug?
-
-
 
 
 
@@ -376,15 +400,19 @@ Opentip.adapter = null
 Opentip.documentIsLoaded = no
 
 
-Opentip.position =
-  top: 0
-  topRight: 1
-  right: 2
-  bottomRight: 3
-  bottom: 4
-  bottomLeft: 5
-  left: 6
-  topLeft: 7
+Opentip.positions = [
+  "top"
+  "topRight"
+  "right"
+  "bottomRight"
+  "bottom"
+  "bottomLeft"
+  "left"
+  "topLeft"
+]
+Opentip.position = { }
+for position, i in Opentip.positions
+  Opentip.position[position] = i
 
 # Different positions
 # Opentip.top = [ "center", "top" ]
@@ -404,7 +432,7 @@ Opentip.styles =
     #
     # Following abbreviations are used:
     #
-    # - `POSITION` : [ 'left|right|center', 'top|bottom|middle' ]
+    # - `POSITION` : a string that contains at least one of top, bottom, right or left
     # - `COORDINATE` : [ XVALUE, YVALUE ] (integers)
     # - `ELEMENT` : element or element id
 
@@ -465,7 +493,7 @@ Opentip.styles =
     stemSize: 8
 
     # `POSITION`
-    tipJoint: [ "left", "top" ]
+    tipJoint: "top left"
 
     # - `null` (no target, opentip uses mouse as target)
     # - `true` (target is the triggerElement)

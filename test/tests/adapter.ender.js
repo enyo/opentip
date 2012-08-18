@@ -42,7 +42,7 @@ describe("Ender adapter", function() {
       });
     });
     return describe("observe()", function() {
-      it("should observe given event on ender element", function(done) {
+      return it("should observe given event on ender element", function(done) {
         var element;
         element = $("<a>link</a>");
         adapter.observe(element, "click", function() {
@@ -50,7 +50,6 @@ describe("Ender adapter", function() {
         });
         return element.get(0).click();
       });
-      return it("should handle stopPropagation");
     });
   });
 });
