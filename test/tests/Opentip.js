@@ -26,36 +26,42 @@ describe("Opentip", function() {
     before(function() {
       return Opentip.adapter = Opentip.adapters["native"];
     });
-    return describe("arguments", function() {
-      it("should be optional", function() {
-        var opentip;
-        opentip = new Opentip("div", "content");
-        expect(opentip.content).to.equal("content");
-        expect(opentip.triggerElement).to.equal("div");
-        opentip = new Opentip("div", "content", "title", {
-          hideOn: "click"
-        });
-        expect(opentip.content).to.equal("content");
-        expect(opentip.triggerElement).to.equal("div");
-        expect(opentip.options.hideOn).to.equal("click");
-        expect(opentip.options.title).to.equal("title");
-        opentip = new Opentip("div", {
-          hideOn: "click"
-        });
-        expect(opentip.triggerElement).to.equal("div");
-        expect(opentip.options.hideOn).to.equal("click");
-        expect(opentip.content).to.equal("");
-        return expect(opentip.options.title).to.equal(void 0);
+    it("arguments should be optional", function() {
+      var opentip;
+      opentip = new Opentip("div", "content");
+      expect(opentip.content).to.equal("content");
+      expect(opentip.triggerElement).to.equal("div");
+      opentip = new Opentip("div", "content", "title", {
+        hideOn: "click"
       });
-      return it("should use the href attribute if ajax and an A element", function() {
-        var element, opentip;
-        element = $("<a href=\"http://testlink\">link</a>").get(0);
-        opentip = new Opentip(element, {
-          ajax: true
-        });
-        expect(opentip.options.ajax).to.be.a("object");
-        return expect(opentip.options.ajax.url).to.equal("http://testlink");
+      expect(opentip.content).to.equal("content");
+      expect(opentip.triggerElement).to.equal("div");
+      expect(opentip.options.hideOn).to.equal("click");
+      expect(opentip.options.title).to.equal("title");
+      opentip = new Opentip("div", {
+        hideOn: "click"
       });
+      expect(opentip.triggerElement).to.equal("div");
+      expect(opentip.options.hideOn).to.equal("click");
+      expect(opentip.content).to.equal("");
+      return expect(opentip.options.title).to.equal(void 0);
+    });
+    it("should use the href attribute if AJAX and an A element", function() {
+      var element, opentip;
+      element = $("<a href=\"http://testlink\">link</a>").get(0);
+      opentip = new Opentip(element, {
+        ajax: true
+      });
+      expect(opentip.options.ajax).to.be.a("object");
+      return expect(opentip.options.ajax.url).to.equal("http://testlink");
+    });
+    return it("should disable AJAX if neither URL or a link HREF is provided", function() {
+      var element, opentip;
+      element = $("<div>text</div>").get(0);
+      opentip = new Opentip(element, {
+        ajax: true
+      });
+      return expect(opentip.options.ajax).to.not.be.ok();
     });
   });
   return describe("setContent()", function() {

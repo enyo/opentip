@@ -101,7 +101,10 @@ class Opentip
         @options.ajax = { } if typeof @options.ajax != "object"
         @options.ajax.url = @adapter.attr @triggerElement, "href"
       else 
-        options.ajax = off
+        @options.ajax = off
+
+    # If the event is 'click', no point in following a link
+    # if @options.showOn == 'click' && this.triggerElement.tagName.toLowerCase() == 'a') {if (evt) {evt.stop();}this.triggerElement.observe('click', function(e) {e.stop();});}
 
 
 
