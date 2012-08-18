@@ -147,3 +147,23 @@ describe "Opentip", ->
       expect(opentip.content).to.equal "TEST2"
       expect(stub.callCount).to.equal 1
 
+  describe "buildContainer()", ->
+    element = document.createElement "div"
+    opentip = new Opentip element,
+      style: "glass"
+      showEffect: "appear"
+      hideEffect: "fade"
+
+    it "should set the id", ->
+      expect(adapter.attr opentip.container, "id").to.equal "opentip-" + opentip.id
+    it "should set the classes", ->
+      enderElement = $(opentip.container[0])
+      expect(enderElement.hasClass "opentip-container").to.be.ok()
+      expect(enderElement.hasClass "completely-hidden").to.be.ok()
+      expect(enderElement.hasClass "style-glass").to.be.ok()
+      expect(enderElement.hasClass "show-effect-appear").to.be.ok()
+      expect(enderElement.hasClass "hide-effect-fade").to.be.ok()
+
+
+
+

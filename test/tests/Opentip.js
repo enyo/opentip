@@ -199,7 +199,7 @@ describe("Opentip", function() {
       return expect(opentip.hideTriggerElements).to.eql([]);
     });
   });
-  return describe("setContent()", function() {
+  describe("setContent()", function() {
     return it("should update the content if tooltip currently visible", function() {
       var element, opentip, stub;
       element = document.createElement("div");
@@ -214,6 +214,27 @@ describe("Opentip", function() {
       opentip.setContent("TEST2");
       expect(opentip.content).to.equal("TEST2");
       return expect(stub.callCount).to.equal(1);
+    });
+  });
+  return describe("buildContainer()", function() {
+    var element, opentip;
+    element = document.createElement("div");
+    opentip = new Opentip(element, {
+      style: "glass",
+      showEffect: "appear",
+      hideEffect: "fade"
+    });
+    it("should set the id", function() {
+      return expect(adapter.attr(opentip.container, "id")).to.equal("opentip-" + opentip.id);
+    });
+    return it("should set the classes", function() {
+      var enderElement;
+      enderElement = $(opentip.container[0]);
+      expect(enderElement.hasClass("opentip-container")).to.be.ok();
+      expect(enderElement.hasClass("completely-hidden")).to.be.ok();
+      expect(enderElement.hasClass("style-glass")).to.be.ok();
+      expect(enderElement.hasClass("show-effect-appear")).to.be.ok();
+      return expect(enderElement.hasClass("hide-effect-fade")).to.be.ok();
     });
   });
 });

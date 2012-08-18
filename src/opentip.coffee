@@ -58,6 +58,15 @@ class Opentip
     bottomLeft: 5
     left: 6
     topLeft: 7
+
+  class:
+    container: "opentip-container"
+    completelyHidden: "completely-hidden"
+    loading: "loading"
+    fixed: "fixed"
+    showEffectPrefix: "show-effect-"
+    hideEffectPrefix: "hide-effect-"
+    stylePrefix: "style-"
   
 
   # Sets up and configures the tooltip but does **not** build the html elements.
@@ -233,12 +242,12 @@ class Opentip
   #
   # The actual creation of the elements is in buildElements()
   buildContainer: ->
-    @container = @adapter.create """<div class="ot-container ot-completely-hidden style-#{@options.className}"></div>"""
+    @container = @adapter.create """<div id="opentip-#{@id}" class="#{@class.container} #{@class.completelyHidden} #{@class.stylePrefix}#{@options.className}"></div>"""
 
-    @adapter.addClass @container, "ot-loading" if @options.ajax
-    @adapter.addClass @container, "ot-fixed" if @options.fixed
-    @adapter.addClass @container, "ot-show-#{@options.showEffect}" if @options.showEffect
-    @adapter.addClass @container, "ot-hide-#{@options.hideEffect}" if @options.hideEffect
+    @adapter.addClass @container, @class.loading if @options.ajax
+    @adapter.addClass @container, @class.fixed if @options.fixed
+    @adapter.addClass @container, "#{@class.showEffectPrefix}#{@options.showEffect}" if @options.showEffect
+    @adapter.addClass @container, "#{@class.hideEffectPrefix}#{@options.hideEffect}" if @options.hideEffect
 
 
   # Sets the content and updates the HTML element if currently visible
@@ -249,6 +258,13 @@ class Opentip
 
 
   activate: ->
+    # The order is important here! Do not reverse.
+    # @setupObserversForReallyHiddenTip()
+    # @setupObserversForHiddenTip()
+
+
+  setupObservers: ->
+
 
 
 # Utils
