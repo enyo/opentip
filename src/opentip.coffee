@@ -104,7 +104,8 @@ class Opentip
         @options.ajax = off
 
     # If the event is 'click', no point in following a link
-    # if @options.showOn == 'click' && this.triggerElement.tagName.toLowerCase() == 'a') {if (evt) {evt.stop();}this.triggerElement.observe('click', function(e) {e.stop();});}
+    if @options.showOn == "click" && @adapter.tagName(@triggerElement) == "A"
+      @adapter.observe @triggerElement, "click", (->), "stop propagation"
 
 
 

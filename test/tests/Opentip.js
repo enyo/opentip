@@ -55,13 +55,25 @@ describe("Opentip", function() {
       expect(opentip.options.ajax).to.be.a("object");
       return expect(opentip.options.ajax.url).to.equal("http://testlink");
     });
-    return it("should disable AJAX if neither URL or a link HREF is provided", function() {
+    it("should disable AJAX if neither URL or a link HREF is provided", function() {
       var element, opentip;
       element = $("<div>text</div>").get(0);
       opentip = new Opentip(element, {
         ajax: true
       });
       return expect(opentip.options.ajax).to.not.be.ok();
+    });
+    return it("should disable a link if the event is onClick", function() {
+      var element, opentip;
+      sinon.spy(Opentip.adapter, "observe");
+      element = $("<a href=\"http://testlink\">link</a>").get(0);
+      opentip = new Opentip(element, {
+        showOn: "click"
+      });
+      expect(Opentip.adapter.observe.calledOnce).to.be.ok();
+      expect(Opentip.adapter.observe.getCall(0).args[1]).to.equal("click");
+      expect(Opentip.adapter.observe.getCall(0).args[3]).to.be.ok();
+      return Opentip.adapter.observe.restore();
     });
   });
   return describe("setContent()", function() {

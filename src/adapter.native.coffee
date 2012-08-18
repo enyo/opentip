@@ -36,6 +36,17 @@ class Adapter
   attr: (element, attr) ->
     result = element.getAttribute?(attr)
 
+  # Observe given eventName
+  observe: (element, eventName, observer, stopPropagation) ->
+    obs = (e) ->
+      if stopPropagation
+        e.preventDefault()
+        e.stopPropagation()
+        e.stopped = yes
+      observer.apply this, arguments
+
+    element.addEventListener eventName, obs
+
 
   # Utility functions
   # =================

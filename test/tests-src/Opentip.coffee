@@ -45,6 +45,18 @@ describe "Opentip", ->
       opentip = new Opentip element, ajax: on
       expect(opentip.options.ajax).to.not.be.ok()
 
+    it "should disable a link if the event is onClick", ->
+      sinon.spy Opentip.adapter, "observe"
+      element = $("""<a href="http://testlink">link</a>""").get(0)
+      opentip = new Opentip element, showOn: "click"
+
+      expect(Opentip.adapter.observe.calledOnce).to.be.ok()
+      expect(Opentip.adapter.observe.getCall(0).args[1]).to.equal "click"
+      expect(Opentip.adapter.observe.getCall(0).args[3]).to.be.ok()
+
+      Opentip.adapter.observe.restore()
+
+
   describe "setContent()", ->
     it "should update the content if tooltip currently visible", ->
       opentip = new Opentip "div", "content"

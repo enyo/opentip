@@ -1,5 +1,6 @@
 
 $ = ender
+bean = require "bean"
 
 describe "Ender adapter", ->
   adapter = Opentip.adapters.ender
@@ -36,6 +37,18 @@ describe "Ender adapter", ->
       it "should return the attribute of passed ender element", ->
         element = $ """<a href="http://link"></a>"""
         expect(adapter.attr element, "href").to.equal "http://link"
+
+    describe "observe()", ->
+      it "should observe given event on native element", (done) ->
+        element = document.createElement "a"
+        adapter.observe element, "click", -> done()
+        element.click()
+      it "should observe given event on ender element", (done) ->
+        element = $ "<a>link</a>"
+        adapter.observe element, "click", -> done()
+        element.get(0).click()
+      it "should handle stopPropagation"
+
 
 
 

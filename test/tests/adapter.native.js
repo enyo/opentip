@@ -31,7 +31,7 @@ describe("Native adapter", function() {
         return expect(adapter.tagName(element)).to.equal("DIV");
       });
     });
-    return describe("attr()", function() {
+    describe("attr()", function() {
       return it("should return the attribute of passed element", function() {
         var element;
         element = document.createElement("a");
@@ -40,6 +40,17 @@ describe("Native adapter", function() {
         expect(adapter.attr(element, "class")).to.equal("test-class");
         return expect(adapter.attr(element, "href")).to.equal("http://link");
       });
+    });
+    return describe("observe()", function() {
+      it("should attach an event listener", function(done) {
+        var element;
+        element = document.createElement("a");
+        adapter.observe(element, "click", function() {
+          return done();
+        });
+        return element.click();
+      });
+      return it("should handle stopPropagation");
     });
   });
 });

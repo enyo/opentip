@@ -31,5 +31,11 @@ describe "Native adapter", ->
         expect(adapter.attr element, "class").to.equal "test-class"
         expect(adapter.attr element, "href").to.equal "http://link"
 
+    describe "observe()", ->
+      it "should attach an event listener", (done) ->
+        element = document.createElement "a"
+        adapter.observe element, "click", -> done()
+        element.click()
+      it "should handle stopPropagation"
 
 

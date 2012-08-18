@@ -6,6 +6,8 @@
 # Because $ is my favorite character
 $ = ender
 
+# Using bean as event handler
+bean = require "bean"
 
 # Augment ender
 $.ender {
@@ -41,6 +43,13 @@ class Adapter
 
   # Returns the given attribute of element
   attr: (element, attr) -> $(element).attr attr
+
+  # Observe given eventName
+  observe: (element, eventName, observer, stopPropagation) ->
+    obs = (e) ->
+      e.stop() if stopPropagation
+      observer.apply this, arguments
+    $(element).on eventName, obs
 
 
 
