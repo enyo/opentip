@@ -21,9 +21,9 @@ describe "Opentip", ->
 
   describe "constructor()", ->
     before ->
-      sinon.stub Opentip::, "init"
+      sinon.stub Opentip::, "_init"
     after ->
-      Opentip::init.restore()
+      Opentip::_init.restore()
     it "arguments should be optional", ->
       element = adapter.create "<div></div>"
       opentip = new Opentip element, "content"
@@ -138,7 +138,7 @@ describe "Opentip", ->
     it "should update the content if tooltip currently visible", ->
       element = document.createElement "div"
       opentip = new Opentip element, showOn: "click"
-      stub = sinon.stub opentip, "updateElementContent"
+      stub = sinon.stub opentip, "_updateElementContent"
       opentip.visible = no
       opentip.setContent "TEST"
       expect(opentip.content).to.equal "TEST"
@@ -146,6 +146,7 @@ describe "Opentip", ->
       opentip.setContent "TEST2"
       expect(opentip.content).to.equal "TEST2"
       expect(stub.callCount).to.equal 1
+      opentip._updateElementContent.restore()
 
   describe "buildContainer()", ->
     element = document.createElement "div"

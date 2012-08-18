@@ -167,7 +167,7 @@ class Opentip
     @options = options
 
     # Build the HTML elements when the dom is ready.
-    @adapter.domReady => @init()
+    @adapter.domReady => @_init()
 
 
   # Initializes the tooltip by creating the container and setting up the event
@@ -177,8 +177,8 @@ class Opentip
   # actually shows for the first time.
   #
   # This function activates the tooltip as well.
-  init: ->
-    @buildContainer()
+  _init: ->
+    @_buildContainer()
 
     if @options.hideTrigger
 
@@ -225,7 +225,7 @@ class Opentip
 
 
     @bound = { }
-    @bound[methodToBind] = => @[methodToBind].apply this, arguments for methodToBind in [
+    @bound[methodToBind] = (=> @[methodToBind].apply this, arguments) for methodToBind in [
       "prepareToShow"
       "prepareToHide"
       "show"
@@ -241,7 +241,7 @@ class Opentip
   # attach events to it.
   #
   # The actual creation of the elements is in buildElements()
-  buildContainer: ->
+  _buildContainer: ->
     @container = @adapter.create """<div id="opentip-#{@id}" class="#{@class.container} #{@class.completelyHidden} #{@class.stylePrefix}#{@options.className}"></div>"""
 
     @adapter.addClass @container, @class.loading if @options.ajax
@@ -251,10 +251,15 @@ class Opentip
 
 
   # Sets the content and updates the HTML element if currently visible
-  setContent: (@content) -> @updateElementContent() if @visible
+  #
+  # This can be a function or a string. The function will be executed, and the
+  # result used as new content of the tooltip.
+  setContent: (@content) -> @_updateElementContent() if @visible
 
-
-  updateElementContent: ->
+  # Actually updates the content.
+  #
+  # If content is a function it is evaluated here.
+  _updateElementContent: ->
 
 
   activate: ->
@@ -263,7 +268,7 @@ class Opentip
     # @setupObserversForHiddenTip()
 
 
-  setupObservers: ->
+  _setupObservers: ->
 
   prepareToShow: ->
   show: ->

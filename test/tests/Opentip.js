@@ -29,10 +29,10 @@ describe("Opentip", function() {
   });
   describe("constructor()", function() {
     before(function() {
-      return sinon.stub(Opentip.prototype, "init");
+      return sinon.stub(Opentip.prototype, "_init");
     });
     after(function() {
-      return Opentip.prototype.init.restore();
+      return Opentip.prototype._init.restore();
     });
     it("arguments should be optional", function() {
       var element, opentip;
@@ -206,14 +206,15 @@ describe("Opentip", function() {
       opentip = new Opentip(element, {
         showOn: "click"
       });
-      stub = sinon.stub(opentip, "updateElementContent");
+      stub = sinon.stub(opentip, "_updateElementContent");
       opentip.visible = false;
       opentip.setContent("TEST");
       expect(opentip.content).to.equal("TEST");
       opentip.visible = true;
       opentip.setContent("TEST2");
       expect(opentip.content).to.equal("TEST2");
-      return expect(stub.callCount).to.equal(1);
+      expect(stub.callCount).to.equal(1);
+      return opentip._updateElementContent.restore();
     });
   });
   return describe("buildContainer()", function() {
