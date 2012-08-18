@@ -138,7 +138,7 @@ describe("Generic adapter", function() {
             })()).to.eql([]);
           });
         });
-        return describe("observe()", function() {
+        describe("observe()", function() {
           return it("should attach an event listener", function(done) {
             var element;
             element = document.createElement("a");
@@ -146,6 +146,20 @@ describe("Generic adapter", function() {
               return done();
             });
             return element.click();
+          });
+        });
+        return describe("stopObserving()", function() {
+          return it("should remove event listener", function() {
+            var element, listener;
+            element = document.createElement("a");
+            listener = sinon.stub();
+            adapter.observe(element, "click", listener);
+            element.click();
+            element.click();
+            expect(listener.callCount).to.equal(2);
+            adapter.stopObserving(element, "click", listener);
+            element.click();
+            return expect(listener.callCount).to.equal(2);
           });
         });
       });

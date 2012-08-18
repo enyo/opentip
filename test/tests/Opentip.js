@@ -81,7 +81,6 @@ describe("Opentip", function() {
       });
       expect(adapter.observe.calledOnce).to.be.ok();
       expect(adapter.observe.getCall(0).args[1]).to.equal("click");
-      expect(adapter.observe.getCall(0).args[3]).to.be.ok();
       return adapter.observe.restore();
     });
     it("should take all options from selected style", function() {
@@ -183,20 +182,20 @@ describe("Opentip", function() {
       opentip = new Opentip(element, {
         showOn: "click"
       });
-      expect(opentip.showTriggerElementsWhenHidden).to.eql([
+      expect(opentip.showTriggersWhenHidden).to.eql([
         {
           event: "click",
           element: element
         }
       ]);
-      expect(opentip.showTriggerElementsWhenVisible).to.eql([]);
-      expect(opentip.hideTriggerElements).to.eql([]);
+      expect(opentip.showTriggersWhenVisible).to.eql([]);
+      expect(opentip.hideTriggers).to.eql([]);
       opentip = new Opentip(element, {
         showOn: "creation"
       });
-      expect(opentip.showTriggerElementsWhenHidden).to.eql([]);
-      expect(opentip.showTriggerElementsWhenVisible).to.eql([]);
-      return expect(opentip.hideTriggerElements).to.eql([]);
+      expect(opentip.showTriggersWhenHidden).to.eql([]);
+      expect(opentip.showTriggersWhenVisible).to.eql([]);
+      return expect(opentip.hideTriggers).to.eql([]);
     });
   });
   describe("init()", function() {

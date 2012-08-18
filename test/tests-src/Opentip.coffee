@@ -59,7 +59,6 @@ describe "Opentip", ->
 
       expect(adapter.observe.calledOnce).to.be.ok()
       expect(adapter.observe.getCall(0).args[1]).to.equal "click"
-      expect(adapter.observe.getCall(0).args[3]).to.be.ok()
 
       adapter.observe.restore()
 
@@ -125,13 +124,13 @@ describe "Opentip", ->
     it "should setup all trigger elements", ->
       element = adapter.create "<div></div>"
       opentip = new Opentip element, showOn: "click"
-      expect(opentip.showTriggerElementsWhenHidden).to.eql [ { event: "click", element: element } ]
-      expect(opentip.showTriggerElementsWhenVisible).to.eql [ ]
-      expect(opentip.hideTriggerElements).to.eql [ ]
+      expect(opentip.showTriggersWhenHidden).to.eql [ { event: "click", element: element } ]
+      expect(opentip.showTriggersWhenVisible).to.eql [ ]
+      expect(opentip.hideTriggers).to.eql [ ]
       opentip = new Opentip element, showOn: "creation"
-      expect(opentip.showTriggerElementsWhenHidden).to.eql [ ]
-      expect(opentip.showTriggerElementsWhenVisible).to.eql [ ]
-      expect(opentip.hideTriggerElements).to.eql [ ]
+      expect(opentip.showTriggersWhenHidden).to.eql [ ]
+      expect(opentip.showTriggersWhenVisible).to.eql [ ]
+      expect(opentip.hideTriggers).to.eql [ ]
 
 
   describe "init()", ->

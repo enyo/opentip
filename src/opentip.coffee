@@ -125,7 +125,11 @@ class Opentip
 
     # If the event is 'click', no point in following a link
     if options.showOn == "click" && @adapter.tagName(@triggerElement) == "A"
-      @adapter.observe @triggerElement, "click", (->), "stop propagation"
+      @adapter.observe @triggerElement, "click", (e) ->
+        e.preventDefault()
+        e.stopPropagation()
+        e.stopped = yes
+
 
     # Doesn't make sense to use a target without the opentip being fixed
     options.fixed = yes if options.target
@@ -150,17 +154,17 @@ class Opentip
       options.targetJoint[1] = if options.tipJoint[1] == "top" then "bottom" else if options.tipJoint[1] == "bottom" then "top" else "middle"
 
     # Used to show the opentip obviously
-    @showTriggerElementsWhenHidden = [ ]
+    @showTriggersWhenHidden = [ ]
 
     # Those ensure that opentip doesn't disappear when hovering other related elements
-    @showTriggerElementsWhenVisible = [ ]
+    @showTriggersWhenVisible = [ ]
 
     # Elements that hide Opentip
-    @hideTriggerElements = [ ]
+    @hideTriggers = [ ]
 
     # The obvious showTriggerELementWhenHidden is the options.showOn
     if options.showOn and options.showOn != "creation"
-      @showTriggerElementsWhenHidden.push
+      @showTriggersWhenHidden.push
         element: @triggerElement
         event: options.showOn
 
@@ -210,7 +214,7 @@ class Opentip
           hideTriggerElement = @adapter.wrap hideTrigger
 
         if hideTriggerElement
-          @hideTriggerElements.push
+          @hideTriggers.push
             element: hideTriggerElement
             event: hideOnEvent
 
@@ -219,7 +223,7 @@ class Opentip
             # trigger to that element, so the tooltip doesn't disappear when
             # hovering child elements. (Hovering children fires a mouseout
             # mouseover event)
-            @showTriggerElementsWhenVisible.push
+            @showTriggersWhenVisible.push
               element: hideTriggerElement
               event: "mouseover"
 
@@ -262,19 +266,65 @@ class Opentip
   _updateElementContent: ->
 
 
+  # Sets up appropriate observers
   activate: ->
-    # The order is important here! Do not reverse.
-    # @setupObserversForReallyHiddenTip()
-    # @setupObserversForHiddenTip()
+    @_setupObservers "hiding", "hidden"
+
+  # Hides the tooltip and sets up appropriate observers
+  deactivate: ->
+    @debug "Deactivating tooltip."
+    @hide()
+    @_setupObservers "hidden"
 
 
-  _setupObservers: ->
+  _setupObservers: (states...) ->
+    for state in states
+      switch state
+        when "showing"
+          # Setup the triggers to hide the tip
+          for trigger in @hideTriggers
+            @adapter.observe trigger.element, trigger.event, @bound.prepareToHide
+
+          # Remove the triggers to to show the tip
+          for trigger in @showTriggersWhenHidden
+            @adapter.stopObserving trigger.element, trigger.event, @bound.prepareToShow
+
+          # Start listening to window changes
+          @adapter.observe (if document.onresize? then document else window), "resize", @bound.reposition
+          @adapter.observe window, "scroll", @bound.reposition
+        when "visible"
+          # Most of the observers have already been handled by "showing"
+          # Add the triggers that make sure opentip doesn't hide prematurely
+          for trigger in showTriggersWhenVisible
+            @adapter.observe trigger.element, trigger.event, @bound.prepareToShow
+        when "hiding"
+          # Setup the triggers to show the tip
+          for trigger in @showTriggersWhenHidden
+            @adapter.observe trigger.element, trigger.event, @bound.prepareToShow
+          
+          # Remove the triggers that hide the tip
+          for trigger in @hideTriggers
+            @adapter.stopObserving trigger.element, trigger.event, @bound.prepareToHide
+
+          # No need to listen for window changes anymore
+          @adapter.stopObserving (if document.onresize? then document else window), "resize", @bound.reposition
+          @adapter.stopObserving window, "scroll", @bound.reposition
+        when "hidden"
+          # Most of the observers have already been handled by "hiding"
+          # Remove the trigger that would retrigger a `show` when tip is visible.
+          for trigger in @showTriggersWhenVisible
+            @adapter.stopObserving trigger.element, trigger.event, @bound.prepareToShow
+        else
+          throw new Error "Unknown state: #{state}"
 
   prepareToShow: ->
-    console.log "HI"
+
   show: ->
+
   prepareToHide: ->
+
   hide: ->
+
   reposition: ->
 
 # Utils

@@ -97,3 +97,16 @@ describe "Generic adapter", ->
             element = document.createElement "a"
             adapter.observe element, "click", -> done()
             element.click()
+
+        describe "stopObserving()", ->
+          it "should remove event listener", ->
+            element = document.createElement "a"
+            listener = sinon.stub()
+            adapter.observe element, "click", listener
+            element.click()
+            element.click()
+            expect(listener.callCount).to.equal 2
+            adapter.stopObserving element, "click", listener
+            element.click()
+            expect(listener.callCount).to.equal 2 # Shouldn't have changed
+

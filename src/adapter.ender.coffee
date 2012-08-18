@@ -53,12 +53,10 @@ class Adapter
   removeClass: (element, className) -> $(element).removeClass className
 
   # Observe given eventName
-  observe: (element, eventName, observer, stopPropagation) ->
-    obs = (e) ->
-      e.stop() if stopPropagation
-      observer.apply this, arguments
-    $(element).on eventName, obs
+  observe: (element, eventName, observer) -> $(element).on eventName, observer
 
+  # Stop observing event
+  stopObserving: (element, eventName, observer) -> $(element).unbind eventName, observer
 
 
   # Utility functions
