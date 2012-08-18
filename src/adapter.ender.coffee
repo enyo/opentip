@@ -40,11 +40,20 @@ class Adapter
     throw new Error "Multiple elements provided." if element.length > 1
     element
 
+  # Returns the unwrapped element
+  unwrap: (element) -> $(element).get 0
+
   # Returns the tag name of the element
   tagName: (element) -> $(element).get(0).tagName
 
   # Returns or sets the given attribute of element
   attr: (element, attr, value) -> $(element).attr attr, value
+
+  # Finds elements by selector
+  find: (element, selector) -> $(element).find selector
+
+  # Finds all elements by selector
+  findAll: -> @find.apply @, arguments
 
   # Add a class
   addClass: (element, className) -> $(element).addClass className
@@ -52,8 +61,21 @@ class Adapter
   # Remove a class
   removeClass: (element, className) -> $(element).removeClass className
 
+  # Set given css properties
+  css: (element, properties) -> $(element).css properties
+
+
+  # Updates the content of the element
+  update: (element, content, escape) ->
+    element = $ element
+    if escape
+      element.text content
+    else
+      element.html content
+
   # Observe given eventName
-  observe: (element, eventName, observer) -> $(element).on eventName, observer
+  observe: (element, eventName, observer) ->
+    $(element).on eventName, observer
 
   # Stop observing event
   stopObserving: (element, eventName, observer) -> $(element).unbind eventName, observer

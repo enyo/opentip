@@ -250,7 +250,7 @@ describe("Opentip", function() {
       var enderElement;
       enderElement = $(opentip.container[0]);
       expect(enderElement.hasClass("opentip-container")).to.be.ok();
-      expect(enderElement.hasClass("completely-hidden")).to.be.ok();
+      expect(enderElement.hasClass("hidden")).to.be.ok();
       expect(enderElement.hasClass("style-glass")).to.be.ok();
       expect(enderElement.hasClass("show-effect-appear")).to.be.ok();
       return expect(enderElement.hasClass("hide-effect-fade")).to.be.ok();

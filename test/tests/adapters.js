@@ -72,6 +72,16 @@ describe("Generic adapter", function() {
             return expect(adapter.tagName(element)).to.equal("DIV");
           });
         });
+        describe("unwrap()", function() {
+          return it("should properly return the unwrapped element", function() {
+            var element, unwrapped, unwrapped2, wrapped;
+            element = document.createElement("div");
+            wrapped = adapter.wrap(element);
+            unwrapped = adapter.unwrap(element);
+            unwrapped2 = adapter.unwrap(wrapped);
+            return expect((element === unwrapped && unwrapped === unwrapped2)).to.be.ok();
+          });
+        });
         describe("attr()", function() {
           it("should return the attribute of passed element", function() {
             var element;
@@ -136,6 +146,52 @@ describe("Generic adapter", function() {
               }
               return _results1;
             })()).to.eql([]);
+          });
+        });
+        describe("find()", function() {
+          it("should properly retrieve child elements", function() {
+            var a, b, element;
+            element = $("<div><span id=\"a-span\" class=\"a\"></span><div id=\"b-span\" class=\"b\"></div></div>").get(0);
+            a = adapter.unwrap(adapter.find(element, ".a"));
+            b = adapter.unwrap(adapter.find(element, ".b"));
+            expect(a.id).to.equal("a-span");
+            return expect(b.id).to.equal("b-span");
+          });
+          return it("should return null if no element", function() {
+            var a, element;
+            element = $("<div></div>").get(0);
+            a = adapter.unwrap(adapter.find(element, ".a"));
+            return expect(a).to.be(null);
+          });
+        });
+        describe("findAll()", function() {
+          it("should properly retrieve child elements", function() {
+            var a, element;
+            element = $("<div><span id=\"a-span\" class=\"a\"></span><span id=\"b-span\" class=\"b\"></span></div>").get(0);
+            a = adapter.findAll(element, "span");
+            return expect(a.length).to.equal(2);
+          });
+          return it("should return empty array if no element", function() {
+            var a, element;
+            element = $("<div></div>").get(0);
+            a = adapter.findAll(element, "span");
+            return expect(a.length).to.be(0);
+          });
+        });
+        describe("update()", function() {
+          it("should escape html if wanted", function() {
+            var element;
+            element = document.createElement("div");
+            adapter.update(element, "abc <div>test</div>", true);
+            return expect(element.firstChild.textContent).to.be("abc <div>test</div>");
+          });
+          return it("should not escape html if wanted", function() {
+            var element;
+            element = document.createElement("div");
+            adapter.update(element, "abc<div>test</div>", false);
+            expect(element.childNodes.length).to.be(2);
+            expect(element.firstChild.textContent).to.be("abc");
+            return expect(element.childNodes[1].textContent).to.be("test");
           });
         });
         describe("observe()", function() {

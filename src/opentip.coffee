@@ -51,7 +51,13 @@ class Opentip
 
   class:
     container: "opentip-container"
-    completelyHidden: "completely-hidden"
+
+    hidden: "hidden"
+    hiding: "hiding"
+    goingToShow: "going-to-show"
+    showing: "showing"
+    visible: "visible"
+
     loading: "loading"
     fixed: "fixed"
     showEffectPrefix: "show-effect-"
@@ -63,7 +69,9 @@ class Opentip
   #
   # `content`, `title` and `options` are optional but have to be in this order.
   constructor: (element, content, title, options) ->
-    this.id = ++@lastTipId
+    @id = ++@lastTipId
+
+    @debug "Creating Opentip #{@id}"
 
     @adapter = Opentip.adapter
 
@@ -231,7 +239,7 @@ class Opentip
 
 
     @bound = { }
-    @bound[methodToBind] = (=> @[methodToBind].apply this, arguments) for methodToBind in [
+    @bound[methodToBind] = (do (methodToBind) => return => @[methodToBind].apply this, arguments) for methodToBind in [
       "prepareToShow"
       "prepareToHide"
       "show"
@@ -248,13 +256,15 @@ class Opentip
   #
   # The actual creation of the elements is in buildElements()
   _buildContainer: ->
-    @container = @adapter.create """<div id="opentip-#{@id}" class="#{@class.container} #{@class.completelyHidden} #{@class.stylePrefix}#{@options.className}"></div>"""
+    @container = @adapter.create """<div id="opentip-#{@id}" class="#{@class.container} #{@class.hidden} #{@class.stylePrefix}#{@options.className}"></div>"""
 
     @adapter.addClass @container, @class.loading if @options.ajax
     @adapter.addClass @container, @class.fixed if @options.fixed
     @adapter.addClass @container, "#{@class.showEffectPrefix}#{@options.showEffect}" if @options.showEffect
     @adapter.addClass @container, "#{@class.hideEffectPrefix}#{@options.hideEffect}" if @options.hideEffect
 
+  # Builds all elements inside the container.
+  _buildElements: ->
 
   # Sets the content and updates the HTML element if currently visible
   #
@@ -266,11 +276,29 @@ class Opentip
   #
   # If content is a function it is evaluated here.
   _updateElementContent: ->
+    contentDiv = @adapter.find @container, ".content"
+
+    if contentDiv?
+      if typeof @content == "function"
+        @debug "Executing content function."
+        @content = @content this
+      @adapter.update contentDiv, @content, @options.escapeHtml
+
+    @_storeAndFixDimensions()
+
+  _storeAndFixDimensions: ->
+    # TODO
+    # this.container.setStyle({width: 'auto', left: '0px', top: '0px'});
+    # this.dimensions = this.container.getDimensions();
+    # this.container.setStyle({width: this.dimensions.width + 'px', left: this.lastPosition.left + 'px', top: this.lastPosition.top + 'px'});
 
 
   # Sets up appropriate observers
   activate: ->
-    @_setupObservers "hiding", "hidden"
+    # The order is important here!
+    # "hidden" removes the observers for the `showTriggersWhenVisible` which
+    # could be the same as the `showTriggersWhenHidden`.
+    @_setupObservers "hidden", "preparingToHide"
 
   # Hides the tooltip and sets up appropriate observers
   deactivate: ->
@@ -282,7 +310,7 @@ class Opentip
   _setupObservers: (states...) ->
     for state in states
       switch state
-        when "showing"
+        when "preparingToShow"
           # Setup the triggers to hide the tip
           for trigger in @hideTriggers
             @adapter.observe trigger.element, trigger.event, @bound.prepareToHide
@@ -295,11 +323,11 @@ class Opentip
           @adapter.observe (if document.onresize? then document else window), "resize", @bound.reposition
           @adapter.observe window, "scroll", @bound.reposition
         when "visible"
-          # Most of the observers have already been handled by "showing"
+          # Most of the observers have already been handled by "preparingToShow"
           # Add the triggers that make sure opentip doesn't hide prematurely
-          for trigger in showTriggersWhenVisible
+          for trigger in @showTriggersWhenVisible
             @adapter.observe trigger.element, trigger.event, @bound.prepareToShow
-        when "hiding"
+        when "preparingToHide"
           # Setup the triggers to show the tip
           for trigger in @showTriggersWhenHidden
             @adapter.observe trigger.element, trigger.event, @bound.prepareToShow
@@ -312,16 +340,83 @@ class Opentip
           @adapter.stopObserving (if document.onresize? then document else window), "resize", @bound.reposition
           @adapter.stopObserving window, "scroll", @bound.reposition
         when "hidden"
-          # Most of the observers have already been handled by "hiding"
+          # Most of the observers have already been handled by "preparingToHide"
           # Remove the trigger that would retrigger a `show` when tip is visible.
           for trigger in @showTriggersWhenVisible
             @adapter.stopObserving trigger.element, trigger.event, @bound.prepareToShow
         else
           throw new Error "Unknown state: #{state}"
-
+    null
   prepareToShow: ->
+    @_abortHiding()
+    return if @visible
+
+    @debug "Showing in #{@options.delay}s."
+
+    Opentip._abortShowingGroup @options.group if @options.group
+
+    @preparingToShow = true
+
+    # Even though it is not yet visible, I already attach the observers, so the
+    # tooltip won't show if a hideEvent is triggered.
+    @_setupObservers "preparingToShow"
+
+    # Making sure the tooltip is at the right position as soon as it shows
+    @_followMousePosition()
+    @reposition()
+
+    @_showTimeoutId = setTimeout @bound.show, @options.delay || 0
 
   show: ->
+    @_clearTimeouts()
+    return if @visible
+
+    # Thanks to Torsten Saam for this enhancement.
+    return @deactivate() unless @_triggerElementExists()
+
+
+    @debug "Showing now."
+
+    Opentip._hideGroup @options.group if @options.group
+
+    @visible = yes
+    @preparingToShow = no
+
+    @_buildElement unless @tooltipElement
+    @_updateElementContent()
+
+
+    @_loadAjax() if @options.ajax and not @loaded
+
+    @_searchAndActivateHideButtons()
+
+    @_ensureTriggerElement()
+
+    @container.css zIndex: @lastZIndex++
+
+    # The order is important here! Do not reverse.
+    @_setupObservers "visible", "preparingToShow"
+
+    @reposition()
+
+    @adapter.removeClass @container, @class.hiding
+    @adapter.removeClass @container, @class.hidden
+    @adapter.addClass @container, @class.goingToShow
+
+    @defer =>
+      @setCss3Style @container, "transition-duration": "#{@options.showEffectDuration}s"
+      @adapter.removeClass @container, @class.goingToShow
+      @adapter.addClass @container, @class.showing
+
+      delay = 0
+      delay = @options.showEffectDuration if @options.showEffect and @options.showEffectDuration
+
+      @_visibilityStateTimeoutId = setTimeout =>
+        @adapter.removeClass @container, @class.showing
+        @adapter.addClass @container, @class.visible
+      , delay
+
+      @_activateFirstInput()
 
   _abortShowing: ->
 
@@ -333,8 +428,84 @@ class Opentip
 
   reposition: ->
 
+
+  _searchAndActivateHideButtons: ->
+    if !@options.hideTrigger or "closeButton" in @options.hideTrigger
+      for element in @adapter.findAll @container, ".close"
+        @hideTriggers.push
+          element: @adapter.wrap element
+          event: "click"
+
+      # Creating the observers for the new close buttons
+      @_setupObservers "visible" if @visible
+
+  _activateFirstInput: ->
+    input = @adapter.unwrap @adapter.find @container, "input, textarea"
+    input?.focus?()
+
+  # Calls reposition() everytime the mouse moves
+  _followMousePosition: -> @adapter.observe document.body, "mousemove", @bound.reposition unless @options.fixed
+
+  # Removes observer
+  _stopFollowingMousePosition: -> @adapter.stopObserving document.body, "mousemove", @bound.reposition unless @options.fixed
+
+
+  # I thinks those are self explanatory
+  _clearShowTimeout: -> clearTimeout @_showTimeoutId
+  _clearHideTimeout: -> clearTimeout @_hideTimeoutId
+  _clearTimeouts: ->
+    clearTimeout @_visibilityStateTimeoutId
+    @_clearShowTimeout()
+    @_clearHideTimeout()
+
+  # Makes sure the trigger element exists, is visible, and part of this world.
+  _triggerElementExists: ->
+    el = @adapter.unwrap @triggerElement
+    while el.parentNode
+      return yes if el.parentNode.tagName == "BODY"
+      el = el.parentNode
+
+    # TODO: Add a check if the element is actually visible
+    return no
+
+  @_loadAjax: ->
+    # TODO
+    throw new Error "Not supported yet."
+
+  # In milliseconds, how often opentip should check for the existance of the element
+  _ensureTriggerElementInterval: 1000
+
+  # Regularely checks if the element is still in the dom.
+  _ensureTriggerElement: ->
+    @_deactivateTriggerElementEnsurance()
+    @deactivate unless @_triggerElementExists()
+    @_ensureTriggerElementInterval = setTimeout (=> @_ensureTriggerElement()), @_ensureTriggerElementInterval
+
+  _deactivateTriggerElementEnsurance: ->
+    clearTimeout @_ensureTriggerElementInterval
+
+
+
 # Utils
 # -----
+
+vendors = [
+  "khtml"
+  "ms"
+  "o"
+  "moz"
+  "webkit"
+]
+
+# Sets a sepcific css3 value for all vendors
+Opentip::setCss3Style = (element, styles) ->
+  element = @adapter.unwrap element
+  for own prop, value of styles
+    for vendor in vendors
+      element.style["-#{vendor}-#{prop}"] = value
+    element.style[prop] = value
+
+Opentip::defer = (func) -> setTimeout func, 0
 
 Opentip::ucfirst = (string) ->
   return "" unless string?
@@ -358,7 +529,7 @@ Opentip::sanitizePosition = (position) ->
 
   verticalPosition = i for i in [ "top", "bottom" ] when ~position.indexOf i
   horizontalPosition = i for i in [ "left", "right" ] when ~position.indexOf i
-  horizontalPosition = @ucfirst horizontalPosition if verticalPosition
+  horizontalPosition = @ucfirst horizontalPosition if verticalPosition?
 
   position = "#{verticalPosition ? ""}#{horizontalPosition ? ""}"
   
@@ -382,6 +553,11 @@ Opentip::debug = -> console.debug.apply console, arguments if @debugging and con
 
 
 
+# Startup
+# -------
+
+# TODO write startup script
+
 
 
 # Publicly available
@@ -390,6 +566,13 @@ Opentip.version = "2.0.0-dev"
 
 Opentip.debugging = off
 
+Opentip.tips = [ ]
+
+Opentip._abortShowingGroup = ->
+  # TODO
+
+Opentip._hideGroup = ->
+  # TODO
 
 # A list of possible adapters. Used for testing
 Opentip.adapters = { }
@@ -413,16 +596,6 @@ Opentip.positions = [
 Opentip.position = { }
 for position, i in Opentip.positions
   Opentip.position[position] = i
-
-# Different positions
-# Opentip.top = [ "center", "top" ]
-# Opentip.topRight = [ "right", "top" ]
-# Opentip.right = [ "right", "middle" ]
-# Opentip.bottomRight = [ "right", "bottom" ]
-# Opentip.bottom = [ "center", "bottom" ]
-# Opentip.bottomLeft = [ "left", "bottom" ]
-# Opentip.left = [ "left", "middle" ]
-# Opentip.topLeft = [ "left", "top" ]
 
 
 # The standard style.

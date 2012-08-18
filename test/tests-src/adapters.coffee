@@ -61,6 +61,14 @@ describe "Generic adapter", ->
             element = document.createElement "div"
             expect(adapter.tagName element).to.equal "DIV"
 
+        describe "unwrap()", ->
+          it "should properly return the unwrapped element", ->
+            element = document.createElement "div"
+            wrapped = adapter.wrap element
+            unwrapped = adapter.unwrap element
+            unwrapped2 = adapter.unwrap wrapped
+            expect(element == unwrapped == unwrapped2).to.be.ok()
+
         describe "attr()", ->
           it "should return the attribute of passed element", ->
             element = document.createElement "a"
@@ -91,6 +99,40 @@ describe "Generic adapter", ->
             expect(val for val in element.classList).to.eql [ "test" ]
             adapter.removeClass element, "test"
             expect(val for val in element.classList).to.eql [ ]
+
+        describe "find()", ->
+          it "should properly retrieve child elements", ->
+            element = $("""<div><span id="a-span" class="a"></span><div id="b-span" class="b"></div></div>""").get(0)
+            a = adapter.unwrap adapter.find element, ".a"
+            b = adapter.unwrap adapter.find element, ".b"
+            expect(a.id).to.equal "a-span"
+            expect(b.id).to.equal "b-span"
+          it "should return null if no element", ->
+            element = $("""<div></div>""").get(0)
+            a = adapter.unwrap adapter.find element, ".a"
+            expect(a).to.be null
+
+        describe "findAll()", ->
+          it "should properly retrieve child elements", ->
+            element = $("""<div><span id="a-span" class="a"></span><span id="b-span" class="b"></span></div>""").get(0)
+            a = adapter.findAll element, "span"
+            expect(a.length).to.equal 2
+          it "should return empty array if no element", ->
+            element = $("""<div></div>""").get(0)
+            a = adapter.findAll element, "span"
+            expect(a.length).to.be 0
+
+        describe "update()", ->
+          it "should escape html if wanted", ->
+            element = document.createElement "div"
+            adapter.update element, "abc <div>test</div>", yes
+            expect(element.firstChild.textContent).to.be "abc <div>test</div>"
+          it "should not escape html if wanted", ->
+            element = document.createElement "div"
+            adapter.update element, "abc<div>test</div>", no
+            expect(element.childNodes.length).to.be 2
+            expect(element.firstChild.textContent).to.be "abc"
+            expect(element.childNodes[1].textContent).to.be "test"
 
         describe "observe()", ->
           it "should attach an event listener", (done) ->

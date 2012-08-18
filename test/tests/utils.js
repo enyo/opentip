@@ -13,9 +13,23 @@ describe("utils", function() {
       return expect(Opentip.prototype.sanitizePosition("left - top")).to.equal("topLeft");
     });
   });
-  return describe("ucfirst()", function() {
+  describe("ucfirst()", function() {
     return it("should transform the first character to uppercase", function() {
       return expect(Opentip.prototype.ucfirst("abc def")).to.equal("Abc def");
+    });
+  });
+  return describe("setCss3Style()", function() {
+    return it("should set the style for all vendors", function() {
+      var element;
+      element = document.createElement("div");
+      Opentip.prototype.setCss3Style(element, {
+        opacity: "0.5",
+        "transition-duration": "1s"
+      });
+      expect(element.style["-moz-transition-duration"]).to.be("1s");
+      expect(element.style["-moz-opacity"]).to.be("0.5");
+      expect(element.style["-webkit-transition-duration"]).to.be("1s");
+      return expect(element.style["-o-transition-duration"]).to.be("1s");
     });
   });
 });

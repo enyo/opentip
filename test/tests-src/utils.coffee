@@ -14,3 +14,12 @@ describe "utils", ->
   describe "ucfirst()", ->
     it "should transform the first character to uppercase", ->
       expect(Opentip::ucfirst "abc def").to.equal "Abc def"
+
+  describe "setCss3Style()", ->
+    it "should set the style for all vendors", ->
+      element = document.createElement "div"
+      Opentip::setCss3Style element, { opacity: "0.5", "transition-duration": "1s" }
+      expect(element.style["-moz-transition-duration"]).to.be "1s"
+      expect(element.style["-moz-opacity"]).to.be "0.5"
+      expect(element.style["-webkit-transition-duration"]).to.be "1s"
+      expect(element.style["-o-transition-duration"]).to.be "1s"
