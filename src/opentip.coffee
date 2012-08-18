@@ -97,7 +97,7 @@ class Opentip
 
     # If the url of an Ajax request is not set, get it from the link it's attached to.
     if @options.ajax and not options.ajax.url?
-      if @adapter.tagName @triggerElement == "A"
+      if @adapter.tagName(@triggerElement) == "A"
         @options.ajax = { } if typeof @options.ajax != "object"
         @options.ajax.url = @adapter.attr @triggerElement, "href"
       else 

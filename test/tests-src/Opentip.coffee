@@ -1,4 +1,6 @@
 
+$ = ender
+
 describe "Opentip", ->
   describe "debug()", ->
     consoleDebug = console.debug
@@ -35,7 +37,10 @@ describe "Opentip", ->
         expect(opentip.options.title).to.equal undefined
 
       it "should use the href attribute if ajax and an A element", ->
-        opentip = new Opentip ""
+        element = $("""<a href="http://testlink">link</a>""").get(0)
+        opentip = new Opentip element, ajax: on
+        expect(opentip.options.ajax).to.be.a "object"
+        expect(opentip.options.ajax.url).to.equal "http://testlink"
 
   describe "setContent()", ->
     it "should update the content if tooltip currently visible", ->
