@@ -147,8 +147,23 @@ class Opentip
       # top -> bottom, bottom -> top, middle -> middle
       options.targetJoint[1] = if options.tipJoint[1] == "top" then "bottom" else if options.tipJoint[1] == "bottom" then "top" else "middle"
 
+    # Used to show the opentip obviously
+    @showTriggerElementsWhenHidden = [ ]
+
+    # Those ensure that opentip doesn't disappear when hovering other related elements
+    @showTriggerElementsWhenVisible = [ ]
+
+    # Elements that hide Opentip
+    @hideTriggerElements = [ ]
+
+    # The obvious showTriggerELementWhenHidden is the options.showOn
+    if options.showOn and options.showOn != "creation"
+      @showTriggerElementsWhenHidden.push
+        element: @triggerElement
+        event: options.showOn
 
     @options = options
+
 
   # This actually builds the tootlip and sets up observers
   build: ->
@@ -210,8 +225,17 @@ Opentip.adapter = null
 
 Opentip.documentIsLoaded = no
 
+# Different positions
+Opentip.topLeft = [ "left", "top" ]
+Opentip.top = [ "center", "top" ]
+Opentip.topRight = [ "right", "top" ]
+Opentip.right = [ "right", "middle" ]
+Opentip.bottomRight = [ "right", "bottom" ]
+Opentip.bottom = [ "center", "bottom" ]
+Opentip.bottomLeft = [ "left", "bottom" ]
+Opentip.left = [ "left", "middle" ]
 
-  
+
 # The standard style.
 Opentip.styles =
   standard:    

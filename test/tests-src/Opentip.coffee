@@ -115,6 +115,17 @@ describe "Opentip", ->
       expect(opentip.options.targetJoint).to.eql [ "left", "top" ]
 
 
+    it "should setup all trigger elements", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, showOn: "click"
+      expect(opentip.showTriggerElementsWhenHidden).to.eql [ { event: "click", element: element } ]
+      expect(opentip.showTriggerElementsWhenVisible).to.eql [ ]
+      expect(opentip.hideTriggerElements).to.eql [ ]
+      opentip = new Opentip element, showOn: "creation"
+      expect(opentip.showTriggerElementsWhenHidden).to.eql [ ]
+      expect(opentip.showTriggerElementsWhenVisible).to.eql [ ]
+      expect(opentip.hideTriggerElements).to.eql [ ]
+
 
   describe "setContent()", ->
     it "should update the content if tooltip currently visible", ->

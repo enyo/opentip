@@ -152,7 +152,7 @@ describe("Opentip", function() {
       });
       return expect(opentip.options.delay).to.equal(0.2);
     });
-    return it("the targetJoint should be the inverse of the tipJoint if none provided", function() {
+    it("the targetJoint should be the inverse of the tipJoint if none provided", function() {
       var element, opentip;
       element = document.createElement("div");
       opentip = new Opentip(element, {
@@ -167,6 +167,27 @@ describe("Opentip", function() {
         tipJoint: ["right", "bottom"]
       });
       return expect(opentip.options.targetJoint).to.eql(["left", "top"]);
+    });
+    return it("should setup all trigger elements", function() {
+      var element, opentip;
+      element = document.createElement("div");
+      opentip = new Opentip(element, {
+        showOn: "click"
+      });
+      expect(opentip.showTriggerElementsWhenHidden).to.eql([
+        {
+          event: "click",
+          element: element
+        }
+      ]);
+      expect(opentip.showTriggerElementsWhenVisible).to.eql([]);
+      expect(opentip.hideTriggerElements).to.eql([]);
+      opentip = new Opentip(element, {
+        showOn: "creation"
+      });
+      expect(opentip.showTriggerElementsWhenHidden).to.eql([]);
+      expect(opentip.showTriggerElementsWhenVisible).to.eql([]);
+      return expect(opentip.hideTriggerElements).to.eql([]);
     });
   });
   return describe("setContent()", function() {
