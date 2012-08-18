@@ -77,7 +77,7 @@ describe("Opentip", function() {
     });
     it("should take all options from selected style", function() {
       var element, opentip;
-      element = $("<div></div>").get(0);
+      element = document.createElement("div");
       opentip = new Opentip(element, {
         style: "glass",
         showOn: "click"
@@ -86,14 +86,57 @@ describe("Opentip", function() {
       expect(opentip.options.className).to.equal("glass");
       return expect(opentip.options.stemSize).to.equal(8);
     });
-    return it("should set the options to fixed if a target is provided", function() {
+    it("should set the options to fixed if a target is provided", function() {
       var element, opentip;
-      element = $("<div></div>").get(0);
+      element = document.createElement("div");
       opentip = new Opentip(element, {
         target: true,
         fixed: false
       });
       return expect(opentip.options.fixed).to.be.ok();
+    });
+    it("should use provided stem", function() {
+      var element, opentip;
+      element = document.createElement("div");
+      opentip = new Opentip(element, {
+        stem: ["center", "bottom"],
+        tipJoin: ["left", "top"]
+      });
+      return expect(opentip.options.stem).to.eql(["center", "bottom"]);
+    });
+    it("should take the tipJoint as stem if stem is just true", function() {
+      var element, opentip;
+      element = document.createElement("div");
+      opentip = new Opentip(element, {
+        stem: true,
+        tipJoin: ["left", "top"]
+      });
+      return expect(opentip.options.stem).to.eql(["left", "top"]);
+    });
+    it("should use provided target", function() {
+      var element, element2, opentip;
+      element = document.createElement("div");
+      element2 = document.createElement("div");
+      opentip = new Opentip(element, {
+        target: element2
+      });
+      return expect(opentip.options.target).to.equal(element2);
+    });
+    it("should take the triggerElement as target if target is just true", function() {
+      var element, opentip;
+      element = document.createElement("div");
+      opentip = new Opentip(element, {
+        target: true
+      });
+      return expect(opentip.options.target).to.equal(element);
+    });
+    return it("currentStemPosition should be set to inital stemPosition", function() {
+      var element, opentip;
+      element = document.createElement("div");
+      opentip = new Opentip(element, {
+        stem: ["left", "top"]
+      });
+      return expect(opentip.currentStemPosition).to.eql(["left", "top"]);
     });
   });
   return describe("setContent()", function() {

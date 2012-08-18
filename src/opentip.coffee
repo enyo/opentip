@@ -125,8 +125,17 @@ class Opentip
     if options.showOn == "click" && @adapter.tagName(@triggerElement) == "A"
       @adapter.observe @triggerElement, "click", (->), "stop propagation"
 
-
+    # Doesn't make sense to use a target without the opentip being fixed
     options.fixed = yes if options.target
+
+    options.stem = options.tipJoint if options.stem == yes
+
+    if options.target == yes
+      options.target = @triggerElement
+    else if options.target
+      options.target = @adapter.wrap options.target
+
+    @currentStemPosition = options.stem
 
 
     @options = options
@@ -213,7 +222,7 @@ Opentip.styles =
     # - `false` (no stem)
     # - `true` (stem at tipJoint position)
     # - `POSITION` (for stems in other directions)
-    stem: false
+    stem: no
 
     # `float` (in seconds)
     # If null, the default is used: 0.2 for mouseover, 0 for click
@@ -223,7 +232,7 @@ Opentip.styles =
     hideDelay: 0.1
 
     # If target is not null, elements are always fixed.
-    fixed: false
+    fixed: no
 
     # - eventname (eg: `"click"`, `"mouseover"`, etc..)
     # - `"creation"` (the tooltip will show when being created)

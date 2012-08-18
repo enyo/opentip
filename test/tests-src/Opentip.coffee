@@ -57,7 +57,7 @@ describe "Opentip", ->
       Opentip.adapter.observe.restore()
 
     it "should take all options from selected style", ->
-      element = $("""<div></div>""").get(0)
+      element = document.createElement "div"
       opentip = new Opentip element, style: "glass", showOn: "click"
 
       # Should have been set by the options
@@ -68,9 +68,35 @@ describe "Opentip", ->
       expect(opentip.options.stemSize).to.equal 8
 
     it "should set the options to fixed if a target is provided", ->
-      element = $("""<div></div>""").get(0)
+      element = document.createElement "div"
       opentip = new Opentip element, target: yes, fixed: no
       expect(opentip.options.fixed).to.be.ok()
+
+    it "should use provided stem", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, stem: [ "center", "bottom" ], tipJoin: [ "left", "top" ]
+      expect(opentip.options.stem).to.eql [ "center", "bottom" ]
+
+    it "should take the tipJoint as stem if stem is just true", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, stem: yes, tipJoin: [ "left", "top" ]
+      expect(opentip.options.stem).to.eql [ "left", "top" ]
+
+    it "should use provided target", ->
+      element = document.createElement "div"
+      element2 = document.createElement "div"
+      opentip = new Opentip element, target: element2
+      expect(opentip.options.target).to.equal element2
+
+    it "should take the triggerElement as target if target is just true", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, target: yes
+      expect(opentip.options.target).to.equal element
+
+    it "currentStemPosition should be set to inital stemPosition", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, stem: [ "left", "top" ]
+      expect(opentip.currentStemPosition).to.eql [ "left", "top" ]
 
 
 
