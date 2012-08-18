@@ -105,6 +105,15 @@ describe "Opentip", ->
       opentip = new Opentip element, delay: null, showOn: "mouseover"
       expect(opentip.options.delay).to.equal 0.2
 
+    it "the targetJoint should be the inverse of the tipJoint if none provided", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, tipJoint: [ "left", "middle" ]
+      expect(opentip.options.targetJoint).to.eql [ "right", "middle" ]
+      opentip = new Opentip element, tipJoint: [ "center", "top" ]
+      expect(opentip.options.targetJoint).to.eql [ "center", "bottom" ]
+      opentip = new Opentip element, tipJoint: [ "right", "bottom" ]
+      expect(opentip.options.targetJoint).to.eql [ "left", "top" ]
+
 
 
   describe "setContent()", ->

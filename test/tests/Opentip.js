@@ -138,7 +138,7 @@ describe("Opentip", function() {
       });
       return expect(opentip.currentStemPosition).to.eql(["left", "top"]);
     });
-    return it("delay should be automatically set if none provided", function() {
+    it("delay should be automatically set if none provided", function() {
       var element, opentip;
       element = document.createElement("div");
       opentip = new Opentip(element, {
@@ -151,6 +151,22 @@ describe("Opentip", function() {
         showOn: "mouseover"
       });
       return expect(opentip.options.delay).to.equal(0.2);
+    });
+    return it("the targetJoint should be the inverse of the tipJoint if none provided", function() {
+      var element, opentip;
+      element = document.createElement("div");
+      opentip = new Opentip(element, {
+        tipJoint: ["left", "middle"]
+      });
+      expect(opentip.options.targetJoint).to.eql(["right", "middle"]);
+      opentip = new Opentip(element, {
+        tipJoint: ["center", "top"]
+      });
+      expect(opentip.options.targetJoint).to.eql(["center", "bottom"]);
+      opentip = new Opentip(element, {
+        tipJoint: ["right", "bottom"]
+      });
+      return expect(opentip.options.targetJoint).to.eql(["left", "top"]);
     });
   });
   return describe("setContent()", function() {

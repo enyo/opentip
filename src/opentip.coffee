@@ -140,6 +140,14 @@ class Opentip
     unless options.delay?
       options.delay = if options.showOn == "mouseover" then 0.2 else 0
 
+    unless options.targetJoint?
+      options.targetJoint = [ ]
+      # left -> right, right -> left, center -> center
+      options.targetJoint[0] = if options.tipJoint[0] == "left" then "right" else if options.tipJoint[0] == "right" then "left" else "center"
+      # top -> bottom, bottom -> top, middle -> middle
+      options.targetJoint[1] = if options.tipJoint[1] == "top" then "bottom" else if options.tipJoint[1] == "bottom" then "top" else "middle"
+
+
     @options = options
 
   # This actually builds the tootlip and sets up observers
