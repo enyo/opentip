@@ -49,16 +49,6 @@ class Opentip
 
   lastZIndex: 100
 
-  position:
-    top: 0
-    topRight: 1
-    right: 2
-    bottomRight: 3
-    bottom: 4
-    bottomLeft: 5
-    left: 6
-    topLeft: 7
-
   class:
     container: "opentip-container"
     completelyHidden: "completely-hidden"
@@ -233,9 +223,19 @@ class Opentip
               element: hideTriggerElement
               event: "mouseover"
 
+
+    @bound = { }
+    @bound[methodToBind] = => @[methodToBind].apply this, arguments for methodToBind in [
+      "prepareToShow"
+      "prepareToHide"
+      "show"
+      "hide"
+      "reposition"
+    ]
+
     @activate()
 
-    @show() if @options.showOn == "creation"
+    @prepareToShow() if @options.showOn == "creation"
 
   # This just builds the opentip container, which is the absolute minimum to
   # attach events to it.
@@ -265,7 +265,11 @@ class Opentip
 
   setupObservers: ->
 
-
+  prepareToShow: ->
+  show: ->
+  prepareToHide: ->
+  hide: ->
+  reposition: ->
 
 # Utils
 # -----
@@ -285,7 +289,7 @@ Opentip::sanitizePosition = (arrayPosition) ->
   else if typeof arrayPosition == "string"
     positionString = arrayPosition
   
-  position = @position[positionString]
+  position = Opentip.position[positionString]
   
   throw "Unknown position: " + positionString unless position?
   position
@@ -315,15 +319,26 @@ Opentip.adapter = null
 
 Opentip.documentIsLoaded = no
 
+
+Opentip.position =
+  top: 0
+  topRight: 1
+  right: 2
+  bottomRight: 3
+  bottom: 4
+  bottomLeft: 5
+  left: 6
+  topLeft: 7
+
 # Different positions
-Opentip.topLeft = [ "left", "top" ]
-Opentip.top = [ "center", "top" ]
-Opentip.topRight = [ "right", "top" ]
-Opentip.right = [ "right", "middle" ]
-Opentip.bottomRight = [ "right", "bottom" ]
-Opentip.bottom = [ "center", "bottom" ]
-Opentip.bottomLeft = [ "left", "bottom" ]
-Opentip.left = [ "left", "middle" ]
+# Opentip.top = [ "center", "top" ]
+# Opentip.topRight = [ "right", "top" ]
+# Opentip.right = [ "right", "middle" ]
+# Opentip.bottomRight = [ "right", "bottom" ]
+# Opentip.bottom = [ "center", "bottom" ]
+# Opentip.bottomLeft = [ "left", "bottom" ]
+# Opentip.left = [ "left", "middle" ]
+# Opentip.topLeft = [ "left", "top" ]
 
 
 # The standard style.
