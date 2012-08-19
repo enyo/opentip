@@ -297,8 +297,9 @@ class Opentip
   activate: ->
     # The order is important here!
     # "hidden" removes the observers for the `showTriggersWhenVisible` which
-    # could be the same as the `showTriggersWhenHidden`.
-    @_setupObservers "hidden", "preparingToHide"
+    # could be the same as the `showTriggersWhenHidden` which are added by
+    # "hiding".
+    @_setupObservers "hidden", "hiding"
 
   # Hides the tooltip and sets up appropriate observers
   deactivate: ->
@@ -310,7 +311,7 @@ class Opentip
   _setupObservers: (states...) ->
     for state in states
       switch state
-        when "preparingToShow"
+        when "showing"
           # Setup the triggers to hide the tip
           for trigger in @hideTriggers
             @adapter.observe trigger.element, trigger.event, @bound.prepareToHide
@@ -323,11 +324,11 @@ class Opentip
           @adapter.observe (if document.onresize? then document else window), "resize", @bound.reposition
           @adapter.observe window, "scroll", @bound.reposition
         when "visible"
-          # Most of the observers have already been handled by "preparingToShow"
+          # Most of the observers have already been handled by "showing"
           # Add the triggers that make sure opentip doesn't hide prematurely
           for trigger in @showTriggersWhenVisible
             @adapter.observe trigger.element, trigger.event, @bound.prepareToShow
-        when "preparingToHide"
+        when "hiding"
           # Setup the triggers to show the tip
           for trigger in @showTriggersWhenHidden
             @adapter.observe trigger.element, trigger.event, @bound.prepareToShow
@@ -340,7 +341,7 @@ class Opentip
           @adapter.stopObserving (if document.onresize? then document else window), "resize", @bound.reposition
           @adapter.stopObserving window, "scroll", @bound.reposition
         when "hidden"
-          # Most of the observers have already been handled by "preparingToHide"
+          # Most of the observers have already been handled by "hiding"
           # Remove the trigger that would retrigger a `show` when tip is visible.
           for trigger in @showTriggersWhenVisible
             @adapter.stopObserving trigger.element, trigger.event, @bound.prepareToShow
@@ -359,7 +360,7 @@ class Opentip
 
     # Even though it is not yet visible, I already attach the observers, so the
     # tooltip won't show if a hideEvent is triggered.
-    @_setupObservers "preparingToShow"
+    @_setupObservers "showing"
 
     # Making sure the tooltip is at the right position as soon as it shows
     @_followMousePosition()
@@ -395,7 +396,7 @@ class Opentip
     @container.css zIndex: @lastZIndex++
 
     # The order is important here! Do not reverse.
-    @_setupObservers "visible", "preparingToShow"
+    @_setupObservers "visible", "showing"
 
     @reposition()
 
@@ -425,6 +426,11 @@ class Opentip
   hide: ->
 
   _abortHiding: ->
+    if @preparingToHide
+      @debug "Aborting hiding"
+      @_clearTimeouts()
+      @preparingToHide = no
+      @_setupObservers "showing"
 
   reposition: ->
 

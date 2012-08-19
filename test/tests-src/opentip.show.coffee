@@ -1,7 +1,7 @@
 
 $ = ender
 
-describe "Opentip", ->
+describe "Opentip - Appearing", ->
   adapter = Opentip.adapters.native
   beforeEach ->
     Opentip.adapter = adapter
@@ -23,5 +23,11 @@ describe "Opentip", ->
       opentip.prepareToShow()
       expect(opentip._abortHiding.callCount).to.be 1
 
-
-
+    it "should abort when already visible", ->
+      expect(opentip.preparingToShow).to.not.be.ok()
+      opentip.visible = yes
+      opentip.prepareToShow()
+      expect(opentip.preparingToShow).to.not.be.ok()
+      opentip.visible = no
+      opentip.prepareToShow()
+      expect(opentip.preparingToShow).to.be.ok()

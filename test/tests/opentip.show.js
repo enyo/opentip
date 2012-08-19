@@ -3,7 +3,7 @@ var $;
 
 $ = ender;
 
-describe("Opentip", function() {
+describe("Opentip - Appearing", function() {
   var adapter;
   adapter = Opentip.adapters["native"];
   beforeEach(function() {
@@ -28,11 +28,20 @@ describe("Opentip", function() {
       opentip.prepareToShow();
       return expect(opentip._abortHiding.callCount).to.be(1);
     });
-    return it("even when aborting because it's already visible", function() {
+    it("even when aborting because it's already visible", function() {
       sinon.stub(opentip, "_abortHiding");
       opentip.visible = true;
       opentip.prepareToShow();
       return expect(opentip._abortHiding.callCount).to.be(1);
+    });
+    return it("should abort when already visible", function() {
+      expect(opentip.preparingToShow).to.not.be.ok();
+      opentip.visible = true;
+      opentip.prepareToShow();
+      expect(opentip.preparingToShow).to.not.be.ok();
+      opentip.visible = false;
+      opentip.prepareToShow();
+      return expect(opentip.preparingToShow).to.be.ok();
     });
   });
 });
