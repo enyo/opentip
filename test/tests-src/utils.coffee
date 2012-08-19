@@ -16,9 +16,11 @@ describe "utils", ->
       expect(Opentip::ucfirst "abc def").to.equal "Abc def"
 
   describe "setCss3Style()", ->
+    Opentip.adapter = adapter = Opentip.adapters.native
+    opentip = new Opentip adapter.create("<div></div>"), "Test"
     it "should set the style for all vendors", ->
       element = document.createElement "div"
-      Opentip::setCss3Style element, { opacity: "0.5", "transition-duration": "1s" }
+      opentip.setCss3Style element, { opacity: "0.5", "transition-duration": "1s" }
       expect(element.style["-moz-transition-duration"]).to.be "1s"
       expect(element.style["-moz-opacity"]).to.be "0.5"
       expect(element.style["-webkit-transition-duration"]).to.be "1s"

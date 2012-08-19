@@ -19,10 +19,13 @@ describe("utils", function() {
     });
   });
   return describe("setCss3Style()", function() {
+    var adapter, opentip;
+    Opentip.adapter = adapter = Opentip.adapters["native"];
+    opentip = new Opentip(adapter.create("<div></div>"), "Test");
     return it("should set the style for all vendors", function() {
       var element;
       element = document.createElement("div");
-      Opentip.prototype.setCss3Style(element, {
+      opentip.setCss3Style(element, {
         opacity: "0.5",
         "transition-duration": "1s"
       });

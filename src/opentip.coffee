@@ -390,7 +390,7 @@ class Opentip
 
     @_searchAndActivateHideButtons()
 
-    @_ensureTriggerElement()
+    @_startEnsureTriggerElement()
 
     @container.css zIndex: @lastZIndex++
 
@@ -472,17 +472,23 @@ class Opentip
     # TODO
     throw new Error "Not supported yet."
 
-  # In milliseconds, how often opentip should check for the existance of the element
-  _ensureTriggerElementInterval: 1000
 
   # Regularely checks if the element is still in the dom.
   _ensureTriggerElement: ->
-    @_deactivateTriggerElementEnsurance()
-    @deactivate unless @_triggerElementExists()
-    @_ensureTriggerElementInterval = setTimeout (=> @_ensureTriggerElement()), @_ensureTriggerElementInterval
+    unless @_triggerElementExists()
+      @deactivate()
+      @_stopEnsureTriggerElement()
 
-  _deactivateTriggerElementEnsurance: ->
-    clearTimeout @_ensureTriggerElementInterval
+  # In milliseconds, how often opentip should check for the existance of the element
+  _ensureTriggerElementInterval: 1000
+
+  # Sets up an interval to call _ensureTriggerElement regularely
+  _startEnsureTriggerElement: ->
+    @_ensureTriggerElementTimeoutId = setInterval (=> @_ensureTriggerElement()), @_ensureTriggerElementInterval
+
+  # Stops the interval
+  _stopEnsureTriggerElement: ->
+    clearInterval @_ensureTriggerElementTimeoutId
 
 
 
