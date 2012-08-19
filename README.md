@@ -52,15 +52,15 @@ Those are the major changes you should look out for when migrating from 1.x to 2
 
 ## Future plans
 
-- <strikethrough>Become library independant. I'm currently working on
+- ~~Become library independant. I'm currently working on
   extracting all prototype functionality, so I can switch library easily. The
-  next library   I'll support will be jquery, and then mootools.</strikethrough>
+  next library   I'll support will be jquery, and then mootools.~~
 
 - Add more skins.
 
 - Add cooler loading animation.
 
-- <strikethrough>Implement unit tests.</strikethrough>
+- ~~Implement unit tests.~~
 
 
 If you have ideas, please contact me!
