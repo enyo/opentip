@@ -534,9 +534,11 @@ class Opentip
       position = top: mousePosition.y, left: mousePosition.x
 
     if @options.autoOffset
-      null
-    #   var stemSize = this.options.stem ? this.options.stemSize : 0;
-    #   var offsetDistance = (stemSize && this.options.fixed) ? 2 : 10; // If there is as stem offsets dont need to be that big if fixed.
+      stemSize = if @options.stem then @options.stemSize else 0
+
+      # If there is as stem offsets dont need to be that big if fixed.
+      offsetDistance = if stemSize and @options.fixed then 2 else 10
+
     #   var additionalHorizontal = (tipJ[1] == 'middle' && !this.options.fixed) ? 15 : 0;
     #   var additionalVertical   = (tipJ[0] == 'center' && !this.options.fixed) ? 15 : 0;
     #   if      (tipJ[0] == 'right')  position.left -= offsetDistance + additionalHorizontal;
