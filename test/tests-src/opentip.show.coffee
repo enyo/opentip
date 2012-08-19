@@ -37,3 +37,19 @@ describe "Opentip - Appearing", ->
       opentip.prepareToShow()
       expect(opentip._setupObservers.callCount).to.be 1
       expect(opentip._setupObservers.getCall(0).args[0]).to.be "showing"
+
+    it "should start following mouseposition", ->
+      sinon.stub opentip, "_followMousePosition"
+      opentip.prepareToShow()
+      expect(opentip._followMousePosition.callCount).to.be 1
+
+    it "should reposition itself «On se redresse!»", ->
+      sinon.stub opentip, "reposition"
+      opentip.prepareToShow()
+      expect(opentip.reposition.callCount).to.be 1
+
+    it "should call show() after the specified delay (50ms)", (done) ->
+      opentip.options.delay = 50
+      sinon.stub opentip, "show", -> done()
+      opentip.prepareToShow()
+

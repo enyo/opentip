@@ -43,11 +43,28 @@ describe("Opentip - Appearing", function() {
       opentip.prepareToShow();
       return expect(opentip.preparingToShow).to.be.ok();
     });
-    return it("should setup observers for 'showing'", function() {
+    it("should setup observers for 'showing'", function() {
       sinon.stub(opentip, "_setupObservers");
       opentip.prepareToShow();
       expect(opentip._setupObservers.callCount).to.be(1);
       return expect(opentip._setupObservers.getCall(0).args[0]).to.be("showing");
+    });
+    it("should start following mouseposition", function() {
+      sinon.stub(opentip, "_followMousePosition");
+      opentip.prepareToShow();
+      return expect(opentip._followMousePosition.callCount).to.be(1);
+    });
+    it("should reposition itself «On se redresse!»", function() {
+      sinon.stub(opentip, "reposition");
+      opentip.prepareToShow();
+      return expect(opentip.reposition.callCount).to.be(1);
+    });
+    return it("should call show() after the specified delay (50ms)", function(done) {
+      opentip.options.delay = 50;
+      sinon.stub(opentip, "show", function() {
+        return done();
+      });
+      return opentip.prepareToShow();
     });
   });
 });
