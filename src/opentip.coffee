@@ -71,7 +71,7 @@ class Opentip
   constructor: (element, content, title, options) ->
     @id = ++@lastTipId
 
-    @debug "Creating Opentip #{@id}"
+    @debug "Creating Opentip."
 
     @adapter = Opentip.adapter
 
@@ -347,7 +347,9 @@ class Opentip
             @adapter.stopObserving trigger.element, trigger.event, @bound.prepareToShow
         else
           throw new Error "Unknown state: #{state}"
-    null
+
+    null # No unnecessary array collection
+
   prepareToShow: ->
     @_abortHiding()
     return if @visible
@@ -565,7 +567,10 @@ Opentip::flipPosition = (position) ->
 
 
 # Just forwards to console.debug if Opentip.debug is true and console.debug exists.
-Opentip::debug = -> console.debug.apply console, arguments if Opentip.debug and console?.debug?
+Opentip::debug = (args...) ->
+  if Opentip.debug and console?.debug?
+    args.unshift "##{@id}", "|"
+    console.debug.apply console, args
 
 
 

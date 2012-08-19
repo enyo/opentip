@@ -3,15 +3,15 @@ $ = ender
 
 describe "Opentip - Appearing", ->
   adapter = Opentip.adapters.native
+  opentip = null
+
   beforeEach ->
     Opentip.adapter = adapter
+    opentip = new Opentip adapter.create("<div></div>"), "Test", delay: 0
+  afterEach ->
+    opentip[prop].restore?() for prop of opentip
 
   describe "prepareToShow()", ->
-    opentip = null
-    beforeEach ->
-      opentip = new Opentip adapter.create("<div></div>"), "Test"
-    afterEach ->
-      opentip[prop].restore?() for prop of opentip
 
     it "should always abort a hiding process", ->
       sinon.stub opentip, "_abortHiding"
@@ -33,6 +33,11 @@ describe "Opentip - Appearing", ->
       opentip.prepareToShow()
       expect(opentip.preparingToShow).to.be.ok()
 
+    it "should log that it's preparing to show", ->
+      sinon.stub opentip, "debug"
+      opentip.prepareToShow()
+      expect(opentip.debug.callCount).to.be 1
+
     it "should setup observers for 'showing'", ->
       sinon.stub opentip, "_setupObservers"
       opentip.prepareToShow()
@@ -53,4 +58,28 @@ describe "Opentip - Appearing", ->
       opentip.options.delay = 0.05
       sinon.stub opentip, "show", -> done()
       opentip.prepareToShow()
+
+  describe "show()", ->
+    it "should clear all timeouts", ->
+      sinon.stub opentip, "_clearTimeouts"
+      opentip.show()
+      expect(opentip._clearTimeouts.callCount).to.be 1
+    it "should clear all timeouts even if alrady visible", ->
+      sinon.stub opentip, "_clearTimeouts"
+      opentip.visible = yes
+      opentip.show()
+      expect(opentip._clearTimeouts.callCount).to.be 1
+
+    it "should abort if already visible", ->
+      sinon.stub opentip, "debug"
+      opentip.visible = yes
+      opentip.show()
+      expect(opentip.debug.callCount).to.be 0
+
+    it "should log that it's showing", ->
+      sinon.stub opentip, "debug"
+      opentip.show()
+      expect(opentip.debug.callCount).to.be 1
+
+
 

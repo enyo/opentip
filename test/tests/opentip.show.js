@@ -4,25 +4,24 @@ var $;
 $ = ender;
 
 describe("Opentip - Appearing", function() {
-  var adapter;
+  var adapter, opentip;
   adapter = Opentip.adapters["native"];
+  opentip = null;
   beforeEach(function() {
-    return Opentip.adapter = adapter;
+    Opentip.adapter = adapter;
+    return opentip = new Opentip(adapter.create("<div></div>"), "Test", {
+      delay: 0
+    });
   });
-  return describe("prepareToShow()", function() {
-    var opentip;
-    opentip = null;
-    beforeEach(function() {
-      return opentip = new Opentip(adapter.create("<div></div>"), "Test");
-    });
-    afterEach(function() {
-      var prop, _base, _results;
-      _results = [];
-      for (prop in opentip) {
-        _results.push(typeof (_base = opentip[prop]).restore === "function" ? _base.restore() : void 0);
-      }
-      return _results;
-    });
+  afterEach(function() {
+    var prop, _base, _results;
+    _results = [];
+    for (prop in opentip) {
+      _results.push(typeof (_base = opentip[prop]).restore === "function" ? _base.restore() : void 0);
+    }
+    return _results;
+  });
+  describe("prepareToShow()", function() {
     it("should always abort a hiding process", function() {
       sinon.stub(opentip, "_abortHiding");
       opentip.prepareToShow();
@@ -42,6 +41,11 @@ describe("Opentip - Appearing", function() {
       opentip.visible = false;
       opentip.prepareToShow();
       return expect(opentip.preparingToShow).to.be.ok();
+    });
+    it("should log that it's preparing to show", function() {
+      sinon.stub(opentip, "debug");
+      opentip.prepareToShow();
+      return expect(opentip.debug.callCount).to.be(1);
     });
     it("should setup observers for 'showing'", function() {
       sinon.stub(opentip, "_setupObservers");
@@ -65,6 +69,30 @@ describe("Opentip - Appearing", function() {
         return done();
       });
       return opentip.prepareToShow();
+    });
+  });
+  return describe("show()", function() {
+    it("should clear all timeouts", function() {
+      sinon.stub(opentip, "_clearTimeouts");
+      opentip.show();
+      return expect(opentip._clearTimeouts.callCount).to.be(1);
+    });
+    it("should clear all timeouts even if alrady visible", function() {
+      sinon.stub(opentip, "_clearTimeouts");
+      opentip.visible = true;
+      opentip.show();
+      return expect(opentip._clearTimeouts.callCount).to.be(1);
+    });
+    it("should abort if already visible", function() {
+      sinon.stub(opentip, "debug");
+      opentip.visible = true;
+      opentip.show();
+      return expect(opentip.debug.callCount).to.be(0);
+    });
+    return it("should log that it's showing", function() {
+      sinon.stub(opentip, "debug");
+      opentip.show();
+      return expect(opentip.debug.callCount).to.be(1);
     });
   });
 });
