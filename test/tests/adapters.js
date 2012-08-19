@@ -237,7 +237,7 @@ describe("Generic adapter", function() {
           });
         });
         describe("observe()", function() {
-          return it("should attach an event listener", function(done) {
+          it("should attach an event listener", function(done) {
             var element;
             element = document.createElement("a");
             adapter.observe(element, "click", function() {
@@ -245,9 +245,17 @@ describe("Generic adapter", function() {
             });
             return element.click();
           });
+          return it("should attach an event listener to wrapped", function(done) {
+            var element;
+            element = document.createElement("a");
+            adapter.observe(adapter.wrap(element), "click", function() {
+              return done();
+            });
+            return element.click();
+          });
         });
         return describe("stopObserving()", function() {
-          return it("should remove event listener", function() {
+          it("should remove event listener", function() {
             var element, listener;
             element = document.createElement("a");
             listener = sinon.stub();
@@ -256,6 +264,18 @@ describe("Generic adapter", function() {
             element.click();
             expect(listener.callCount).to.equal(2);
             adapter.stopObserving(element, "click", listener);
+            element.click();
+            return expect(listener.callCount).to.equal(2);
+          });
+          return it("should remove event listener from wrapped", function() {
+            var element, listener;
+            element = document.createElement("a");
+            listener = sinon.stub();
+            adapter.observe(element, "click", listener);
+            element.click();
+            element.click();
+            expect(listener.callCount).to.equal(2);
+            adapter.stopObserving(adapter.wrap(element), "click", listener);
             element.click();
             return expect(listener.callCount).to.equal(2);
           });
