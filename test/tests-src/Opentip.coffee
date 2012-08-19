@@ -153,7 +153,7 @@ describe "Opentip", ->
       expect(stub.callCount).to.equal 1
       opentip._updateElementContent.restore()
 
-  describe "buildContainer()", ->
+  describe "_buildContainer()", ->
     element = document.createElement "div"
     opentip = new Opentip element,
       style: "glass"
@@ -169,5 +169,24 @@ describe "Opentip", ->
       expect(enderElement.hasClass "style-glass").to.be.ok()
       expect(enderElement.hasClass "show-effect-appear").to.be.ok()
       expect(enderElement.hasClass "hide-effect-fade").to.be.ok()
+
+  describe "_buildElements()", ->
+    element = document.createElement "div"
+    opentip = new Opentip element, stem: "top left"
+
+    it "should create a stem element if stem", ->
+      opentip._buildElements()
+      enderElement = $(opentip.container[0])
+      stemElement = enderElement.find ".stem"
+      canvasElement = stemElement.find "canvas"
+      expect(stemElement).to.be.ok()
+      expect(canvasElement).to.be.ok()
+      expect(stemElement.hasClass "topLeft").to.be.ok()
+      
+      # expect(enderElement.hasClass "opentip-container").to.be.ok()
+      # expect(enderElement.hasClass "hidden").to.be.ok()
+      # expect(enderElement.hasClass "style-glass").to.be.ok()
+      # expect(enderElement.hasClass "show-effect-appear").to.be.ok()
+      # expect(enderElement.hasClass "hide-effect-fade").to.be.ok()
 
 

@@ -35,6 +35,10 @@ describe "utils", ->
     it "should transform the first character to uppercase", ->
       expect(Opentip::ucfirst "abc def").to.equal "Abc def"
 
+  describe "dasherize()", ->
+    it "should transform camelized words into dasherized", ->
+      expect(Opentip::dasherize "testAbcHoiTEST").to.equal "test-abc-hoi-t-e-s-t"
+
   describe "setCss3Style()", ->
     Opentip.adapter = adapter = Opentip.adapters.native
     opentip = new Opentip adapter.create("<div></div>"), "Test"

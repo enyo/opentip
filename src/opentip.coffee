@@ -262,6 +262,13 @@ class Opentip
 
   # Builds all elements inside the container and put the container in body.
   _buildElements: ->
+
+    # Create the stem
+    if @options.stem
+      stemOffset = "-#{@options.stemSize}px"
+      stemElement = @adapter.create """<div class="stem #{@options.stem}"><canvas></canvas></div>"""
+      @adapter.append @container, stemElement
+
     # var stemCanvas;
     # var closeButtonCanvas;
     # if (this.options.stem) {
@@ -564,9 +571,14 @@ Opentip::defer = (func) -> setTimeout func, 0
 # Changes seconds to milliseconds
 Opentip::setTimeout = (func, seconds) -> setTimeout func, if seconds then seconds * 1000 else 0
 
+# Turns only the first character uppercase
 Opentip::ucfirst = (string) ->
   return "" unless string?
   string.charAt(0).toUpperCase() + string.slice(1)
+
+# Converts a camelized string into a dasherized one
+Opentip::dasherize = (string) ->
+  string.replace /([A-Z])/g, (_, char) -> "-#{char.toLowerCase()}"
 
 # Every position goes through this function
 #
@@ -600,10 +612,6 @@ Opentip::flipPosition = (position) ->
   # There are 8 positions, and smart as I am I layed them out in a circle.
   flippedIndex = (positionIdx + 4) % 8
   Opentip.positions[flippedIndex]
-
-
-
-
 
 # Just forwards to console.debug if Opentip.debug is true and console.debug exists.
 Opentip::debug = (args...) ->

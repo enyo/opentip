@@ -228,7 +228,7 @@ describe("Opentip", function() {
       return opentip._updateElementContent.restore();
     });
   });
-  return describe("buildContainer()", function() {
+  describe("_buildContainer()", function() {
     var element, opentip;
     element = document.createElement("div");
     opentip = new Opentip(element, {
@@ -247,6 +247,23 @@ describe("Opentip", function() {
       expect(enderElement.hasClass("style-glass")).to.be.ok();
       expect(enderElement.hasClass("show-effect-appear")).to.be.ok();
       return expect(enderElement.hasClass("hide-effect-fade")).to.be.ok();
+    });
+  });
+  return describe("_buildElements()", function() {
+    var element, opentip;
+    element = document.createElement("div");
+    opentip = new Opentip(element, {
+      stem: "top left"
+    });
+    return it("should create a stem element if stem", function() {
+      var canvasElement, enderElement, stemElement;
+      opentip._buildElements();
+      enderElement = $(opentip.container[0]);
+      stemElement = enderElement.find(".stem");
+      canvasElement = stemElement.find("canvas");
+      expect(stemElement).to.be.ok();
+      expect(canvasElement).to.be.ok();
+      return expect(stemElement.hasClass("topLeft")).to.be.ok();
     });
   });
 });

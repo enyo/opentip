@@ -43,6 +43,11 @@ describe("utils", function() {
       return expect(Opentip.prototype.ucfirst("abc def")).to.equal("Abc def");
     });
   });
+  describe("dasherize()", function() {
+    return it("should transform camelized words into dasherized", function() {
+      return expect(Opentip.prototype.dasherize("testAbcHoiTEST")).to.equal("test-abc-hoi-t-e-s-t");
+    });
+  });
   return describe("setCss3Style()", function() {
     var adapter, opentip;
     Opentip.adapter = adapter = Opentip.adapters["native"];
