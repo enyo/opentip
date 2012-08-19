@@ -37,9 +37,11 @@ Those are the major changes you should look out for when migrating from 1.x to 2
 - `Opentip` The recommend way to create opentips now is to call
   `new Opentip(element, content, title, options)`, or with the framework of your choice
   (eg, ender: $("#my-div").opentip(content, title options))
-- The isntantiation of new tips inside an event (eg: `onclick`, `onmouseover`) is no
+- The instantiation of new tips inside an event (eg: `onclick`, `onmouseover`) is no
   longer supported! You will create new opentips everytime the event is fired.
-
+- `Opentip.debugging` does no longer exist. Use `Opentip.debug = true;`
+- Positions are no longer of the weird form `[ "left", "top" ]` but simply strings
+  like `"top left"` or `"right"`
 
 
 ## Future plans

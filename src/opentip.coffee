@@ -548,8 +548,8 @@ Opentip::flipPosition = (position) ->
 
 
 
-# Just forwards to console.debug if @debugging is true and console.debug exists.
-Opentip::debug = -> console.debug.apply console, arguments if @debugging and console?.debug?
+# Just forwards to console.debug if Opentip.debug is true and console.debug exists.
+Opentip::debug = -> console.debug.apply console, arguments if Opentip.debug and console?.debug?
 
 
 
@@ -564,7 +564,7 @@ Opentip::debug = -> console.debug.apply console, arguments if @debugging and con
 # ------------------
 Opentip.version = "2.0.0-dev"
 
-Opentip.debugging = off
+Opentip.debug = off
 
 Opentip.tips = [ ]
 
