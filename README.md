@@ -88,7 +88,8 @@ If I forgot somebody, please just tell me.
 
 ### Related projects
 
-You might also be interested in my [formwatcher](http://www.formwatcher.org/).
+You might also be interested in my [formwatcher](http://www.formwatcher.org/) or
+[dropzone](http://www.dropzonejs.com/).
 
 ## License
 Copyright (c) 2012 Matias Meno<br>
