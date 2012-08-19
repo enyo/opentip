@@ -9,24 +9,6 @@ describe("Opentip", function() {
   beforeEach(function() {
     return Opentip.adapter = adapter;
   });
-  describe("debug()", function() {
-    var consoleDebug;
-    consoleDebug = console.debug;
-    beforeEach(function() {
-      return sinon.stub(console, "debug");
-    });
-    afterEach(function() {
-      return console.debug.restore();
-    });
-    return it("should only debug when debugging == true", function() {
-      Opentip.debugging = false;
-      Opentip.prototype.debug("test");
-      expect(console.debug.called).to.be["false"];
-      Opentip.debugging = true;
-      Opentip.prototype.debug("test");
-      return expect(console.debug.called).to.be["true"];
-    });
-  });
   describe("constructor()", function() {
     before(function() {
       return sinon.stub(Opentip.prototype, "_init");
@@ -54,6 +36,17 @@ describe("Opentip", function() {
       expect(opentip.options.hideOn).to.equal("click");
       expect(opentip.content).to.equal("");
       return expect(opentip.options.title).to.equal(void 0);
+    });
+    it("should always use the next tip id", function() {
+      var element, opentip, opentip2, opentip3;
+      element = document.createElement("div");
+      Opentip.lastId = 0;
+      opentip = new Opentip(element, "Test");
+      opentip2 = new Opentip(element, "Test");
+      opentip3 = new Opentip(element, "Test");
+      expect(opentip.id).to.be(1);
+      expect(opentip2.id).to.be(2);
+      return expect(opentip3.id).to.be(3);
     });
     it("should use the href attribute if AJAX and an A element", function() {
       var element, opentip;

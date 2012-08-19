@@ -45,9 +45,6 @@ class Opentip
   STICKS_OUT_LEFT: 1
   STICKS_OUT_RIGHT: 2
 
-  lastTipId: 0
-
-  lastZIndex: 100
 
   class:
     container: "opentip-container"
@@ -69,7 +66,7 @@ class Opentip
   #
   # `content`, `title` and `options` are optional but have to be in this order.
   constructor: (element, content, title, options) ->
-    @id = ++@lastTipId
+    @id = ++Opentip.lastId
 
     @debug "Creating Opentip."
 
@@ -395,7 +392,7 @@ class Opentip
 
     @_startEnsureTriggerElement()
 
-    @container.css zIndex: @lastZIndex++
+    @container.css zIndex: Opentip.lastZIndex++
 
     # The order is important here! Do not reverse.
     @_setupObservers "visible", "showing"
@@ -569,8 +566,8 @@ Opentip::flipPosition = (position) ->
 # Just forwards to console.debug if Opentip.debug is true and console.debug exists.
 Opentip::debug = (args...) ->
   if Opentip.debug and console?.debug?
-    args.unshift "##{@id}", "|"
-    console.debug.apply console, args
+    args.unshift "##{@id} |"
+    console.debug args... 
 
 
 
@@ -586,6 +583,11 @@ Opentip::debug = (args...) ->
 Opentip.version = "2.0.0-dev"
 
 Opentip.debug = off
+
+Opentip.lastId = 0
+
+Opentip.lastZIndex = 100
+
 
 Opentip.tips = [ ]
 

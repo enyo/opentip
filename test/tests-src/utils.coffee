@@ -1,6 +1,26 @@
 
 describe "utils", ->
 
+  describe "debug()", ->
+    consoleDebug = console.debug
+    beforeEach -> sinon.stub console, "debug"
+    afterEach -> console.debug.restore()
+
+    it "should only debug when Opentip.debug == true", ->
+      Opentip.debug = off
+      Opentip::debug "test"
+      expect(console.debug.called).to.not.be.ok()
+      Opentip.debug = on
+      Opentip::debug "test"
+      expect(console.debug.called).to.be.ok()
+
+    it "should include the opentip id", ->
+      Opentip.debug = on
+      opentip = new Opentip document.createElement("span")
+      # Automatically calls debug but to make sure:
+      opentip.debug "test"
+      expect(console.debug.getCall(0).args[0]).to.be "##{opentip.id} |"
+
   describe "sanitizePosition()", ->
     it "should properly camelize positions", ->
       expect(Opentip::sanitizePosition "top-left").to.equal "topLeft"

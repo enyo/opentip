@@ -6,19 +6,6 @@ describe "Opentip", ->
   beforeEach ->
     Opentip.adapter = adapter
 
-  describe "debug()", ->
-    consoleDebug = console.debug
-    beforeEach -> sinon.stub console, "debug"
-    afterEach -> console.debug.restore()
-
-    it "should only debug when debugging == true", ->
-      Opentip.debugging = off
-      Opentip::debug "test"
-      expect(console.debug.called).to.be.false
-      Opentip.debugging = on
-      Opentip::debug "test"
-      expect(console.debug.called).to.be.true
-
   describe "constructor()", ->
     before ->
       sinon.stub Opentip::, "_init"
@@ -41,6 +28,16 @@ describe "Opentip", ->
       expect(opentip.options.hideOn).to.equal "click"
       expect(opentip.content).to.equal ""
       expect(opentip.options.title).to.equal undefined
+
+    it "should always use the next tip id", ->
+      element = document.createElement "div"
+      Opentip.lastId = 0
+      opentip = new Opentip element, "Test"
+      opentip2 = new Opentip element, "Test"
+      opentip3 = new Opentip element, "Test"
+      expect(opentip.id).to.be 1
+      expect(opentip2.id).to.be 2
+      expect(opentip3.id).to.be 3
 
     it "should use the href attribute if AJAX and an A element", ->
       element = $("""<a href="http://testlink">link</a>""").get(0)
