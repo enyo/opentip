@@ -258,6 +258,7 @@ describe("Opentip", function() {
     beforeEach(function() {
       element = document.createElement("div");
       opentip = new Opentip(element, "the content", "the title", {
+        hideTrigger: "closeButton",
         stem: "top left",
         ajax: {
           url: "bla"
@@ -271,8 +272,7 @@ describe("Opentip", function() {
       stemElement = enderElement.find("> .stem");
       canvasElement = stemElement.find("> canvas");
       expect(stemElement.length).to.be.ok();
-      expect(canvasElement.length).to.be.ok();
-      return expect(stemElement.hasClass("top-left")).to.be.ok();
+      return expect(canvasElement.length).to.be.ok();
     });
     it("should add a h1 if title is provided", function() {
       var enderElement, headerElement;
@@ -281,12 +281,20 @@ describe("Opentip", function() {
       expect(headerElement.length).to.be.ok();
       return expect(headerElement.html()).to.be("the title");
     });
-    return it("should add a loading indicator if ajax", function() {
+    it("should add a loading indicator if ajax", function() {
       var enderElement, loadingElement;
       enderElement = $(adapter.unwrap(opentip.container));
       loadingElement = enderElement.find("> .opentip > .loading-indicator > span");
       expect(loadingElement.length).to.be.ok();
       return expect(loadingElement.html()).to.be("Loading...");
+    });
+    return it("should add a close button if hideTrigger = close", function() {
+      var closeButton, enderElement;
+      enderElement = $(adapter.unwrap(opentip.container));
+      console.log(enderElement);
+      closeButton = enderElement.find("> .opentip > header > .buttons > a.close");
+      expect(closeButton.length).to.be.ok();
+      return expect(closeButton.html()).to.be("✖");
     });
   });
 });

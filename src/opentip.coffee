@@ -119,6 +119,7 @@ class Opentip
 
     options = @adapter.extend { }, optionSources...
 
+    options.hideTriggers.push options.hideTrigger if options.hideTrigger
 
     # Sanitize all positions
     options[prop] = @sanitizePosition options[prop] for prop in [
@@ -191,48 +192,44 @@ class Opentip
   _init: ->
     @_buildContainer()
 
-    if @options.hideTrigger
+    for hideTrigger, i in @options.hideTriggers
+      hideOnEvent = null
+      hideTriggerElement = null
 
-      @options.hideTrigger = [ @options.hideTrigger ] unless @options.hideTrigger instanceof Array
+      hideOn = if @options.hideOn instanceof Array then @options.hideOn[i] else @options.hideOn
 
-      for hideTrigger, i in @options.hideTrigger
-        hideOnEvent = null
-        hideTriggerElement = null
+      if typeof hideTrigger == "string"
+        switch hideTrigger
+          when "trigger"
+            hideOnEvent = hideOn || "mouseout"
+            hideTriggerElement = @triggerElement
+          when "tip"
+            hideOnEvent = hideOn || "mouseover"
+            hideTriggerElement = @container
+          when "target"
+            hideOnEvent = hideOn || "mouseover"
+            hideTriggerElement = this.options.target
+          when "closeButton"
+            # The close button gets handled later
+          else
+            throw new Error "Unknown hide trigger: #{hideTrigger}."
+      else
+        hideOnEvent = hideOn || "mouseover"
+        hideTriggerElement = @adapter.wrap hideTrigger
 
-        hideOn = if @options.hideOn instanceof Array then @options.hideOn[i] else @options.hideOn
+      if hideTriggerElement
+        @hideTriggers.push
+          element: hideTriggerElement
+          event: hideOnEvent
 
-        if typeof hideTrigger == "string"
-          switch hideTrigger
-            when "trigger"
-              hideOnEvent = hideOn || "mouseout"
-              hideTriggerElement = @triggerElement
-            when "tip"
-              hideOnEvent = hideOn || "mouseover"
-              hideTriggerElement = @container
-            when "target"
-              hideOnEvent = hideOn || "mouseover"
-              hideTriggerElement = this.options.target
-            when "closeButton"
-              # The close button gets handled later
-            else
-              throw new Error "Unknown hide trigger: #{hideTrigger}."
-        else
-          hideOnEvent = hideOn || "mouseover"
-          hideTriggerElement = @adapter.wrap hideTrigger
-
-        if hideTriggerElement
-          @hideTriggers.push
+        if hideOnEvent == "mouseout"
+          # When the hide trigger is mouseout, we have to attach a mouseover
+          # trigger to that element, so the tooltip doesn't disappear when
+          # hovering child elements. (Hovering children fires a mouseout
+          # mouseover event)
+          @showTriggersWhenVisible.push
             element: hideTriggerElement
-            event: hideOnEvent
-
-          if hideOnEvent == "mouseout"
-            # When the hide trigger is mouseout, we have to attach a mouseover
-            # trigger to that element, so the tooltip doesn't disappear when
-            # hovering child elements. (Hovering children fires a mouseout
-            # mouseover event)
-            @showTriggersWhenVisible.push
-              element: hideTriggerElement
-              event: "mouseover"
+            event: "mouseover"
 
 
     @bound = { }
@@ -271,7 +268,7 @@ class Opentip
 
 
     # The actual content will be set by `_updateElementContent()`
-    @tooltipElement = @adapter.create """<div class="opentip"><header><div class="buttons"></div></header><div class="content"></div></div>"""
+    @tooltipElement = @adapter.create """<div class="opentip"><header></header><div class="content"></div></div>"""
 
     headerElement = @adapter.find @tooltipElement, "header"
 
@@ -284,48 +281,13 @@ class Opentip
     if @options.ajax
       @adapter.append @tooltipElement, @adapter.create """<div class="loading-indicator"><span>Loading...</span></div>"""
 
+    if "closeButton" in @options.hideTriggers
+      @adapter.append headerElement, @adapter.create """<div class="buttons"><a href="javascript:undefined;" class="close">✖</a></div>"""
+
     # Now put the tooltip in the container and the container in the body
     @adapter.append @container, @tooltipElement
     @adapter.append document.body, @container
 
-
-
-    # var stemCanvas;
-    # var closeButtonCanvas;
-    # if (this.options.stem) {
-    #   var stemOffset = '-' + this.options.stemSize + 'px';
-    #   this.container.appendChild(Opentip.element('div', {className: 'stem-container ' + this.options.stem[0] + ' ' + this.options.stem[1]}, stemCanvas = Opentip.element('canvas', {className: 'stem'})));
-    # }
-    # var self = this;
-    # var content = [];
-    # var headerContent = [];
-    # if (this.options.title) headerContent.push(Opentip.element('div', {className: 'title'}, this.options.title));
-
-    # content.push(Opentip.element('div', {className: 'header'}, headerContent));
-    # content.push($(Opentip.element('div', {className: 'content'}))); // Will be updated by updateElementContent()
-    # if (this.options.ajax) {content.push($(Opentip.element('div', {className: 'loadingIndication'}, Opentip.element('span', 'Loading...'))));}
-    # this.tooltipElement = $(Opentip.element('div', {className: 'opentip'}, content));
-
-    # this.container.appendChild(this.tooltipElement);
-
-    # var buttons = this.container.appendChild(Opentip.element('div', {className: 'ot-buttons'}));
-    # var drawCloseButton = false;
-    # if (this.options.hideTrigger && this.options.hideTrigger.include('closeButton')) {
-    #   buttons.appendChild(Opentip.element('a', {href: 'javascript:undefined', className: 'close'}, closeButtonCanvas = Opentip.element('canvas', { className: 'canvas' })));
-    #   // The canvas has to have a className assigned, because IE < 9 doesn't know the element, and won't assign any css to it.
-    #   drawCloseButton = true;
-    # }
-
-    # if (Opentip.useIFrame()) this.iFrameElement = this.container.appendChild($(Opentip.element('iframe', {className: 'opentipIFrame', src: 'javascript:false;'})).setStyle({display: 'none', zIndex: 100}).setOpacity(0));
-
-    # document.body.appendChild(this.container);
-
-    # if (typeof G_vmlCanvasManager !== "undefined") {
-    #   if (stemCanvas) G_vmlCanvasManager.initElement(stemCanvas);
-    #   if (closeButtonCanvas) G_vmlCanvasManager.initElement(closeButtonCanvas);
-    # }
-
-    # if (drawCloseButton) this.drawCloseButton();
 
   # Sets the content and updates the HTML element if currently visible
   #
@@ -505,7 +467,7 @@ class Opentip
 
 
   _searchAndActivateHideButtons: ->
-    if !@options.hideTrigger or "closeButton" in @options.hideTrigger
+    if "closeButton" in @options.hideTriggers
       for element in @adapter.findAll @container, ".close"
         @hideTriggers.push
           element: @adapter.wrap element
@@ -737,8 +699,12 @@ Opentip.styles =
     # - `"target"`
     # - `"closeButton"`
     # - `ELEMENT`
-    # - Or an array containing any of the previous
+    #
+    # This is just a shortcut, and will be added to hideTriggers
     hideTrigger: "trigger"
+
+    # An array of hideTriggers.
+    hideTriggers: [ ]
 
     # - eventname (eg: `"click"`)
     # - array of event strings if multiple hideTriggers

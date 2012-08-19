@@ -179,7 +179,7 @@ describe "Opentip", ->
 
     beforeEach ->
       element = document.createElement "div"
-      opentip = new Opentip element, "the content", "the title", stem: "top left", ajax: { url: "bla" }
+      opentip = new Opentip element, "the content", "the title", hideTrigger: "closeButton", stem: "top left", ajax: { url: "bla" }
       opentip._buildElements()
 
     it "should create a stem element if stem", ->
@@ -189,7 +189,6 @@ describe "Opentip", ->
 
       expect(stemElement.length).to.be.ok()
       expect(canvasElement.length).to.be.ok()
-      expect(stemElement.hasClass "top-left").to.be.ok()
 
     it "should add a h1 if title is provided", ->
       enderElement = $ adapter.unwrap opentip.container
@@ -202,5 +201,12 @@ describe "Opentip", ->
       loadingElement = enderElement.find "> .opentip > .loading-indicator > span"
       expect(loadingElement.length).to.be.ok()
       expect(loadingElement.html()).to.be "Loading..."
+
+    it "should add a close button if hideTrigger = close", ->
+      enderElement = $ adapter.unwrap opentip.container
+      console.log enderElement
+      closeButton = enderElement.find "> .opentip > header > .buttons > a.close"
+      expect(closeButton.length).to.be.ok()
+      expect(closeButton.html()).to.be "✖"
 
 
