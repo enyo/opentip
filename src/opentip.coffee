@@ -463,9 +463,171 @@ class Opentip
       @preparingToHide = no
       @_setupObservers "showing"
 
-  reposition: ->
+  reposition: (e) ->
+    e ?= @lastEvt
+
+    # The stem gets reset by _ensureViewportContainment() if necessary.
+    @currentStemPosition = @options.stem
+
+    position = @_ensureViewportContainment e, @getPosition e
+
+    
+    return @_positionStem() if @_positionsEqual position, @lastPosition
 
 
+    # var position = this.ensureViewportContainment(evt, this.getPosition(evt));
+    # if (this.positionsEqual(position, this.lastPosition)) {
+    #   this.positionStem();
+    #   return;
+    # }
+
+    # this.lastPosition = position;
+    # if (position) {
+    #   var style = {'left': position.left + 'px', 'top': position.top + 'px'};
+    #   this.container.setStyle(style);
+    #   if (Opentip.useIFrame() && this.iFrameElement) {
+    #     this.iFrameElement.setStyle({width: this.container.getWidth() + 'px', height: this.container.getHeight() + 'px'});
+    #   }
+
+    #   /**
+    #    * Following is a redraw fix, because I noticed some drawing errors in some browsers when tooltips where overlapping.
+    #    */
+    #   var container = this.container;
+    #   (function() {
+    #     container.style.visibility = "hidden"; // I chose visibility instead of display so that I don't interfere with appear/disappear effects.
+    #     var redrawFix = container.offsetHeight;
+    #     container.style.visibility = "visible";
+    #   }).defer();
+    # }
+    # this.positionStem();
+  getPosition: (e, tipJoint, targetJoint, stem) ->
+
+    tipJoint ?= @options.tipJoint
+    targetJoint ?= @options.targetJoint
+
+    position = { }
+
+    if @options.target
+      null
+      #   var tmp = this.options.target.cumulativeOffset();
+      #   position.left = tmp[0];
+      #   position.top = tmp[1];
+      #   if (trgJ[0] == 'right')  {
+      #     // For wrapping inline elements, left + width does not give the right border, because left is where
+      #     // the element started, not its most left position.
+      #     if (typeof this.options.target.getBoundingClientRect != 'undefined') {
+      #       position.left = this.options.target.getBoundingClientRect().right + $(document.viewport).getScrollOffsets().left;
+      #     }
+      #     else {
+      #       position.left = position.left + this.options.target.getWidth();
+      #     }
+      #   }
+      #   else if (trgJ[0] == 'center') {position.left += Math.round(this.options.target.getWidth() / 2);}
+      #   if      (trgJ[1] == 'bottom') {position.top += this.options.target.getHeight();}
+      #   else if (trgJ[1] == 'middle') {position.top += Math.round(this.options.target.getHeight() / 2);}
+    else
+      # Follow mouse
+      @lastEvent = e if e?
+      mousePosition = @adapter.mousePosition e
+      position = top: mousePosition.y, left: mousePosition.x
+
+    if @options.autoOffset
+      null
+    #   var stemSize = this.options.stem ? this.options.stemSize : 0;
+    #   var offsetDistance = (stemSize && this.options.fixed) ? 2 : 10; // If there is as stem offsets dont need to be that big if fixed.
+    #   var additionalHorizontal = (tipJ[1] == 'middle' && !this.options.fixed) ? 15 : 0;
+    #   var additionalVertical   = (tipJ[0] == 'center' && !this.options.fixed) ? 15 : 0;
+    #   if      (tipJ[0] == 'right')  position.left -= offsetDistance + additionalHorizontal;
+    #   else if (tipJ[0] == 'left')   position.left += offsetDistance + additionalHorizontal;
+    #   if      (tipJ[1] == 'bottom') position.top -= offsetDistance + additionalVertical;
+    #   else if (tipJ[1] == 'top')    position.top += offsetDistance + additionalVertical;
+
+    #   if (stemSize) {
+    #     var stem = stem || this.options.stem;
+    #     if      (stem[0] == 'right')  position.left -= stemSize;
+    #     else if (stem[0] == 'left')   position.left += stemSize;
+    #     if      (stem[1] == 'bottom') position.top -= stemSize;
+    #     else if (stem[1] == 'top')    position.top += stemSize;
+    #   }
+
+    position.left += @options.offset[0];
+    position.top += @options.offset[1];
+
+
+    if /right/i.test tipJoint then position.left -= @dimensions.width
+    else if tipJoint == "top" or tipJoint == "bottom" then position.left -= Math.round @dimensions.width / 2
+
+    if /bottom/i.test tipJoint then position.top -= @dimensions.height
+    else if tipJoint == "left" or tipJoint == "right" then position.top -= Math.round @dimensions.height / 2
+
+    position
+
+  _ensureViewportContainment: (e, position) ->
+    return position unless @visible
+    
+    position
+    # // Sometimes the element is theoretically visible, but an effect is not yet showing it.
+    # // So the calculation of the offsets is incorrect sometimes, which results in faulty repositioning.
+    # if (!this.visible) return position;
+
+    # var sticksOut = [ this.sticksOutX(position), this.sticksOutY(position) ];
+    # if (!sticksOut[0] && !sticksOut[1]) return position;
+
+    # var tipJ = this.options.tipJoint.clone();
+    # var trgJ = this.options.targetJoint.clone();
+
+    # var viewportScrollOffset = $(document.viewport).getScrollOffsets();
+    # var dimensions = this.dimensions;
+    # var viewportOffset = {left: position.left - viewportScrollOffset.left, top: position.top - viewportScrollOffset.top};
+    # var viewportDimensions = document.viewport.getDimensions();
+    # var reposition = false;
+
+    # if (viewportDimensions.width >= dimensions.width) {
+    #   if (viewportOffset.left < 0) {
+    #     reposition = true;
+    #     tipJ[0] = 'left';
+    #     if (this.options.target && trgJ[0] == 'left') {trgJ[0] = 'right';}
+    #   }
+    #   else if (viewportOffset.left + dimensions.width > viewportDimensions.width) {
+    #     reposition = true;
+    #     tipJ[0] = 'right';
+    #     if (this.options.target && trgJ[0] == 'right') {trgJ[0] = 'left';}
+    #   }
+    # }
+
+    # if (viewportDimensions.height >= dimensions.height) {
+    #   if (viewportOffset.top < 0) {
+    #     reposition = true;
+    #     tipJ[1] = 'top';
+    #     if (this.options.target && trgJ[1] == 'top') {trgJ[1] = 'bottom';}
+    #   }
+    #   else if (viewportOffset.top + dimensions.height > viewportDimensions.height) {
+    #     reposition = true;
+    #     tipJ[1] = 'bottom';
+    #     if (this.options.target && trgJ[1] == 'bottom') {trgJ[1] = 'top';}
+    #   }
+    # }
+    # if (reposition) {
+    #   var newPosition = this.getPosition(evt, tipJ, trgJ, tipJ);
+    #   var newSticksOut = [ this.sticksOutX(newPosition), this.sticksOutY(newPosition) ];
+    #   var revertedCount = 0;
+    #   for (var i = 0; i <=1; i ++) {
+    #     if (newSticksOut[i] && newSticksOut[i] != sticksOut[i]) {
+    #       // The tooltip changed sides, but now is sticking out the other side of the window.
+    #       // If its still sticking out, but on the same side, it's ok. At least, it sticks out less.
+    #       revertedCount ++;
+    #       tipJ[i] = this.options.tipJoint[i];
+    #       if (this.options.target) {trgJ[i] = this.options.targetJoint[i];}
+    #     }
+    #   }
+    #   if (revertedCount < 2) {
+    #     this.currentStemPosition = tipJ;
+    #     return this.getPosition(evt, tipJ, trgJ, tipJ);
+    #   }
+    # }
+    # return position;
+  _positionStem: ->
+    # TODO
   _searchAndActivateHideButtons: ->
     if "closeButton" in @options.hideTriggers
       for element in @adapter.findAll @container, ".close"
@@ -595,6 +757,11 @@ Opentip::flipPosition = (position) ->
   # There are 8 positions, and smart as I am I layed them out in a circle.
   flippedIndex = (positionIdx + 4) % 8
   Opentip.positions[flippedIndex]
+
+# Returns true if top and left are equal
+Opentip::_positionsEqual = (posA, posB) ->
+  posA? and posB? and posA.left == posB.left and posA.top == posB.top
+
 
 # Just forwards to console.debug if Opentip.debug is true and console.debug exists.
 Opentip::debug = (args...) ->

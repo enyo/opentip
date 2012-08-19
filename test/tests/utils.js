@@ -48,6 +48,38 @@ describe("utils", function() {
       return expect(Opentip.prototype.dasherize("testAbcHoiTEST")).to.equal("test-abc-hoi-t-e-s-t");
     });
   });
+  describe("_positionsEqual()", function() {
+    return it("should properly compare positions", function() {
+      var eq;
+      eq = Opentip.prototype._positionsEqual;
+      expect(eq({
+        left: 0,
+        top: 0
+      }, {
+        left: 0,
+        top: 0
+      })).to.be.ok();
+      expect(eq({
+        left: 100,
+        top: 20
+      }, {
+        left: 100,
+        top: 20
+      })).to.be.ok();
+      expect(eq({
+        left: 100,
+        top: 20
+      }, {
+        left: 101,
+        top: 20
+      })).to.not.be.ok();
+      expect(eq(null, {
+        left: 101,
+        top: 20
+      })).to.not.be.ok();
+      return expect(eq(null, null)).to.not.be.ok();
+    });
+  });
   return describe("setCss3Style()", function() {
     var adapter, opentip;
     Opentip.adapter = adapter = Opentip.adapters["native"];

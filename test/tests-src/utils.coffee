@@ -39,6 +39,15 @@ describe "utils", ->
     it "should transform camelized words into dasherized", ->
       expect(Opentip::dasherize "testAbcHoiTEST").to.equal "test-abc-hoi-t-e-s-t"
 
+  describe "_positionsEqual()", ->
+    it "should properly compare positions", ->
+      eq = Opentip::_positionsEqual
+      expect(eq { left: 0, top: 0 }, { left: 0, top: 0 }).to.be.ok()
+      expect(eq { left: 100, top: 20 }, { left: 100, top: 20 }).to.be.ok()
+      expect(eq { left: 100, top: 20 }, { left: 101, top: 20 }).to.not.be.ok()
+      expect(eq null, { left: 101, top: 20 }).to.not.be.ok()
+      expect(eq null, null).to.not.be.ok()
+
   describe "setCss3Style()", ->
     Opentip.adapter = adapter = Opentip.adapters.native
     opentip = new Opentip adapter.create("<div></div>"), "Test"

@@ -90,6 +90,21 @@ class Adapter
       height: element.offsetHeight
     }
 
+  # Returns an object with x and y 
+  mousePosition: (e) ->
+    pos = x: 0, y: 0
+
+    e ?= window.event
+
+    if e.pageX or e.pageY
+      pos.x = e.pageX
+      pos.y = e.pageY
+    else if e.clientX or e.clientY
+      pos.x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft
+      pos.y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop
+
+    pos
+  
 
   # Observe given eventName
   observe: (element, eventName, observer) -> @unwrap(element).addEventListener eventName, observer
