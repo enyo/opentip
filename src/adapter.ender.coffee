@@ -55,6 +55,17 @@ class Adapter
   # Finds all elements by selector
   findAll: -> @find.apply @, arguments
 
+  # Updates the content of the element
+  update: (element, content, escape) ->
+    element = $ element
+    if escape
+      element.text content
+    else
+      element.html content
+
+  # Appends given child to element
+  append: (element, child) -> $(element).append child
+
   # Add a class
   addClass: (element, className) -> $(element).addClass className
 
@@ -64,14 +75,8 @@ class Adapter
   # Set given css properties
   css: (element, properties) -> $(element).css properties
 
-
-  # Updates the content of the element
-  update: (element, content, escape) ->
-    element = $ element
-    if escape
-      element.text content
-    else
-      element.html content
+  # Returns an object with given dimensions
+  dimensions: (element) -> $(element).dim()
 
   # Observe given eventName
   observe: (element, eventName, observer) ->

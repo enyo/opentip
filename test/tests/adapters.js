@@ -162,6 +162,21 @@ describe("Generic adapter", function() {
             return expect(element.style.background).to.be("green");
           });
         });
+        describe("dimensions()", function() {
+          return it("should return an object with the correct dimensions", function() {
+            var dim, dim2, element;
+            element = $("<div style=\"display:block; position: absolute; width: 100px; height: 200px;\"></div>").get(0);
+            $("body").append(element);
+            dim = adapter.dimensions(element);
+            dim2 = adapter.dimensions(adapter.wrap(element));
+            expect(dim).to.eql(dim2);
+            expect(dim).to.eql({
+              width: 100,
+              height: 200
+            });
+            return $(element).remove();
+          });
+        });
         describe("find()", function() {
           it("should properly retrieve child elements", function() {
             var a, b, element;
@@ -234,6 +249,19 @@ describe("Generic adapter", function() {
             expect(element.innerHTML).to.be("abc");
             adapter.update(adapter.wrap(element), "abc", false);
             return expect(element.innerHTML).to.be("abc");
+          });
+        });
+        describe("append()", function() {
+          return it("should properly append child to element", function() {
+            var child, element;
+            element = document.createElement("div");
+            child = document.createElement("span");
+            adapter.append(element, child);
+            expect(element.innerHTML).to.eql("<span></span>");
+            element = document.createElement("div");
+            child = document.createElement("span");
+            adapter.append(adapter.wrap(element), adapter.wrap(child));
+            return expect(element.innerHTML).to.eql("<span></span>");
           });
         });
         describe("observe()", function() {

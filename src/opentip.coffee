@@ -260,8 +260,44 @@ class Opentip
     @adapter.addClass @container, "#{@class.showEffectPrefix}#{@options.showEffect}" if @options.showEffect
     @adapter.addClass @container, "#{@class.hideEffectPrefix}#{@options.hideEffect}" if @options.hideEffect
 
-  # Builds all elements inside the container.
+  # Builds all elements inside the container and put the container in body.
   _buildElements: ->
+    # var stemCanvas;
+    # var closeButtonCanvas;
+    # if (this.options.stem) {
+    #   var stemOffset = '-' + this.options.stemSize + 'px';
+    #   this.container.appendChild(Opentip.element('div', {className: 'stem-container ' + this.options.stem[0] + ' ' + this.options.stem[1]}, stemCanvas = Opentip.element('canvas', {className: 'stem'})));
+    # }
+    # var self = this;
+    # var content = [];
+    # var headerContent = [];
+    # if (this.options.title) headerContent.push(Opentip.element('div', {className: 'title'}, this.options.title));
+
+    # content.push(Opentip.element('div', {className: 'header'}, headerContent));
+    # content.push($(Opentip.element('div', {className: 'content'}))); // Will be updated by updateElementContent()
+    # if (this.options.ajax) {content.push($(Opentip.element('div', {className: 'loadingIndication'}, Opentip.element('span', 'Loading...'))));}
+    # this.tooltipElement = $(Opentip.element('div', {className: 'opentip'}, content));
+
+    # this.container.appendChild(this.tooltipElement);
+
+    # var buttons = this.container.appendChild(Opentip.element('div', {className: 'ot-buttons'}));
+    # var drawCloseButton = false;
+    # if (this.options.hideTrigger && this.options.hideTrigger.include('closeButton')) {
+    #   buttons.appendChild(Opentip.element('a', {href: 'javascript:undefined', className: 'close'}, closeButtonCanvas = Opentip.element('canvas', { className: 'canvas' })));
+    #   // The canvas has to have a className assigned, because IE < 9 doesn't know the element, and won't assign any css to it.
+    #   drawCloseButton = true;
+    # }
+
+    # if (Opentip.useIFrame()) this.iFrameElement = this.container.appendChild($(Opentip.element('iframe', {className: 'opentipIFrame', src: 'javascript:false;'})).setStyle({display: 'none', zIndex: 100}).setOpacity(0));
+
+    # document.body.appendChild(this.container);
+
+    # if (typeof G_vmlCanvasManager !== "undefined") {
+    #   if (stemCanvas) G_vmlCanvasManager.initElement(stemCanvas);
+    #   if (closeButtonCanvas) G_vmlCanvasManager.initElement(closeButtonCanvas);
+    # }
+
+    # if (drawCloseButton) this.drawCloseButton();
 
   # Sets the content and updates the HTML element if currently visible
   #
@@ -283,12 +319,19 @@ class Opentip
 
     @_storeAndFixDimensions()
 
+  # Sets width auto to the element so it uses the appropriate width, gets the
+  # dimensions and sets them so the tolltip won't change in size (which can be
+  # annoying when the tooltip gets too close to the browser edge)
   _storeAndFixDimensions: ->
-    # TODO
-    # this.container.setStyle({width: 'auto', left: '0px', top: '0px'});
-    # this.dimensions = this.container.getDimensions();
-    # this.container.setStyle({width: this.dimensions.width + 'px', left: this.lastPosition.left + 'px', top: this.lastPosition.top + 'px'});
-
+    @adapter.css @container,
+      width: "auto"
+      left: "0px" # So it doesn't force wrapping
+      top: "0px"
+    @dimensions = @adapter.dimensions @container
+    @adapter.css @container,
+      width: "#{@dimensions.width}px"
+      top: "#{@lastPosition.top}px"
+      left: "#{@lastPosition.left}px"
 
   # Sets up appropriate observers
   activate: ->
@@ -382,7 +425,7 @@ class Opentip
     @visible = yes
     @preparingToShow = no
 
-    @_buildElement unless @tooltipElement
+    @_buildElements() unless @tooltipElement?
     @_updateElementContent()
 
     @_loadAjax() if @options.ajax and not @loaded

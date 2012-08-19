@@ -33,53 +33,63 @@ class Adapter
     element = [ element ] unless element instanceof Array or element instanceof NodeList
     element
 
-  $: -> @wrap.apply @, arguments
-
   # Returns the unwrapped element
-  unwrap: (element) -> @$(element)[0]
+  unwrap: (element) -> @wrap(element)[0]
 
   # Returns the tag name of the element
-  tagName: (element) -> @$(element)[0].tagName
+  tagName: (element) -> @unwrap(element).tagName
 
   # Returns or sets the given attribute of element
   attr: (element, attr, value) ->
     if value?
-      @$(element)[0].setAttribute attr, value
+      @unwrap(element).setAttribute attr, value
     else
-      @$(element)[0].getAttribute? attr
+      @unwrap(element).getAttribute? attr
 
   # Finds elements by selector
-  find: (element, selector) -> @$(element)[0].querySelector selector
+  find: (element, selector) -> @unwrap(element).querySelector selector
 
   # Finds all elements by selector
-  findAll: (element, selector) -> @$(element)[0].querySelectorAll selector
-
-  # Add a class
-  addClass: (element, className) -> @$(element)[0].classList.add className
+  findAll: (element, selector) -> @unwrap(element).querySelectorAll selector
 
   # Updates the content of the element
   update: (element, content, escape) ->
-    element = @$(element)[0]
+    element = @unwrap element
     if escape
       element.innerHTML = "" # Clearing the content
       element.appendChild document.createTextNode content
     else
       element.innerHTML = content
 
+  # Appends given child to element
+  append: (element, child) -> @unwrap(element).appendChild @unwrap child
+
+  # Add a class
+  addClass: (element, className) -> @unwrap(element).classList.add className
+
   # Remove a class
-  removeClass: (element, className) -> @$(element)[0].classList.remove className
+  removeClass: (element, className) -> @unwrap(element).classList.remove className
 
   # Set given css properties
   css: (element, properties) ->
-    element = @unwrap @$ element
+    element = @unwrap @wrap element
     for own key, value of properties
       element.style[key] = value
 
+  # Returns an object with given dimensions
+  dimensions: (element) ->
+    element = @unwrap @wrap element
+    {
+      width: element.offsetWidth
+      height: element.offsetHeight
+    }
+
+
   # Observe given eventName
-  observe: (element, eventName, observer) -> @$(element)[0].addEventListener eventName, observer
+  observe: (element, eventName, observer) -> @unwrap(element).addEventListener eventName, observer
 
   # Stop observing event
-  stopObserving: (element, eventName, observer) -> @$(element)[0].removeEventListener eventName, observer
+  stopObserving: (element, eventName, observer) -> @unwrap(element).removeEventListener eventName, observer
 
 
   # Utility functions

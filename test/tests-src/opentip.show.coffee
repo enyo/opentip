@@ -87,7 +87,6 @@ describe "Opentip - Appearing", ->
     it "should log that it's showing", ->
       sinon.stub opentip, "debug"
       opentip.show()
-      # console.log "HOHOHO"
       expect(opentip.debug.callCount).to.be 1
       expect(opentip.debug.args[0][0]).to.be "Showing now."
 

@@ -108,6 +108,17 @@ describe "Generic adapter", ->
             expect(element.style.color).to.be "red"
             expect(element.style.background).to.be "green"
 
+        describe "dimensions()", ->
+          it "should return an object with the correct dimensions", ->
+            element = $("""<div style="display:block; position: absolute; width: 100px; height: 200px;"></div>""").get 0
+            $("body").append element
+            dim = adapter.dimensions element
+            dim2 = adapter.dimensions adapter.wrap element # Testing with wrapped as well
+            expect(dim).to.eql dim2
+            expect(dim).to.eql width: 100, height: 200
+            $(element).remove()
+
+
         describe "find()", ->
           it "should properly retrieve child elements", ->
             element = $("""<div><span id="a-span" class="a"></span><div id="b-span" class="b"></div></div>""").get(0)
@@ -166,6 +177,17 @@ describe "Generic adapter", ->
             adapter.update adapter.wrap(element), "abc", no # Testing with wrapped as well
             expect(element.innerHTML).to.be "abc"
 
+        describe "append()", ->
+          it "should properly append child to element", ->
+            element = document.createElement "div"
+            child = document.createElement "span"
+            adapter.append element, child
+            expect(element.innerHTML).to.eql "<span></span>"
+            # Testing with wrapped as well
+            element = document.createElement "div"
+            child = document.createElement "span"
+            adapter.append adapter.wrap(element), adapter.wrap(child)
+            expect(element.innerHTML).to.eql "<span></span>"
 
         describe "observe()", ->
           it "should attach an event listener", (done) ->
