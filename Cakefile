@@ -29,61 +29,18 @@ green = '\x1b[0;32m'
 reset = '\x1b[0m'
 red = '\x1b[0;31m'
 
-# Cakefile Tasks
-#
-# ## *docs*
-#
-# Generate Annotated Documentation
-#
-# <small>Usage</small>
-#
-# ```
-# cake docs
-# ```
 task 'docs', 'generate documentation', -> docco()
 
-# ## *build*
-#
-# Builds Source
-#
-# <small>Usage</small>
-#
-# ```
-# cake build
-# ```
 task 'build', 'compile source', -> build -> log ":)", green
 
-# ## *watch*
-#
-# Builds your source whenever it changes
-#
-# <small>Usage</small>
-#
-# ```
-# cake watch
-# ```
 task 'watch', 'compile and watch', -> build true, -> log ":-)", green
 
-# ## *test*
-#
-# Runs your test suite.
-#
-# <small>Usage</small>
-#
-# ```
-# cake test
-# ```
+task 'css', 'compile stylus', -> css -> log ":)", green
+
+task 'watchcss', 'compile and watch stylus', -> css true, -> log ":-)", green
+
 task 'test', 'run tests', -> build -> mocha -> log ":)", green
 
-# ## *clean*
-#
-# Cleans up generated js files
-#
-# <small>Ussage</small>
-#
-# ```
-# cake clean
-# ```
 task 'clean', 'clean generated files', -> clean -> log ";)", green
 
 
@@ -226,4 +183,16 @@ mocha = (options, callback) ->
 docco = (callback) ->
   #if moduleExists('docco')
   walk 'src', (err, files) -> launch 'docco', files, callback
+
+
+css = (watch, callback) ->
+  if typeof watch is 'function'
+    callback = watch
+    watch = false
+
+  options = [ "-o", "#{__dirname}/css/", "--include", "/usr/local/lib/node_modules/nib/lib" ]
+  options.push "-w" if watch
+  options.push "#{__dirname}/css/stylus"
+
+  launch "stylus", options, callback
 

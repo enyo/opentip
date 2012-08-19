@@ -172,7 +172,7 @@ describe("Opentip", function() {
       });
       return expect(opentip.options.targetJoint).to.eql("topLeft");
     });
-    return it("should setup all trigger elements", function() {
+    it("should setup all trigger elements", function() {
       var element, opentip;
       element = adapter.create("<div></div>");
       opentip = new Opentip(element, {
@@ -192,6 +192,15 @@ describe("Opentip", function() {
       expect(opentip.showTriggersWhenHidden).to.eql([]);
       expect(opentip.showTriggersWhenVisible).to.eql([]);
       return expect(opentip.hideTriggers).to.eql([]);
+    });
+    return it("should copy options.hideTrigger onto options.hideTriggers", function() {
+      var element, opentip;
+      element = adapter.create("<div></div>");
+      opentip = new Opentip(element, {
+        hideTrigger: "closeButton",
+        hideTriggers: ["trigger"]
+      });
+      return expect(opentip.options.hideTriggers).to.eql(["trigger", "closeButton"]);
     });
   });
   describe("init()", function() {

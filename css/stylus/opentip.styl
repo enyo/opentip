@@ -1,0 +1,21 @@
+@import "nib"
+
+.opentip-container, .opentip-container *
+  box-sizing border-box
+
+.opentip-container
+  position absolute
+  max-width 300px
+  z-index 100
+    
+  &.hidden
+    display none
+
+  .opentip
+    position relative
+    font-size 13px
+    line-height 120%
+    box-shadow 0 0 5px rgba(0, 0, 0, 0.1)
+    border 1px solid #aaa
+    padding 3px
+

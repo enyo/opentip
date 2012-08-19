@@ -133,6 +133,13 @@ describe "Opentip", ->
       expect(opentip.showTriggersWhenVisible).to.eql [ ]
       expect(opentip.hideTriggers).to.eql [ ]
 
+    it "should copy options.hideTrigger onto options.hideTriggers", ->
+      element = adapter.create "<div></div>"
+      opentip = new Opentip element, hideTrigger: "closeButton", hideTriggers: [ "trigger" ]
+      expect(opentip.options.hideTriggers).to.eql [ "trigger", "closeButton"]
+
+
+
 
   describe "init()", ->
     describe "showOn == creation", ->
