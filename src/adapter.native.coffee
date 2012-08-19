@@ -21,7 +21,7 @@ class Adapter
   create: (htmlString) ->
     div = document.createElement "div"
     div.innerHTML = htmlString
-    div.childNodes
+    @wrap div.childNodes
 
 
 
@@ -30,7 +30,10 @@ class Adapter
 
   # Wrap the element in the framework
   wrap: (element) ->
-    element = [ element ] unless element instanceof Array or element instanceof NodeList
+    if element instanceof NodeList
+      element = (el for el in element)
+    else if element not instanceof Array
+      element = [ element ]
     element
 
   # Returns the unwrapped element
@@ -62,7 +65,10 @@ class Adapter
       element.innerHTML = content
 
   # Appends given child to element
-  append: (element, child) -> @unwrap(element).appendChild @unwrap child
+  append: (element, child) ->
+    unwrappedChild = @unwrap child
+    unwrappedElement = @unwrap element
+    unwrappedElement.appendChild unwrappedChild
 
   # Add a class
   addClass: (element, className) -> @unwrap(element).classList.add className

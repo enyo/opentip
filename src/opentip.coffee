@@ -266,8 +266,23 @@ class Opentip
     # Create the stem
     if @options.stem
       stemOffset = "-#{@options.stemSize}px"
-      stemElement = @adapter.create """<div class="stem #{@options.stem}"><canvas></canvas></div>"""
+      stemElement = @adapter.create """<div class="stem #{@dasherize @options.stem}"><canvas></canvas></div>"""
       @adapter.append @container, stemElement
+
+    # The actual content will be set by `_updateElementContent()`
+    @tooltipElement = @adapter.create """<div class="opentip"><header></header><div class="content"></div></div>"""
+
+    headerElement = @adapter.find @tooltipElement, "header"
+
+    if @options.title
+      # Create the title element and append it to the header
+      titleElement = @adapter.create """<h1></h1>"""
+      @adapter.update titleElement, @options.title, @options.escapeTitle
+      @adapter.append headerElement, titleElement
+
+    @adapter.append @container, @tooltipElement
+
+    @adapter.append document.body, @container
 
     # var stemCanvas;
     # var closeButtonCanvas;
@@ -684,6 +699,9 @@ Opentip.styles =
 
     # Will be set if provided in constructor
     title: undefined
+
+    # Whether the provided title should be html escaped
+    escapeTitle: yes
 
     # The class name to be added to the HTML element
     className: "standard"

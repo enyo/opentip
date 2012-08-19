@@ -14,6 +14,7 @@ describe "Opentip - Appearing", ->
 
   afterEach ->
     opentip[prop].restore?() for prop of opentip
+    $(".opentip-container").remove()
 
   describe "prepareToShow()", ->
     beforeEach -> triggerElementExists = no

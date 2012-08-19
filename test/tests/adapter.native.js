@@ -23,11 +23,16 @@ describe("Native adapter", function() {
       });
     });
     return describe("wrap()", function() {
-      return it("should wrap the element in an array", function() {
+      it("should wrap the element in an array", function() {
         var element, wrapped;
         element = document.createElement("div");
         wrapped = adapter.wrap(element);
         return expect(element).to.equal(wrapped[0]);
+      });
+      return it("should properly wrap nodelists", function() {
+        var wrapped;
+        wrapped = adapter.wrap(document.body.childNodes);
+        return expect(wrapped).to.not.be.a(NodeList);
       });
     });
   });

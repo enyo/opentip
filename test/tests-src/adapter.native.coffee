@@ -22,4 +22,6 @@ describe "Native adapter", ->
         wrapped = adapter.wrap element
         expect(element).to.equal wrapped[0]
 
-
+      it "should properly wrap nodelists", ->
+        wrapped = adapter.wrap document.body.childNodes
+        expect(wrapped).to.not.be.a NodeList

@@ -19,12 +19,13 @@ describe("Opentip - Appearing", function() {
     });
   });
   afterEach(function() {
-    var prop, _base, _results;
-    _results = [];
+    var prop, _base;
     for (prop in opentip) {
-      _results.push(typeof (_base = opentip[prop]).restore === "function" ? _base.restore() : void 0);
+      if (typeof (_base = opentip[prop]).restore === "function") {
+        _base.restore();
+      }
     }
-    return _results;
+    return $(".opentip-container").remove();
   });
   describe("prepareToShow()", function() {
     beforeEach(function() {

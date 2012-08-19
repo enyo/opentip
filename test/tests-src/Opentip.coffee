@@ -6,6 +6,9 @@ describe "Opentip", ->
   beforeEach ->
     Opentip.adapter = adapter
 
+  afterEach ->
+    $(".opentip-container").remove()
+
   describe "constructor()", ->
     before ->
       sinon.stub Opentip::, "_init"
@@ -15,7 +18,7 @@ describe "Opentip", ->
       element = adapter.create "<div></div>"
       opentip = new Opentip element, "content"
       expect(opentip.content).to.equal "content"
-      expect(opentip.triggerElement).to.equal element
+      expect(adapter.unwrap(opentip.triggerElement)).to.equal adapter.unwrap element
 
       opentip = new Opentip element, "content", "title", { hideOn: "click" }
       expect(opentip.content).to.equal "content"
@@ -44,6 +47,7 @@ describe "Opentip", ->
       opentip = new Opentip element, ajax: on
       expect(opentip.options.ajax).to.be.a "object"
       expect(opentip.options.ajax.url).to.equal "http://testlink"
+
     it "should disable AJAX if neither URL or a link HREF is provided", ->
       element = $("""<div>text</div>""").get(0)
       opentip = new Opentip element, ajax: on
@@ -163,7 +167,7 @@ describe "Opentip", ->
     it "should set the id", ->
       expect(adapter.attr opentip.container, "id").to.equal "opentip-" + opentip.id
     it "should set the classes", ->
-      enderElement = $(opentip.container[0])
+      enderElement = $ adapter.unwrap opentip.container
       expect(enderElement.hasClass "opentip-container").to.be.ok()
       expect(enderElement.hasClass "hidden").to.be.ok()
       expect(enderElement.hasClass "style-glass").to.be.ok()
@@ -171,18 +175,27 @@ describe "Opentip", ->
       expect(enderElement.hasClass "hide-effect-fade").to.be.ok()
 
   describe "_buildElements()", ->
-    element = document.createElement "div"
-    opentip = new Opentip element, stem: "top left"
+    element = opentip = null
+
+    beforeEach ->
+      element = document.createElement "div"
+      opentip = new Opentip element, "the content", "the title", stem: "top left"
+      opentip._buildElements()
 
     it "should create a stem element if stem", ->
-      opentip._buildElements()
-      enderElement = $(opentip.container[0])
+      enderElement = $ adapter.unwrap opentip.container
       stemElement = enderElement.find ".stem"
       canvasElement = stemElement.find "canvas"
+
       expect(stemElement).to.be.ok()
       expect(canvasElement).to.be.ok()
-      expect(stemElement.hasClass "topLeft").to.be.ok()
-      
+      expect(stemElement.hasClass "top-left").to.be.ok()
+
+    it "should add a h1 if title is provided", ->
+      enderElement = $ adapter.unwrap opentip.container
+      headerElement = enderElement.find "header h1"
+      expect(headerElement).to.be.ok()
+      expect(headerElement.html()).to.be "the title"
       # expect(enderElement.hasClass "opentip-container").to.be.ok()
       # expect(enderElement.hasClass "hidden").to.be.ok()
       # expect(enderElement.hasClass "style-glass").to.be.ok()

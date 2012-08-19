@@ -9,6 +9,9 @@ describe("Opentip", function() {
   beforeEach(function() {
     return Opentip.adapter = adapter;
   });
+  afterEach(function() {
+    return $(".opentip-container").remove();
+  });
   describe("constructor()", function() {
     before(function() {
       return sinon.stub(Opentip.prototype, "_init");
@@ -21,7 +24,7 @@ describe("Opentip", function() {
       element = adapter.create("<div></div>");
       opentip = new Opentip(element, "content");
       expect(opentip.content).to.equal("content");
-      expect(opentip.triggerElement).to.equal(element);
+      expect(adapter.unwrap(opentip.triggerElement)).to.equal(adapter.unwrap(element));
       opentip = new Opentip(element, "content", "title", {
         hideOn: "click"
       });
@@ -241,7 +244,7 @@ describe("Opentip", function() {
     });
     return it("should set the classes", function() {
       var enderElement;
-      enderElement = $(opentip.container[0]);
+      enderElement = $(adapter.unwrap(opentip.container));
       expect(enderElement.hasClass("opentip-container")).to.be.ok();
       expect(enderElement.hasClass("hidden")).to.be.ok();
       expect(enderElement.hasClass("style-glass")).to.be.ok();
@@ -251,19 +254,29 @@ describe("Opentip", function() {
   });
   return describe("_buildElements()", function() {
     var element, opentip;
-    element = document.createElement("div");
-    opentip = new Opentip(element, {
-      stem: "top left"
+    element = opentip = null;
+    beforeEach(function() {
+      element = document.createElement("div");
+      opentip = new Opentip(element, "the content", "the title", {
+        stem: "top left"
+      });
+      return opentip._buildElements();
     });
-    return it("should create a stem element if stem", function() {
+    it("should create a stem element if stem", function() {
       var canvasElement, enderElement, stemElement;
-      opentip._buildElements();
-      enderElement = $(opentip.container[0]);
+      enderElement = $(adapter.unwrap(opentip.container));
       stemElement = enderElement.find(".stem");
       canvasElement = stemElement.find("canvas");
       expect(stemElement).to.be.ok();
       expect(canvasElement).to.be.ok();
-      return expect(stemElement.hasClass("topLeft")).to.be.ok();
+      return expect(stemElement.hasClass("top-left")).to.be.ok();
+    });
+    return it("should add a h1 if title is provided", function() {
+      var enderElement, headerElement;
+      enderElement = $(adapter.unwrap(opentip.container));
+      headerElement = enderElement.find("header h1");
+      expect(headerElement).to.be.ok();
+      return expect(headerElement.html()).to.be("the title");
     });
   });
 });
