@@ -31,3 +31,9 @@ describe "Opentip - Appearing", ->
       opentip.visible = no
       opentip.prepareToShow()
       expect(opentip.preparingToShow).to.be.ok()
+
+    it "should setup observers for 'showing'", ->
+      sinon.stub opentip, "_setupObservers"
+      opentip.prepareToShow()
+      expect(opentip._setupObservers.callCount).to.be 1
+      expect(opentip._setupObservers.getCall(0).args[0]).to.be "showing"

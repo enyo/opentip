@@ -34,7 +34,7 @@ describe("Opentip - Appearing", function() {
       opentip.prepareToShow();
       return expect(opentip._abortHiding.callCount).to.be(1);
     });
-    return it("should abort when already visible", function() {
+    it("should abort when already visible", function() {
       expect(opentip.preparingToShow).to.not.be.ok();
       opentip.visible = true;
       opentip.prepareToShow();
@@ -42,6 +42,12 @@ describe("Opentip - Appearing", function() {
       opentip.visible = false;
       opentip.prepareToShow();
       return expect(opentip.preparingToShow).to.be.ok();
+    });
+    return it("should setup observers for 'showing'", function() {
+      sinon.stub(opentip, "_setupObservers");
+      opentip.prepareToShow();
+      expect(opentip._setupObservers.callCount).to.be(1);
+      return expect(opentip._setupObservers.getCall(0).args[0]).to.be("showing");
     });
   });
 });
