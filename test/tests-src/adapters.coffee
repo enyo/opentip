@@ -189,6 +189,9 @@ describe "Generic adapter", ->
             adapter.append adapter.wrap(element), adapter.wrap(child)
             expect(element.innerHTML).to.eql "<span></span>"
 
+        describe "offset()", ->
+          it "should properly return the offset position"
+
         describe "observe()", ->
           it "should attach an event listener", (done) ->
             element = document.createElement "a"

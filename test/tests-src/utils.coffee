@@ -58,3 +58,10 @@ describe "utils", ->
       expect(element.style["-moz-opacity"]).to.be "0.5"
       expect(element.style["-webkit-transition-duration"]).to.be "1s"
       expect(element.style["-o-transition-duration"]).to.be "1s"
+
+  describe "defer()", ->
+    it "should call the callback as soon as possible"
+
+  describe "setTimeout()", ->
+    it "should wrap window.setTimeout but with seconds"
+

@@ -264,6 +264,9 @@ describe("Generic adapter", function() {
             return expect(element.innerHTML).to.eql("<span></span>");
           });
         });
+        describe("offset()", function() {
+          return it("should properly return the offset position");
+        });
         describe("observe()", function() {
           it("should attach an event listener", function(done) {
             var element;

@@ -8,6 +8,11 @@
   position: absolute;
   max-width: 300px;
   z-index: 100;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  -ms-transition: none;
+  transition: none;
 }
 .opentip-container.hidden {
   display: none;

@@ -96,6 +96,8 @@ class Adapter
 
     e ?= window.event
 
+    return unless e?
+
     if e.pageX or e.pageY
       pos.x = e.pageX
       pos.y = e.pageY
@@ -104,7 +106,25 @@ class Adapter
       pos.y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop
 
     pos
-  
+
+  # Returns the offset of the element
+  offset: (element) ->
+    element = @unwrap element
+
+    offset = {
+      top: element.offsetTop
+      left: element.offsetLeft
+    }
+
+    while element = element.offsetParent
+      offset.top += element.offsetTop
+      offset.left += element.offsetLeft
+
+      if element != doc.body
+        offset.top -= element.scrollTop
+        offset.left -= element.scrollLeft
+
+    offset
 
   # Observe given eventName
   observe: (element, eventName, observer) -> @unwrap(element).addEventListener eventName, observer

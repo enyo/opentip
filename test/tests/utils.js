@@ -80,7 +80,7 @@ describe("utils", function() {
       return expect(eq(null, null)).to.not.be.ok();
     });
   });
-  return describe("setCss3Style()", function() {
+  describe("setCss3Style()", function() {
     var adapter, opentip;
     Opentip.adapter = adapter = Opentip.adapters["native"];
     opentip = new Opentip(adapter.create("<div></div>"), "Test");
@@ -96,5 +96,11 @@ describe("utils", function() {
       expect(element.style["-webkit-transition-duration"]).to.be("1s");
       return expect(element.style["-o-transition-duration"]).to.be("1s");
     });
+  });
+  describe("defer()", function() {
+    return it("should call the callback as soon as possible");
+  });
+  return describe("setTimeout()", function() {
+    return it("should wrap window.setTimeout but with seconds");
   });
 });

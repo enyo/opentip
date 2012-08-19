@@ -84,6 +84,8 @@ class Adapter
 
     e ?= window.event
 
+    return unless e?
+
     if e.pageX or e.pageY
       pos.x = e.pageX
       pos.y = e.pageY
@@ -92,6 +94,9 @@ class Adapter
       pos.y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop
 
     pos
+
+  # Returns the offset of the element
+  offset: (element) -> $(element).offset()
 
   # Observe given eventName
   observe: (element, eventName, observer) ->

@@ -471,35 +471,26 @@ class Opentip
 
     position = @_ensureViewportContainment e, @getPosition e
 
-    
     return @_positionStem() if @_positionsEqual position, @lastPosition
 
+    @lastPosition = position
 
-    # var position = this.ensureViewportContainment(evt, this.getPosition(evt));
-    # if (this.positionsEqual(position, this.lastPosition)) {
-    #   this.positionStem();
-    #   return;
-    # }
+    if position
+      @adapter.css @container, { left: "#{position.left}px", top: "#{position.top}px" }
+      console.log "HI"
 
-    # this.lastPosition = position;
-    # if (position) {
-    #   var style = {'left': position.left + 'px', 'top': position.top + 'px'};
-    #   this.container.setStyle(style);
-    #   if (Opentip.useIFrame() && this.iFrameElement) {
-    #     this.iFrameElement.setStyle({width: this.container.getWidth() + 'px', height: this.container.getHeight() + 'px'});
-    #   }
+      # Following is a redraw fix, because I noticed some drawing errors in
+      # some browsers when tooltips where overlapping.
+      @defer =>
+        rawContainer = @adapter.unwrap @container
+        # I chose visibility instead of display so that I don't interfere with
+        # appear/disappear effects.
+        rawContainer.style.visibility = "hidden"
+        redrawFix = rawContainer.offsetHeight
+        rawContainer.style.visibility = "visible"
 
-    #   /**
-    #    * Following is a redraw fix, because I noticed some drawing errors in some browsers when tooltips where overlapping.
-    #    */
-    #   var container = this.container;
-    #   (function() {
-    #     container.style.visibility = "hidden"; // I chose visibility instead of display so that I don't interfere with appear/disappear effects.
-    #     var redrawFix = container.offsetHeight;
-    #     container.style.visibility = "visible";
-    #   }).defer();
-    # }
-    # this.positionStem();
+    @_positionStem()
+
   getPosition: (e, tipJoint, targetJoint, stem) ->
 
     tipJoint ?= @options.tipJoint
@@ -508,27 +499,38 @@ class Opentip
     position = { }
 
     if @options.target
-      null
-      #   var tmp = this.options.target.cumulativeOffset();
-      #   position.left = tmp[0];
-      #   position.top = tmp[1];
-      #   if (trgJ[0] == 'right')  {
-      #     // For wrapping inline elements, left + width does not give the right border, because left is where
-      #     // the element started, not its most left position.
-      #     if (typeof this.options.target.getBoundingClientRect != 'undefined') {
-      #       position.left = this.options.target.getBoundingClientRect().right + $(document.viewport).getScrollOffsets().left;
-      #     }
-      #     else {
-      #       position.left = position.left + this.options.target.getWidth();
-      #     }
-      #   }
-      #   else if (trgJ[0] == 'center') {position.left += Math.round(this.options.target.getWidth() / 2);}
-      #   if      (trgJ[1] == 'bottom') {position.top += this.options.target.getHeight();}
-      #   else if (trgJ[1] == 'middle') {position.top += Math.round(this.options.target.getHeight() / 2);}
+      # Position is fixed
+      targetPosition = @adapter.offset @options.target
+      targetDimensions = @adapter.dimensions @options.target
+
+      position = targetPosition
+
+      if /right/i.test targetJoint
+        # For wrapping inline elements, left + width does not give the right
+        # border, because left is where the element started, not its most left
+        # position.
+        unwrappedTarget = @adapter.unwrap @options.target
+        if unwrappedTarget.getBoundingClientRect?
+          # TODO: make sure this is actually right
+          position.left = unwrappedTarget.getBoundingClientRect().right + (window.pageXOffset ? document.body.scrollLeft)
+        else
+          # Well... browser doesn't support it
+          position.left += targetDimensions.width
+      else if targetJoint == "top" or targetJoint == "bottom"
+        # Center
+        position.left += Math.round targetDimensions.width / 2
+
+      if /bottom/i.test targetJoint
+        position.top += targetDimensions.height
+      else if targetJoint == "left" or targetJoint == "right"
+        # Middle
+        position.top += Math.round targetDimensions.height / 2
+
     else
       # Follow mouse
       @lastEvent = e if e?
       mousePosition = @adapter.mousePosition e
+      return unless mousePosition?
       position = top: mousePosition.y, left: mousePosition.x
 
     if @options.autoOffset
