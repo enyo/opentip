@@ -269,8 +269,9 @@ class Opentip
       stemElement = @adapter.create """<div class="stem #{@dasherize @options.stem}"><canvas></canvas></div>"""
       @adapter.append @container, stemElement
 
+
     # The actual content will be set by `_updateElementContent()`
-    @tooltipElement = @adapter.create """<div class="opentip"><header></header><div class="content"></div></div>"""
+    @tooltipElement = @adapter.create """<div class="opentip"><header><div class="buttons"></div></header><div class="content"></div></div>"""
 
     headerElement = @adapter.find @tooltipElement, "header"
 
@@ -280,9 +281,14 @@ class Opentip
       @adapter.update titleElement, @options.title, @options.escapeTitle
       @adapter.append headerElement, titleElement
 
-    @adapter.append @container, @tooltipElement
+    if @options.ajax
+      @adapter.append @tooltipElement, @adapter.create """<div class="loading-indicator"><span>Loading...</span></div>"""
 
+    # Now put the tooltip in the container and the container in the body
+    @adapter.append @container, @tooltipElement
     @adapter.append document.body, @container
+
+
 
     # var stemCanvas;
     # var closeButtonCanvas;

@@ -179,27 +179,28 @@ describe "Opentip", ->
 
     beforeEach ->
       element = document.createElement "div"
-      opentip = new Opentip element, "the content", "the title", stem: "top left"
+      opentip = new Opentip element, "the content", "the title", stem: "top left", ajax: { url: "bla" }
       opentip._buildElements()
 
     it "should create a stem element if stem", ->
       enderElement = $ adapter.unwrap opentip.container
-      stemElement = enderElement.find ".stem"
-      canvasElement = stemElement.find "canvas"
+      stemElement = enderElement.find "> .stem"
+      canvasElement = stemElement.find "> canvas"
 
-      expect(stemElement).to.be.ok()
-      expect(canvasElement).to.be.ok()
+      expect(stemElement.length).to.be.ok()
+      expect(canvasElement.length).to.be.ok()
       expect(stemElement.hasClass "top-left").to.be.ok()
 
     it "should add a h1 if title is provided", ->
       enderElement = $ adapter.unwrap opentip.container
-      headerElement = enderElement.find "header h1"
-      expect(headerElement).to.be.ok()
+      headerElement = enderElement.find "> .opentip > header > h1"
+      expect(headerElement.length).to.be.ok()
       expect(headerElement.html()).to.be "the title"
-      # expect(enderElement.hasClass "opentip-container").to.be.ok()
-      # expect(enderElement.hasClass "hidden").to.be.ok()
-      # expect(enderElement.hasClass "style-glass").to.be.ok()
-      # expect(enderElement.hasClass "show-effect-appear").to.be.ok()
-      # expect(enderElement.hasClass "hide-effect-fade").to.be.ok()
+
+    it "should add a loading indicator if ajax", ->
+      enderElement = $ adapter.unwrap opentip.container
+      loadingElement = enderElement.find "> .opentip > .loading-indicator > span"
+      expect(loadingElement.length).to.be.ok()
+      expect(loadingElement.html()).to.be "Loading..."
 
 

@@ -258,25 +258,35 @@ describe("Opentip", function() {
     beforeEach(function() {
       element = document.createElement("div");
       opentip = new Opentip(element, "the content", "the title", {
-        stem: "top left"
+        stem: "top left",
+        ajax: {
+          url: "bla"
+        }
       });
       return opentip._buildElements();
     });
     it("should create a stem element if stem", function() {
       var canvasElement, enderElement, stemElement;
       enderElement = $(adapter.unwrap(opentip.container));
-      stemElement = enderElement.find(".stem");
-      canvasElement = stemElement.find("canvas");
-      expect(stemElement).to.be.ok();
-      expect(canvasElement).to.be.ok();
+      stemElement = enderElement.find("> .stem");
+      canvasElement = stemElement.find("> canvas");
+      expect(stemElement.length).to.be.ok();
+      expect(canvasElement.length).to.be.ok();
       return expect(stemElement.hasClass("top-left")).to.be.ok();
     });
-    return it("should add a h1 if title is provided", function() {
+    it("should add a h1 if title is provided", function() {
       var enderElement, headerElement;
       enderElement = $(adapter.unwrap(opentip.container));
-      headerElement = enderElement.find("header h1");
-      expect(headerElement).to.be.ok();
+      headerElement = enderElement.find("> .opentip > header > h1");
+      expect(headerElement.length).to.be.ok();
       return expect(headerElement.html()).to.be("the title");
+    });
+    return it("should add a loading indicator if ajax", function() {
+      var enderElement, loadingElement;
+      enderElement = $(adapter.unwrap(opentip.container));
+      loadingElement = enderElement.find("> .opentip > .loading-indicator > span");
+      expect(loadingElement.length).to.be.ok();
+      return expect(loadingElement.html()).to.be("Loading...");
     });
   });
 });
