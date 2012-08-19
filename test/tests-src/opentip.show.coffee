@@ -4,14 +4,19 @@ $ = ender
 describe "Opentip - Appearing", ->
   adapter = Opentip.adapters.native
   opentip = null
+  triggerElementExists = yes
 
   beforeEach ->
     Opentip.adapter = adapter
+    triggerElementExists = yes
     opentip = new Opentip adapter.create("<div></div>"), "Test", delay: 0
+    sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
+
   afterEach ->
     opentip[prop].restore?() for prop of opentip
 
   describe "prepareToShow()", ->
+    beforeEach -> triggerElementExists = no
 
     it "should always abort a hiding process", ->
       sinon.stub opentip, "_abortHiding"
@@ -61,16 +66,19 @@ describe "Opentip - Appearing", ->
 
   describe "show()", ->
     it "should clear all timeouts", ->
+      triggerElementExists = no
       sinon.stub opentip, "_clearTimeouts"
       opentip.show()
       expect(opentip._clearTimeouts.callCount).to.be 1
     it "should clear all timeouts even if alrady visible", ->
+      triggerElementExists = no
       sinon.stub opentip, "_clearTimeouts"
       opentip.visible = yes
       opentip.show()
       expect(opentip._clearTimeouts.callCount).to.be 1
 
     it "should abort if already visible", ->
+      triggerElementExists = no
       sinon.stub opentip, "debug"
       opentip.visible = yes
       opentip.show()
@@ -79,7 +87,15 @@ describe "Opentip - Appearing", ->
     it "should log that it's showing", ->
       sinon.stub opentip, "debug"
       opentip.show()
+      # console.log "HOHOHO"
       expect(opentip.debug.callCount).to.be 1
+      expect(opentip.debug.args[0][0]).to.be "Showing now."
+
+    it "should set visible to true and preparingToShow to false", ->
+      opentip.preparingToShow = yes
+      opentip.show()
+      expect(opentip.visible).to.be.ok()
+      expect(opentip.preparingToShow).to.not.be.ok()
 
 
 

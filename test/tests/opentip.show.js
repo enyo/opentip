@@ -4,13 +4,18 @@ var $;
 $ = ender;
 
 describe("Opentip - Appearing", function() {
-  var adapter, opentip;
+  var adapter, opentip, triggerElementExists;
   adapter = Opentip.adapters["native"];
   opentip = null;
+  triggerElementExists = true;
   beforeEach(function() {
     Opentip.adapter = adapter;
-    return opentip = new Opentip(adapter.create("<div></div>"), "Test", {
+    triggerElementExists = true;
+    opentip = new Opentip(adapter.create("<div></div>"), "Test", {
       delay: 0
+    });
+    return sinon.stub(opentip, "_triggerElementExists", function() {
+      return triggerElementExists;
     });
   });
   afterEach(function() {
@@ -22,6 +27,9 @@ describe("Opentip - Appearing", function() {
     return _results;
   });
   describe("prepareToShow()", function() {
+    beforeEach(function() {
+      return triggerElementExists = false;
+    });
     it("should always abort a hiding process", function() {
       sinon.stub(opentip, "_abortHiding");
       opentip.prepareToShow();
@@ -73,26 +81,36 @@ describe("Opentip - Appearing", function() {
   });
   return describe("show()", function() {
     it("should clear all timeouts", function() {
+      triggerElementExists = false;
       sinon.stub(opentip, "_clearTimeouts");
       opentip.show();
       return expect(opentip._clearTimeouts.callCount).to.be(1);
     });
     it("should clear all timeouts even if alrady visible", function() {
+      triggerElementExists = false;
       sinon.stub(opentip, "_clearTimeouts");
       opentip.visible = true;
       opentip.show();
       return expect(opentip._clearTimeouts.callCount).to.be(1);
     });
     it("should abort if already visible", function() {
+      triggerElementExists = false;
       sinon.stub(opentip, "debug");
       opentip.visible = true;
       opentip.show();
       return expect(opentip.debug.callCount).to.be(0);
     });
-    return it("should log that it's showing", function() {
+    it("should log that it's showing", function() {
       sinon.stub(opentip, "debug");
       opentip.show();
-      return expect(opentip.debug.callCount).to.be(1);
+      expect(opentip.debug.callCount).to.be(1);
+      return expect(opentip.debug.args[0][0]).to.be("Showing now.");
+    });
+    return it("should set visible to true and preparingToShow to false", function() {
+      opentip.preparingToShow = true;
+      opentip.show();
+      expect(opentip.visible).to.be.ok();
+      return expect(opentip.preparingToShow).to.not.be.ok();
     });
   });
 });

@@ -61,17 +61,17 @@ class Adapter
   update: (element, content, escape) ->
     element = @$(element)[0]
     if escape
-      element.removeChild element.firstchild while element.firstChild
+      element.innerHTML = "" # Clearing the content
       element.appendChild document.createTextNode content
     else
-      element.innerHTML  = content
+      element.innerHTML = content
 
   # Remove a class
   removeClass: (element, className) -> @$(element)[0].classList.remove className
 
   # Set given css properties
   css: (element, properties) ->
-    element = @$ element
+    element = @unwrap @$ element
     for own key, value of properties
       element.style[key] = value
 

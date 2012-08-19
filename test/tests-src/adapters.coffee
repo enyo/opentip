@@ -75,11 +75,11 @@ describe "Generic adapter", ->
             element.setAttribute "class", "test-class"
             element.setAttribute "href", "http://link"
             expect(adapter.attr element, "class").to.equal "test-class"
-            expect(adapter.attr element, "href").to.equal "http://link"
+            expect(adapter.attr adapter.wrap(element), "href").to.equal "http://link" # Testing with wrapped as well
           it "should set the attribute of passed element", ->
             element = document.createElement "a"
             adapter.attr element, "class", "test-class"
-            adapter.attr element, "href", "http://link"
+            adapter.attr adapter.wrap(element), "href", "http://link" # Testing with wrapped as well
             expect(adapter.attr element, "class").to.equal "test-class"
             expect(adapter.attr element, "href").to.equal "http://link"
 
@@ -87,24 +87,32 @@ describe "Generic adapter", ->
           it "should properly add the class", ->
             element = document.createElement "div"
             adapter.addClass element, "test"
-            adapter.addClass element, "test2"
+            adapter.addClass adapter.wrap(element), "test2" # Testing with wrapped as well
             expect(val for val in element.classList).to.eql [ "test", "test2" ]
 
         describe "removeClass()", ->
           it "should properly add the class", ->
             element = document.createElement "div"
             adapter.addClass element, "test"
-            adapter.addClass element, "test2"
+            adapter.addClass adapter.wrap(element), "test2" # Testing with wrapped as well
             adapter.removeClass element, "test2"
             expect(val for val in element.classList).to.eql [ "test" ]
             adapter.removeClass element, "test"
             expect(val for val in element.classList).to.eql [ ]
 
+        describe "css()", ->
+          it "should properly set the style", ->
+            element = document.createElement "div"
+            adapter.css element, color: "red"
+            adapter.css adapter.wrap(element), background: "green" # Testing with wrapped as well
+            expect(element.style.color).to.be "red"
+            expect(element.style.background).to.be "green"
+
         describe "find()", ->
           it "should properly retrieve child elements", ->
             element = $("""<div><span id="a-span" class="a"></span><div id="b-span" class="b"></div></div>""").get(0)
             a = adapter.unwrap adapter.find element, ".a"
-            b = adapter.unwrap adapter.find element, ".b"
+            b = adapter.unwrap adapter.find adapter.wrap(element), ".b" # Testing with wrapped as well
             expect(a.id).to.equal "a-span"
             expect(b.id).to.equal "b-span"
           it "should return null if no element", ->
@@ -116,23 +124,48 @@ describe "Generic adapter", ->
           it "should properly retrieve child elements", ->
             element = $("""<div><span id="a-span" class="a"></span><span id="b-span" class="b"></span></div>""").get(0)
             a = adapter.findAll element, "span"
+            b = adapter.findAll adapter.wrap(element), "span" # Testing with wrapped as well
             expect(a.length).to.equal 2
+            expect(b.length).to.equal 2
           it "should return empty array if no element", ->
             element = $("""<div></div>""").get(0)
             a = adapter.findAll element, "span"
+            b = adapter.findAll adapter.wrap(element), "span" # Testing with wrapped as well
             expect(a.length).to.be 0
+            expect(b.length).to.be 0
 
         describe "update()", ->
           it "should escape html if wanted", ->
             element = document.createElement "div"
             adapter.update element, "abc <div>test</div>", yes
             expect(element.firstChild.textContent).to.be "abc <div>test</div>"
+            element = document.createElement "div"
+            adapter.update adapter.wrap(element), "abc <div>test2</div>", yes # Testing with wrapped as well
+            expect(element.firstChild.textContent).to.be "abc <div>test2</div>"
           it "should not escape html if wanted", ->
             element = document.createElement "div"
             adapter.update element, "abc<div>test</div>", no
             expect(element.childNodes.length).to.be 2
             expect(element.firstChild.textContent).to.be "abc"
             expect(element.childNodes[1].textContent).to.be "test"
+            element = document.createElement "div"
+            adapter.update adapter.wrap(element), "abc<div>test</div>", no # Testing with wrapped as well
+            expect(element.childNodes.length).to.be 2
+          it "should delete previous content in plain text", ->
+            element = document.createElement "div"
+            adapter.update element, "abc", yes
+            adapter.update element, "abc", yes
+            expect(element.innerHTML).to.be "abc"
+            adapter.update adapter.wrap(element), "abc", yes # Testing with wrapped as well
+            expect(element.innerHTML).to.be "abc"
+          it "should delete previous content in HTML", ->
+            element = document.createElement "div"
+            adapter.update element, "abc", no
+            adapter.update element, "abc", no
+            expect(element.innerHTML).to.be "abc"
+            adapter.update adapter.wrap(element), "abc", no # Testing with wrapped as well
+            expect(element.innerHTML).to.be "abc"
+
 
         describe "observe()", ->
           it "should attach an event listener", (done) ->

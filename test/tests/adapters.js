@@ -89,13 +89,13 @@ describe("Generic adapter", function() {
             element.setAttribute("class", "test-class");
             element.setAttribute("href", "http://link");
             expect(adapter.attr(element, "class")).to.equal("test-class");
-            return expect(adapter.attr(element, "href")).to.equal("http://link");
+            return expect(adapter.attr(adapter.wrap(element), "href")).to.equal("http://link");
           });
           return it("should set the attribute of passed element", function() {
             var element;
             element = document.createElement("a");
             adapter.attr(element, "class", "test-class");
-            adapter.attr(element, "href", "http://link");
+            adapter.attr(adapter.wrap(element), "href", "http://link");
             expect(adapter.attr(element, "class")).to.equal("test-class");
             return expect(adapter.attr(element, "href")).to.equal("http://link");
           });
@@ -105,7 +105,7 @@ describe("Generic adapter", function() {
             var element, val;
             element = document.createElement("div");
             adapter.addClass(element, "test");
-            adapter.addClass(element, "test2");
+            adapter.addClass(adapter.wrap(element), "test2");
             return expect((function() {
               var _j, _len1, _ref, _results1;
               _ref = element.classList;
@@ -123,7 +123,7 @@ describe("Generic adapter", function() {
             var element, val;
             element = document.createElement("div");
             adapter.addClass(element, "test");
-            adapter.addClass(element, "test2");
+            adapter.addClass(adapter.wrap(element), "test2");
             adapter.removeClass(element, "test2");
             expect((function() {
               var _j, _len1, _ref, _results1;
@@ -148,12 +148,26 @@ describe("Generic adapter", function() {
             })()).to.eql([]);
           });
         });
+        describe("css()", function() {
+          return it("should properly set the style", function() {
+            var element;
+            element = document.createElement("div");
+            adapter.css(element, {
+              color: "red"
+            });
+            adapter.css(adapter.wrap(element), {
+              background: "green"
+            });
+            expect(element.style.color).to.be("red");
+            return expect(element.style.background).to.be("green");
+          });
+        });
         describe("find()", function() {
           it("should properly retrieve child elements", function() {
             var a, b, element;
             element = $("<div><span id=\"a-span\" class=\"a\"></span><div id=\"b-span\" class=\"b\"></div></div>").get(0);
             a = adapter.unwrap(adapter.find(element, ".a"));
-            b = adapter.unwrap(adapter.find(element, ".b"));
+            b = adapter.unwrap(adapter.find(adapter.wrap(element), ".b"));
             expect(a.id).to.equal("a-span");
             return expect(b.id).to.equal("b-span");
           });
@@ -166,16 +180,20 @@ describe("Generic adapter", function() {
         });
         describe("findAll()", function() {
           it("should properly retrieve child elements", function() {
-            var a, element;
+            var a, b, element;
             element = $("<div><span id=\"a-span\" class=\"a\"></span><span id=\"b-span\" class=\"b\"></span></div>").get(0);
             a = adapter.findAll(element, "span");
-            return expect(a.length).to.equal(2);
+            b = adapter.findAll(adapter.wrap(element), "span");
+            expect(a.length).to.equal(2);
+            return expect(b.length).to.equal(2);
           });
           return it("should return empty array if no element", function() {
-            var a, element;
+            var a, b, element;
             element = $("<div></div>").get(0);
             a = adapter.findAll(element, "span");
-            return expect(a.length).to.be(0);
+            b = adapter.findAll(adapter.wrap(element), "span");
+            expect(a.length).to.be(0);
+            return expect(b.length).to.be(0);
           });
         });
         describe("update()", function() {
@@ -183,15 +201,39 @@ describe("Generic adapter", function() {
             var element;
             element = document.createElement("div");
             adapter.update(element, "abc <div>test</div>", true);
-            return expect(element.firstChild.textContent).to.be("abc <div>test</div>");
+            expect(element.firstChild.textContent).to.be("abc <div>test</div>");
+            element = document.createElement("div");
+            adapter.update(adapter.wrap(element), "abc <div>test2</div>", true);
+            return expect(element.firstChild.textContent).to.be("abc <div>test2</div>");
           });
-          return it("should not escape html if wanted", function() {
+          it("should not escape html if wanted", function() {
             var element;
             element = document.createElement("div");
             adapter.update(element, "abc<div>test</div>", false);
             expect(element.childNodes.length).to.be(2);
             expect(element.firstChild.textContent).to.be("abc");
-            return expect(element.childNodes[1].textContent).to.be("test");
+            expect(element.childNodes[1].textContent).to.be("test");
+            element = document.createElement("div");
+            adapter.update(adapter.wrap(element), "abc<div>test</div>", false);
+            return expect(element.childNodes.length).to.be(2);
+          });
+          it("should delete previous content in plain text", function() {
+            var element;
+            element = document.createElement("div");
+            adapter.update(element, "abc", true);
+            adapter.update(element, "abc", true);
+            expect(element.innerHTML).to.be("abc");
+            adapter.update(adapter.wrap(element), "abc", true);
+            return expect(element.innerHTML).to.be("abc");
+          });
+          return it("should delete previous content in HTML", function() {
+            var element;
+            element = document.createElement("div");
+            adapter.update(element, "abc", false);
+            adapter.update(element, "abc", false);
+            expect(element.innerHTML).to.be("abc");
+            adapter.update(adapter.wrap(element), "abc", false);
+            return expect(element.innerHTML).to.be("abc");
           });
         });
         describe("observe()", function() {

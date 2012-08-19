@@ -385,14 +385,13 @@ class Opentip
     @_buildElement unless @tooltipElement
     @_updateElementContent()
 
-
     @_loadAjax() if @options.ajax and not @loaded
 
     @_searchAndActivateHideButtons()
 
     @_startEnsureTriggerElement()
 
-    @container.css zIndex: Opentip.lastZIndex++
+    @adapter.css @container, zIndex: Opentip.lastZIndex++
 
     # The order is important here! Do not reverse.
     @_setupObservers "visible", "showing"
