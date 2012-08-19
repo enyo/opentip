@@ -17,6 +17,7 @@ describe "Opentip - Appearing", ->
       sinon.stub opentip, "_abortHiding"
       opentip.prepareToShow()
       expect(opentip._abortHiding.callCount).to.be 1
+
     it "even when aborting because it's already visible", ->
       sinon.stub opentip, "_abortHiding"
       opentip.visible = yes
@@ -49,7 +50,7 @@ describe "Opentip - Appearing", ->
       expect(opentip.reposition.callCount).to.be 1
 
     it "should call show() after the specified delay (50ms)", (done) ->
-      opentip.options.delay = 50
+      opentip.options.delay = 0.05
       sinon.stub opentip, "show", -> done()
       opentip.prepareToShow()
 

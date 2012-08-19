@@ -60,7 +60,7 @@ describe("Opentip - Appearing", function() {
       return expect(opentip.reposition.callCount).to.be(1);
     });
     return it("should call show() after the specified delay (50ms)", function(done) {
-      opentip.options.delay = 50;
+      opentip.options.delay = 0.05;
       sinon.stub(opentip, "show", function() {
         return done();
       });

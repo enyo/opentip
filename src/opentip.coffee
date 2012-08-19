@@ -366,7 +366,7 @@ class Opentip
     @_followMousePosition()
     @reposition()
 
-    @_showTimeoutId = setTimeout @bound.show, @options.delay || 0
+    @_showTimeoutId = @setTimeout @bound.show, @options.delay || 0
 
   show: ->
     @_clearTimeouts()
@@ -412,7 +412,7 @@ class Opentip
       delay = 0
       delay = @options.showEffectDuration if @options.showEffect and @options.showEffectDuration
 
-      @_visibilityStateTimeoutId = setTimeout =>
+      @_visibilityStateTimeoutId = @setTimeout =>
         @adapter.removeClass @container, @class.showing
         @adapter.addClass @container, @class.visible
       , delay
@@ -517,7 +517,11 @@ Opentip::setCss3Style = (element, styles) ->
       element.style["-#{vendor}-#{prop}"] = value
     element.style[prop] = value
 
+# Defers the call
 Opentip::defer = (func) -> setTimeout func, 0
+
+# Changes seconds to milliseconds
+Opentip::setTimeout = (func, seconds) -> setTimeout func, if seconds then seconds * 1000 else 0
 
 Opentip::ucfirst = (string) ->
   return "" unless string?
