@@ -89,7 +89,7 @@ describe("Opentip - Appearing", function() {
       triggerElementExists = false;
       sinon.stub(opentip, "_clearTimeouts");
       opentip.show();
-      return expect(opentip._clearTimeouts.callCount).to.be(1);
+      return expect(opentip._clearTimeouts.callCount).to.be.above(0);
     });
     it("should clear all timeouts even if alrady visible", function() {
       triggerElementExists = false;
