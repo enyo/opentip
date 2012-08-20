@@ -8,20 +8,21 @@
   <script>
     Opentip.debug = true;
     $.domReady(function() {
-      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "top", stem: true, stemLength: 5, borderWidth: 20 })
-      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "top right", stem: true, stemLength: 5, borderWidth: 15})
-      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "right", stem: true, stemLength: 5})
-      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "bottom right", stem: true, stemLength: 5})
-      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "bottom", stem: true, stemLength: 5})
-      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "bottom left", stem: true, stemLength: 5})
-      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "left", stem: true, stemLength: 5})
-      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "top left", stem: true, stemLength: 5})
+      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "top", stem: true, stemLength: 5, borderWidth: 1, showOn: "creation" })
+      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "top right", stem: true, stemLength: 5, borderWidth: 1, showOn: "creation"})
+      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "right", stem: true, stemLength: 5, borderWidth: 1, showOn: "creation" })
+      // window.x=$(".opentip-test2").opentip("Hallo test", { target: true, tipJoint: "right", stem: true, stemLength: 20, borderWidth: 0, showOn: "creation" })
+      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "bottom right", stem: true, stemLength: 5, borderWidth: 1, showOn: "creation"})
+      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "bottom", stem: true, stemLength: 5, showOn: "creation"})
+      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "bottom left", stem: true, stemLength: 5, showOn: "creation"})
+      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "left", stem: true, stemLength: 5, showOn: "creation"})
+      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "top left", stem: true, stemLength: 5, showOn: "creation"})
     });
   </script>
   <style type="text/css">
     @import url("../css/opentip.css");
 
-    .opentip-test {
+    .opentip-test, .opentip-test2 {
       width: 150px;
       background: #f4f4f4;
       padding: 10px;
@@ -39,6 +40,7 @@
 
   <div id="mocha">
     <div class="opentip-test" data-ot="test">Hello</div>
+    <div class="opentip-test2" data-ot="test">Hello</div>
   </div>
 
 </body>

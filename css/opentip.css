@@ -22,4 +22,6 @@
   font-size: 13px;
   line-height: 120%;
   padding: 3px;
+  color: rgba(0,0,0,0.7);
+  text-shadow: -1px -1px 0px rgba(255,255,255,0.2);
 }

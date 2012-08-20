@@ -697,37 +697,73 @@ class Opentip
     ctx.beginPath()
 
     ctx.fillStyle = @options.background
+    ctx.lineJoin = "miter"
+    ctx.miterLimit = 500
+
+    # Since borders are always in the middle and I want them outside
+    hb = @options.borderWidth / 2
 
     if @options.borderWidth
       ctx.strokeStyle = @options.borderColor
       ctx.lineWidth = @options.borderWidth
 
+      # Now for some math!
+      #
+      # I have to account for the border width when implementing the stems.
+      #
+      # If I just draw the stem size specified the stem will be bigger if the 
+      # border width is greater than 0
+      #
+      #
+      #      /
+      #     /|\
+      #    / | angle
+      #   /  |  \
+      #  /   |   \
+      # /____|____\
+      # This is the angle of the tip
+      halfAngle = Math.atan (@options.stemBase / 2) / @options.stemLength
+      angle = halfAngle * 2
 
-    # Since borders are always in the middle and I want them outside
-    hb = @options.borderWidth / 2
+      rhombusSide = hb / Math.sin angle
+
+      distanceBetweenTips = 2 * rhombusSide * Math.cos halfAngle
+      stemLength = hb + @options.stemLength - distanceBetweenTips
+
+      console.error "Sorry but your stemLength / stemBase ratio is strange." if stemLength < 0
+
+      stemLength = Math.max 0, stemLength
+
+      # Now calculate the new base
+      stemBase = (Math.tan(halfAngle) * stemLength) * 2
+    else
+      stemLength = @options.stemLength
+      stemBase = @options.stemBase
+
+
 
     # Draws a line with stem if necessary
     drawLine = (length, stem, first) =>
       if first
         # This ensures that the outline is properly closed
-        ctx.moveTo Math.max(@options.stemBase, @options.borderRadius) + 1 - hb, -hb
+        ctx.moveTo Math.max(stemBase, @options.borderRadius) + 1 - hb, -hb
       if stem
-        ctx.lineTo length / 2 - @options.stemBase / 2, -hb
-        ctx.lineTo length / 2, - @options.stemLength - hb
-        ctx.lineTo length / 2 + @options.stemBase / 2, -hb
+        ctx.lineTo length / 2 - stemBase / 2, -hb
+        ctx.lineTo length / 2, - stemLength - hb
+        ctx.lineTo length / 2 + stemBase / 2, -hb
 
     # Draws a corner with stem if necessary
     drawCorner = (stem, last) =>
       if stem
-        ctx.lineTo -@options.stemBase + hb, 0 - hb
-        ctx.lineTo @options.stemLength + hb, -@options.stemLength - hb
-        ctx.lineTo hb, @options.stemBase - hb
+        ctx.lineTo -stemBase + hb, 0 - hb
+        ctx.lineTo stemLength + hb, -stemLength - hb
+        ctx.lineTo hb, stemBase - hb
       else
         ctx.lineTo -@options.borderRadius + hb, -hb
         ctx.quadraticCurveTo hb, -hb, hb, @options.borderRadius - hb
       if last
         # This ensures that the outline is properly closed
-        ctx.lineTo hb, Math.max(@options.stemBase, @options.borderRadius) + 1 - hb
+        ctx.lineTo hb, Math.max(stemBase, @options.borderRadius) + 1 - hb
 
 
     # Start drawing without caring about the shadows or stems
