@@ -86,7 +86,7 @@ class Opentip
     @waitingToHide = no
 
     @lastPosition = left: 0, top: 0
-    @dimensions = [ 100, 50 ] # Some initial values
+    @dimensions = width: 100, height: 50 # Some initial values
 
     @content = ""
 
@@ -464,12 +464,15 @@ class Opentip
       @_setupObservers "showing"
 
   reposition: (e) ->
-    e ?= @lastEvt
-
+    e ?= @lastEvent
     # The stem gets reset by _ensureViewportContainment() if necessary.
+
     @currentStemPosition = @options.stem
 
-    position = @_ensureViewportContainment e, @getPosition e
+    position = @getPosition e
+    return unless position?
+
+    position = @_ensureViewportContainment e, position
 
     return @_positionStem() if @_positionsEqual position, @lastPosition
 
@@ -510,7 +513,7 @@ class Opentip
         # position.
         unwrappedTarget = @adapter.unwrap @options.target
         if unwrappedTarget.getBoundingClientRect?
-          # TODO: make sure this is actually right
+          # TODO: make sure this actually works.
           position.left = unwrappedTarget.getBoundingClientRect().right + (window.pageXOffset ? document.body.scrollLeft)
         else
           # Well... browser doesn't support it
@@ -538,24 +541,26 @@ class Opentip
       # If there is as stem offsets dont need to be that big if fixed.
       offsetDistance = if stemSize and @options.fixed then 2 else 10
 
-    #   var additionalHorizontal = (tipJ[1] == 'middle' && !this.options.fixed) ? 15 : 0;
-    #   var additionalVertical   = (tipJ[0] == 'center' && !this.options.fixed) ? 15 : 0;
-    #   if      (tipJ[0] == 'right')  position.left -= offsetDistance + additionalHorizontal;
-    #   else if (tipJ[0] == 'left')   position.left += offsetDistance + additionalHorizontal;
-    #   if      (tipJ[1] == 'bottom') position.top -= offsetDistance + additionalVertical;
-    #   else if (tipJ[1] == 'top')    position.top += offsetDistance + additionalVertical;
+      # Corners can be closer but when middle or center they are too close
+      additionalHorizontal = if tipJoint.middle and not @options.fixed then 15 else 0
+      additionalVertical = if tipJoint.center and not @options.fixed then 15 else 0
 
-    #   if (stemSize) {
-    #     var stem = stem || this.options.stem;
-    #     if      (stem[0] == 'right')  position.left -= stemSize;
-    #     else if (stem[0] == 'left')   position.left += stemSize;
-    #     if      (stem[1] == 'bottom') position.top -= stemSize;
-    #     else if (stem[1] == 'top')    position.top += stemSize;
-    #   }
+      if tipJoint.right then position.left -= offsetDistance + additionalHorizontal
+      else if tipJoint.left then position.left += offsetDistance + additionalHorizontal
 
-    position.left += @options.offset[0];
-    position.top += @options.offset[1];
+      if tipJoint.bottom then position.top -= offsetDistance + additionalVertical
+      else if tipJoint.top then position.top += offsetDistance + additionalVertical
 
+      if stemSize
+        stem ?= @options.stem
+        if stem.right then position.left -= stemSize
+        else if stem.left then position.left += stemSize
+
+        if stem.bottom then position.top -= stemSize
+        else if stem.top then position.top += stemSize
+
+    position.left += @options.offset[0]
+    position.top += @options.offset[1]
 
     if tipJoint.right then position.left -= @dimensions.width
     else if tipJoint.center then position.left -= Math.round @dimensions.width / 2
@@ -566,7 +571,7 @@ class Opentip
     position
 
   _ensureViewportContainment: (e, position) ->
-    return position unless @visible
+    return position unless @visible and @position
     
     position
     # // Sometimes the element is theoretically visible, but an effect is not yet showing it.
