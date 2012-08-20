@@ -702,11 +702,9 @@ class Opentip
       ctx.strokeStyle = @options.borderColor
       ctx.lineWidth = @options.borderWidth
 
-    ctx.lineCap = "round"
 
     # Since borders are always in the middle and I want them outside
     hb = @options.borderWidth / 2
-
 
     # Draws a line with stem if necessary
     drawLine = (length, stem, first) =>
