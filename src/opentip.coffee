@@ -1173,6 +1173,10 @@ Opentip.styles =
     stem: true
   glass:
     className: "glass"
+  dark:
+    className: "dark"
+    borderColor: "#444"
+    background: "rgba(0, 0, 0, 0.8)"
 
 
 # Change this to the style name you want all your tooltips to have as default.

@@ -25,3 +25,8 @@
   color: rgba(0,0,0,0.7);
   text-shadow: -1px -1px 0px rgba(255,255,255,0.2);
 }
+.opentip-container.style-dark .opentip {
+  color: #f8f8f8;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 1px 1px 0px rgba(0,0,0,0.2);
+}
