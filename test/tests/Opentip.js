@@ -88,7 +88,7 @@ describe("Opentip", function() {
       });
       expect(opentip.options.showOn).to.equal("click");
       expect(opentip.options.className).to.equal("glass");
-      return expect(opentip.options.stemSize).to.equal(8);
+      return expect(opentip.options.stemLength).to.equal(8);
     });
     it("should set the options to fixed if a target is provided", function() {
       var element, opentip;
@@ -106,7 +106,7 @@ describe("Opentip", function() {
         stem: "bottom",
         tipJoin: "topLeft"
       });
-      return expect(opentip.options.stem).to.eql("bottom");
+      return expect(opentip.options.stem.toString()).to.eql("bottom");
     });
     it("should take the tipJoint as stem if stem is just true", function() {
       var element, opentip;
@@ -115,7 +115,7 @@ describe("Opentip", function() {
         stem: true,
         tipJoint: "top left"
       });
-      return expect(opentip.options.stem).to.eql("topLeft");
+      return expect(opentip.options.stem.toString()).to.eql("topLeft");
     });
     it("should use provided target", function() {
       var element, element2, opentip;
@@ -140,7 +140,7 @@ describe("Opentip", function() {
       opentip = new Opentip(element, {
         stem: "topLeft"
       });
-      return expect(opentip.currentStemPosition).to.eql("topLeft");
+      return expect(opentip.currentStemPosition.toString()).to.eql("topLeft");
     });
     it("delay should be automatically set if none provided", function() {
       var element, opentip;
@@ -162,15 +162,15 @@ describe("Opentip", function() {
       opentip = new Opentip(element, {
         tipJoint: "left"
       });
-      expect(opentip.options.targetJoint).to.eql("right");
+      expect(opentip.options.targetJoint.toString()).to.eql("right");
       opentip = new Opentip(element, {
         tipJoint: "top"
       });
-      expect(opentip.options.targetJoint).to.eql("bottom");
+      expect(opentip.options.targetJoint.toString()).to.eql("bottom");
       opentip = new Opentip(element, {
         tipJoint: "bottomRight"
       });
-      return expect(opentip.options.targetJoint).to.eql("topLeft");
+      return expect(opentip.options.targetJoint.toString()).to.eql("topLeft");
     });
     it("should setup all trigger elements", function() {
       var element, opentip;
@@ -274,14 +274,6 @@ describe("Opentip", function() {
         }
       });
       return opentip._buildElements();
-    });
-    it("should create a stem element if stem", function() {
-      var canvasElement, enderElement, stemElement;
-      enderElement = $(adapter.unwrap(opentip.container));
-      stemElement = enderElement.find("> .stem");
-      canvasElement = stemElement.find("> canvas");
-      expect(stemElement.length).to.be.ok();
-      return expect(canvasElement.length).to.be.ok();
     });
     it("should add a h1 if title is provided", function() {
       var enderElement, headerElement;

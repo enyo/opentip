@@ -96,6 +96,15 @@ describe "utils", ->
       expect(eq null, { left: 101, top: 20 }).to.not.be.ok()
       expect(eq null, null).to.not.be.ok()
 
+  describe "_dimensionsEqual()", ->
+    it "should properly compare dimensions", ->
+      eq = Opentip::_dimensionsEqual
+      expect(eq { width: 0, height: 0 }, { width: 0, height: 0 }).to.be.ok()
+      expect(eq { width: 100, height: 20 }, { width: 100, height: 20 }).to.be.ok()
+      expect(eq { width: 100, height: 20 }, { width: 101, height: 20 }).to.not.be.ok()
+      expect(eq null, { width: 101, height: 20 }).to.not.be.ok()
+      expect(eq null, null).to.not.be.ok()
+
   describe "setCss3Style()", ->
     Opentip.adapter = adapter = Opentip.adapters.native
     opentip = new Opentip adapter.create("<div></div>"), "Test"

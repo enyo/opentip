@@ -13,7 +13,7 @@ describe "Opentip - Appearing", ->
     sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
 
   afterEach ->
-    opentip[prop].restore?() for prop of opentip
+    opentip[prop]?.restore?() for own prop of opentip
     $(".opentip-container").remove()
 
   describe "prepareToShow()", ->

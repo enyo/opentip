@@ -72,7 +72,7 @@ describe "Opentip", ->
       # Should have been set by the glass theme
       expect(opentip.options.className).to.equal "glass"
       # Should have been set by the standard theme
-      expect(opentip.options.stemSize).to.equal 8
+      expect(opentip.options.stemLength).to.equal 8
 
     it "should set the options to fixed if a target is provided", ->
       element = document.createElement "div"
@@ -82,12 +82,12 @@ describe "Opentip", ->
     it "should use provided stem", ->
       element = document.createElement "div"
       opentip = new Opentip element, stem: "bottom", tipJoin: "topLeft"
-      expect(opentip.options.stem).to.eql "bottom"
+      expect(opentip.options.stem.toString()).to.eql "bottom"
 
     it "should take the tipJoint as stem if stem is just true", ->
       element = document.createElement "div"
       opentip = new Opentip element, stem: yes, tipJoint: "top left"
-      expect(opentip.options.stem).to.eql "topLeft"
+      expect(opentip.options.stem.toString()).to.eql "topLeft"
 
     it "should use provided target", ->
       element = adapter.create "<div></div>"
@@ -103,7 +103,7 @@ describe "Opentip", ->
     it "currentStemPosition should be set to inital stemPosition", ->
       element = adapter.create "<div></div>"
       opentip = new Opentip element, stem: "topLeft"
-      expect(opentip.currentStemPosition).to.eql "topLeft"
+      expect(opentip.currentStemPosition.toString()).to.eql "topLeft"
 
     it "delay should be automatically set if none provided", ->
       element = document.createElement "div"
@@ -115,11 +115,11 @@ describe "Opentip", ->
     it "the targetJoint should be the inverse of the tipJoint if none provided", ->
       element = document.createElement "div"
       opentip = new Opentip element, tipJoint: "left"
-      expect(opentip.options.targetJoint).to.eql "right"
+      expect(opentip.options.targetJoint.toString()).to.eql "right"
       opentip = new Opentip element, tipJoint: "top"
-      expect(opentip.options.targetJoint).to.eql "bottom"
+      expect(opentip.options.targetJoint.toString()).to.eql "bottom"
       opentip = new Opentip element, tipJoint: "bottomRight"
-      expect(opentip.options.targetJoint).to.eql "topLeft"
+      expect(opentip.options.targetJoint.toString()).to.eql "topLeft"
 
 
     it "should setup all trigger elements", ->
@@ -188,14 +188,6 @@ describe "Opentip", ->
       element = document.createElement "div"
       opentip = new Opentip element, "the content", "the title", hideTrigger: "closeButton", stem: "top left", ajax: { url: "bla" }
       opentip._buildElements()
-
-    it "should create a stem element if stem", ->
-      enderElement = $ adapter.unwrap opentip.container
-      stemElement = enderElement.find "> .stem"
-      canvasElement = stemElement.find "> canvas"
-
-      expect(stemElement.length).to.be.ok()
-      expect(canvasElement.length).to.be.ok()
 
     it "should add a h1 if title is provided", ->
       enderElement = $ adapter.unwrap opentip.container

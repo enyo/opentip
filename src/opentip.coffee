@@ -85,10 +85,13 @@ class Opentip
     @waitingToShow = no
     @waitingToHide = no
 
-    @lastPosition = left: 0, top: 0
-    @dimensions = width: 100, height: 50 # Some initial values
+    # Some initial values
+    @currentPosition = left: 0, top: 0
+    @dimensions = width: 100, height: 50
 
     @content = ""
+
+    @redraw = on
 
     # Make sure to not overwrite the users options object
     options = @adapter.clone options
@@ -315,11 +318,15 @@ class Opentip
       width: "auto"
       left: "0px" # So it doesn't force wrapping
       top: "0px"
-    @dimensions = @adapter.dimensions @container
+    dimensions = @adapter.dimensions @container
+
+    @redraw = on unless @_dimensionsEqual @dimensions, dimensions
+
+    @dimensions = dimensions
     @adapter.css @container,
       width: "#{@dimensions.width}px"
-      top: "#{@lastPosition.top}px"
-      left: "#{@lastPosition.left}px"
+      top: "#{@currentPosition.top}px"
+      left: "#{@currentPosition.left}px"
 
   # Sets up appropriate observers
   activate: ->
@@ -402,9 +409,7 @@ class Opentip
     @_clearTimeouts()
     return if @visible
 
-    # Thanks to Torsten Saam for this enhancement.
     return @deactivate() unless @_triggerElementExists()
-
 
     @debug "Showing now."
 
@@ -448,6 +453,12 @@ class Opentip
 
       @_activateFirstInput()
 
+    # Just making sure the canvas has been drawn initially.
+    # It could happen that the canvas isn't drawn yet when reposition is called
+    # once before the canvas element has been created. If the position
+    # doesn't change after it will never call @_draw() again.
+    @_draw()
+
   _abortShowing: ->
 
   prepareToHide: ->
@@ -463,35 +474,36 @@ class Opentip
 
   reposition: (e) ->
     e ?= @lastEvent
-    # The stem gets reset by _ensureViewportContainment() if necessary.
-
-    @currentStemPosition = @options.stem
 
     position = @getPosition e
     return unless position?
 
-    position = @_ensureViewportContainment e, position
+    {position, stem} = @_ensureViewportContainment e, position
 
-    @_draw position
+    # If the position didn't change, no need to do anything    
+    return if @_positionsEqual position, @currentPosition
 
-    return @_positionStem() if @_positionsEqual position, @lastPosition
+    # The only time the canvas has to bee redrawn is when the stem changes.
+    @redraw = on unless @_positionsEqual stem, @currentStem
 
-    @lastPosition = position
+    @currentPosition = position
+    @currentStem = stem
 
-    if position
-      @adapter.css @container, { left: "#{position.left}px", top: "#{position.top}px" }
+    # _draw() itself tests if it has to be redrawn.
+    @_draw()
 
-      # Following is a redraw fix, because I noticed some drawing errors in
-      # some browsers when tooltips where overlapping.
-      @defer =>
-        rawContainer = @adapter.unwrap @container
-        # I chose visibility instead of display so that I don't interfere with
-        # appear/disappear effects.
-        rawContainer.style.visibility = "hidden"
-        redrawFix = rawContainer.offsetHeight
-        rawContainer.style.visibility = "visible"
+    @adapter.css @container, { left: "#{position.left}px", top: "#{position.top}px" }
 
-    @_positionStem()
+    # Following is a redraw fix, because I noticed some drawing errors in
+    # some browsers when tooltips where overlapping.
+    @defer =>
+      rawContainer = @adapter.unwrap @container
+      # I chose visibility instead of display so that I don't interfere with
+      # appear/disappear effects.
+      rawContainer.style.visibility = "hidden"
+      redrawFix = rawContainer.offsetHeight
+      rawContainer.style.visibility = "visible"
+
 
   getPosition: (e, tipJoint, targetJoint, stem) ->
 
@@ -582,15 +594,19 @@ class Opentip
     position
 
   _ensureViewportContainment: (e, position) ->
-    return position unless @visible and @position
+    # Sometimes the element is theoretically visible, but an effect is not yet showing it.
+    # So the calculation of the offsets is incorrect sometimes, which results in faulty repositioning.
+    return position: position, stem: @options.stem unless @visible and position
     
-    position
-    # // Sometimes the element is theoretically visible, but an effect is not yet showing it.
-    # // So the calculation of the offsets is incorrect sometimes, which results in faulty repositioning.
-    # if (!this.visible) return position;
-
     # var sticksOut = [ this.sticksOutX(position), this.sticksOutY(position) ];
     # if (!sticksOut[0] && !sticksOut[1]) return position;
+
+    {
+      position: position
+      stem: @options.stem
+    }
+
+
 
     # var tipJ = this.options.tipJoint.clone();
     # var trgJ = this.options.targetJoint.clone();
@@ -645,11 +661,14 @@ class Opentip
     #   }
     # }
     # return position;
+
   _draw: ->
     # This function could be called before _buildElements()
-    return unless @backgroundCanvas
+    return unless @backgroundCanvas and @redraw
 
     @debug "Drawing background."
+
+    @redraw = off
 
     backgroundCanvas = @adapter.unwrap @backgroundCanvas
 
@@ -671,14 +690,14 @@ class Opentip
 
       canvasPosition[0] -= Math.max 0, @options.shadowBlur - @options.shadowOffset[0]
       canvasPosition[1] -= Math.max 0, @options.shadowBlur - @options.shadowOffset[1]
-    if @options.stem
-      if @options.stem.left || @options.stem.right
+    if @currentStem
+      if @currentStem.left || @currentStem.right
         canvasDimensions.width += @options.stemLength
-      if @options.stem.top || @options.stem.bottom
+      if @currentStem.top || @currentStem.bottom
         canvasDimensions.height += @options.stemLength
-      if @options.stem.left
+      if @currentStem.left
         canvasPosition[0] -= @options.stemLength
-      if @options.stem.top
+      if @currentStem.top
         canvasPosition[1] -= @options.stemLength
 
     backgroundCanvas.width = canvasDimensions.width
@@ -793,9 +812,9 @@ class Opentip
         ctx.save()
         ctx.translate positionX, positionY
         ctx.rotate rotation
-        drawLine lineLength, @options.stem.toString() == lineStem, i == 0
+        drawLine lineLength, @currentStem?.toString() == lineStem, i == 0
         ctx.translate lineLength, 0
-        drawCorner @options.stem.toString() == cornerStem, i == 3
+        drawCorner @currentStem?.toString() == cornerStem, i == 3
         ctx.restore()
 
     ctx.save()
@@ -810,8 +829,6 @@ class Opentip
     ctx.restore() # Without shadow
     ctx.stroke() if @options.borderWidth
 
-  _positionStem: ->
-    # TODO
   _searchAndActivateHideButtons: ->
     if "closeButton" in @options.hideTriggers
       for element in @adapter.findAll @container, ".close"
@@ -954,6 +971,10 @@ Opentip::flipPosition = (position) ->
 # Returns true if top and left are equal
 Opentip::_positionsEqual = (posA, posB) ->
   posA? and posB? and posA.left == posB.left and posA.top == posB.top
+
+# Returns true if width and height are equal
+Opentip::_dimensionsEqual = (dimA, dimB) ->
+  dimA? and dimB? and dimA.width == dimB.width and dimA.height == dimB.height
 
 
 # Just forwards to console.debug if Opentip.debug is true and console.debug exists.
