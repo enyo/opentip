@@ -28,14 +28,88 @@ describe("utils", function() {
   });
   describe("sanitizePosition()", function() {
     it("should properly camelize positions", function() {
-      expect(Opentip.prototype.sanitizePosition("top-left")).to.equal("topLeft");
-      expect(Opentip.prototype.sanitizePosition("top-Right")).to.equal("topRight");
-      return expect(Opentip.prototype.sanitizePosition("BOTTOM left")).to.equal("bottomLeft");
+      expect(Opentip.prototype.sanitizePosition("top-left").toString()).to.eql("topLeft");
+      expect(Opentip.prototype.sanitizePosition("top-Right").toString()).to.eql("topRight");
+      return expect(Opentip.prototype.sanitizePosition("BOTTOM left").toString()).to.eql("bottomLeft");
     });
-    return it("should handle any order of positions", function() {
-      expect(Opentip.prototype.sanitizePosition("right bottom")).to.equal("bottomRight");
-      expect(Opentip.prototype.sanitizePosition("left left middle")).to.equal("left");
-      return expect(Opentip.prototype.sanitizePosition("left - top")).to.equal("topLeft");
+    it("should handle any order of positions", function() {
+      expect(Opentip.prototype.sanitizePosition("right bottom").toString()).to.eql("bottomRight");
+      expect(Opentip.prototype.sanitizePosition("left left middle").toString()).to.eql("left");
+      return expect(Opentip.prototype.sanitizePosition("left - top").toString()).to.eql("topLeft");
+    });
+    it("should throw an exception if unknonwn position", function() {
+      try {
+        Opentip.prototype.sanitizePosition("center middle");
+        expect(false).to.be.ok();
+      } catch (e) {
+
+      }
+      try {
+        Opentip.prototype.sanitizePosition("");
+        return expect(false).to.be.ok();
+      } catch (e) {
+
+      }
+    });
+    return it("should add .bottom, .left etc... properties on the position", function() {
+      var positions, testCount, testPositions;
+      positions = {
+        top: false,
+        bottom: false,
+        middle: false,
+        left: false,
+        center: false,
+        right: false
+      };
+      testCount = sinon.stub();
+      testPositions = function(position, thisPositions) {
+        var positionName, shouldBeTrue, _results;
+        thisPositions = Opentip.adapters["native"].extend({}, positions, thisPositions);
+        _results = [];
+        for (positionName in thisPositions) {
+          shouldBeTrue = thisPositions[positionName];
+          testCount();
+          if (shouldBeTrue) {
+            _results.push(expect(position[positionName]).to.be.ok());
+          } else {
+            _results.push(expect(position[positionName]).to.not.be.ok());
+          }
+        }
+        return _results;
+      };
+      testPositions(Opentip.prototype.sanitizePosition("top"), {
+        center: true,
+        top: true
+      });
+      testPositions(Opentip.prototype.sanitizePosition("top right"), {
+        right: true,
+        top: true
+      });
+      testPositions(Opentip.prototype.sanitizePosition("right"), {
+        right: true,
+        middle: true
+      });
+      testPositions(Opentip.prototype.sanitizePosition("bottom right"), {
+        right: true,
+        bottom: true
+      });
+      testPositions(Opentip.prototype.sanitizePosition("bottom"), {
+        center: true,
+        bottom: true
+      });
+      testPositions(Opentip.prototype.sanitizePosition("bottom left"), {
+        left: true,
+        bottom: true
+      });
+      testPositions(Opentip.prototype.sanitizePosition("left"), {
+        left: true,
+        middle: true
+      });
+      testPositions(Opentip.prototype.sanitizePosition("top left"), {
+        left: true,
+        top: true
+      });
+      return expect(testCount.callCount).to.be(6 * 8);
     });
   });
   describe("ucfirst()", function() {

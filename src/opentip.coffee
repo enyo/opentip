@@ -477,7 +477,6 @@ class Opentip
 
     if position
       @adapter.css @container, { left: "#{position.left}px", top: "#{position.top}px" }
-      console.log "HI"
 
       # Following is a redraw fix, because I noticed some drawing errors in
       # some browsers when tooltips where overlapping.
@@ -505,7 +504,7 @@ class Opentip
 
       position = targetPosition
 
-      if /right/i.test targetJoint
+      if targetJoint.right
         # For wrapping inline elements, left + width does not give the right
         # border, because left is where the element started, not its most left
         # position.
@@ -516,13 +515,13 @@ class Opentip
         else
           # Well... browser doesn't support it
           position.left += targetDimensions.width
-      else if targetJoint == "top" or targetJoint == "bottom"
+      else if targetJoint.center
         # Center
         position.left += Math.round targetDimensions.width / 2
 
-      if /bottom/i.test targetJoint
+      if targetJoint.bottom
         position.top += targetDimensions.height
-      else if targetJoint == "left" or targetJoint == "right"
+      else if targetJoint.middle
         # Middle
         position.top += Math.round targetDimensions.height / 2
 
@@ -558,11 +557,11 @@ class Opentip
     position.top += @options.offset[1];
 
 
-    if /right/i.test tipJoint then position.left -= @dimensions.width
-    else if tipJoint == "top" or tipJoint == "bottom" then position.left -= Math.round @dimensions.width / 2
+    if tipJoint.right then position.left -= @dimensions.width
+    else if tipJoint.center then position.left -= Math.round @dimensions.width / 2
 
-    if /bottom/i.test tipJoint then position.top -= @dimensions.height
-    else if tipJoint == "left" or tipJoint == "right" then position.top -= Math.round @dimensions.height / 2
+    if tipJoint.bottom then position.top -= @dimensions.height
+    else if tipJoint.middle then position.top -= Math.round @dimensions.height / 2
 
     position
 
@@ -749,9 +748,18 @@ Opentip::sanitizePosition = (position) ->
   horizontalPosition = i for i in [ "left", "right" ] when ~position.indexOf i
   horizontalPosition = @ucfirst horizontalPosition if verticalPosition?
 
-  position = "#{verticalPosition ? ""}#{horizontalPosition ? ""}"
+  position = new String "#{verticalPosition ? ""}#{horizontalPosition ? ""}"
   
-  throw "Unknown position: " + position unless Opentip.position[position]?
+  throw new Error "Unknown position: " + position unless Opentip.position[position]?
+
+  switch horizontalPosition?.toLowerCase()
+    when "left" then position.left = yes
+    when "right" then position.right = yes
+    else position.center = yes
+  switch verticalPosition?.toLowerCase()
+    when "top" then position.top = yes
+    when "bottom" then position.bottom = yes
+    else position.middle = yes
 
   position
 

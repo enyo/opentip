@@ -23,13 +23,51 @@ describe "utils", ->
 
   describe "sanitizePosition()", ->
     it "should properly camelize positions", ->
-      expect(Opentip::sanitizePosition "top-left").to.equal "topLeft"
-      expect(Opentip::sanitizePosition "top-Right").to.equal "topRight"
-      expect(Opentip::sanitizePosition "BOTTOM left").to.equal "bottomLeft"
+      expect(Opentip::sanitizePosition("top-left").toString()).to.eql "topLeft"
+      expect(Opentip::sanitizePosition("top-Right").toString()).to.eql "topRight"
+      expect(Opentip::sanitizePosition("BOTTOM left").toString()).to.eql "bottomLeft"
     it "should handle any order of positions", ->
-      expect(Opentip::sanitizePosition "right bottom").to.equal "bottomRight"
-      expect(Opentip::sanitizePosition "left left middle").to.equal "left"
-      expect(Opentip::sanitizePosition "left - top").to.equal "topLeft"
+      expect(Opentip::sanitizePosition("right bottom").toString()).to.eql "bottomRight"
+      expect(Opentip::sanitizePosition("left left middle").toString()).to.eql "left"
+      expect(Opentip::sanitizePosition("left - top").toString()).to.eql "topLeft"
+    it "should throw an exception if unknonwn position", ->
+      try
+        Opentip::sanitizePosition "center middle"
+        expect(false).to.be.ok()
+      catch e
+      try
+        Opentip::sanitizePosition ""
+        expect(false).to.be.ok()
+      catch e
+
+    it "should add .bottom, .left etc... properties on the position", ->
+      positions = 
+        top: no
+        bottom: no
+        middle: no
+        left: no
+        center: no
+        right: no
+
+      testCount = sinon.stub()
+      testPositions = (position, thisPositions) ->
+        thisPositions = Opentip.adapters.native.extend { }, positions, thisPositions
+        for positionName, shouldBeTrue of thisPositions
+          testCount()
+          if shouldBeTrue then expect(position[positionName]).to.be.ok()
+          else expect(position[positionName]).to.not.be.ok()
+
+      testPositions Opentip::sanitizePosition("top"), center: yes, top: yes
+      testPositions Opentip::sanitizePosition("top right"), right: yes, top: yes
+      testPositions Opentip::sanitizePosition("right"), right: yes, middle: yes
+      testPositions Opentip::sanitizePosition("bottom right"), right: yes, bottom: yes
+      testPositions Opentip::sanitizePosition("bottom"), center: yes, bottom: yes
+      testPositions Opentip::sanitizePosition("bottom left"), left: yes, bottom: yes
+      testPositions Opentip::sanitizePosition("left"), left: yes, middle: yes
+      testPositions Opentip::sanitizePosition("top left"), left: yes, top: yes
+
+      # Just making sure that the tests are actually called
+      expect(testCount.callCount).to.be 6 * 8
 
   describe "ucfirst()", ->
     it "should transform the first character to uppercase", ->
