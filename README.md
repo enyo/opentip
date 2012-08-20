@@ -49,6 +49,9 @@ Those are the major changes you should look out for when migrating from 1.x to 2
 - Positions are no longer of the weird form `[ "left", "top" ]` but simply
   strings   like `"top left"` or `"right"`
 
+- `stem.size` has been dropped in favor of `stem.length` and `stem.base`
+
+- Most of the design is now done in JS since the whole thing is a canvas now.
 
 ## Future plans
 
