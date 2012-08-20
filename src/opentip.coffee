@@ -506,8 +506,6 @@ class Opentip
       targetDimensions = @adapter.dimensions @options.target
 
       position = targetPosition
-      console.log "POSITION:", targetPosition.left, targetPosition.top
-      console.log "DIMENSIONS:", targetDimensions.width, targetDimensions.height
 
       if targetJoint.right
         # For wrapping inline elements, left + width does not give the right
@@ -520,19 +518,26 @@ class Opentip
         else
           # Well... browser doesn't support it
           position.left += targetDimensions.width
-        console.log "HI"
       else if targetJoint.center
         # Center
         position.left += Math.round targetDimensions.width / 2
-        console.log "HI"
 
       if targetJoint.bottom
         position.top += targetDimensions.height
-        console.log "HI"
       else if targetJoint.middle
         # Middle
         position.top += Math.round targetDimensions.height / 2
-        console.log "HI2"
+
+      if @options.borderWidth
+        if @options.tipJoint.left
+          position.left += @options.borderWidth
+        if @options.tipJoint.right
+          position.left -= @options.borderWidth
+        if @options.tipJoint.top
+          position.top += @options.borderWidth
+        else if @options.tipJoint.bottom
+          position.top -= @options.borderWidth
+        
 
     else
       # Follow mouse
@@ -685,6 +690,7 @@ class Opentip
       left: "#{canvasPosition[0]}px"
       top: "#{canvasPosition[1]}px"
 
+
     ctx = backgroundCanvas.getContext "2d"
 
     ctx.clearRect 0, 0, backgroundCanvas.width, backgroundCanvas.height
@@ -696,7 +702,7 @@ class Opentip
       ctx.strokeStyle = @options.borderColor
       ctx.lineWidth = @options.borderWidth
 
-
+    ctx.lineCap = "round"
 
     # Since borders are always in the middle and I want them outside
     hb = @options.borderWidth / 2
@@ -709,7 +715,7 @@ class Opentip
         ctx.moveTo Math.max(@options.stemBase, @options.borderRadius) + 1 - hb, -hb
       if stem
         ctx.lineTo length / 2 - @options.stemBase / 2, -hb
-        ctx.lineTo length / 2, - @options.stemLength
+        ctx.lineTo length / 2, - @options.stemLength - hb
         ctx.lineTo length / 2 + @options.stemBase / 2, -hb
 
     # Draws a corner with stem if necessary
