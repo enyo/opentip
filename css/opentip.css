@@ -30,3 +30,41 @@
   color: rgba(255,255,255,0.9);
   text-shadow: 1px 1px 0px rgba(0,0,0,0.2);
 }
+.opentip-container.hide-effect-fade {
+  -webkit-transition: opacity 1s ease-in-out;
+  -moz-transition: opacity 1s ease-in-out;
+  -o-transition: opacity 1s ease-in-out;
+  -ms-transition: opacity 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+}
+.opentip-container.hide-effect-fade.hiding {
+  opacity: 0;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  filter: alpha(opacity=0);
+}
+.opentip-container.show-effect-appear.going-to-show,
+.opentip-container.show-effect-appear.showing {
+  -webkit-transition: opacity 1s ease-in-out;
+  -moz-transition: opacity 1s ease-in-out;
+  -o-transition: opacity 1s ease-in-out;
+  -ms-transition: opacity 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+}
+.opentip-container.show-effect-appear.going-to-show {
+  opacity: 0;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  filter: alpha(opacity=0);
+}
+.opentip-container.show-effect-appear.showing {
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+}
+.opentip-container.show-effect-appear.visible {
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+}

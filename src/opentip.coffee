@@ -49,6 +49,7 @@ class Opentip
   class:
     container: "opentip-container"
 
+    goingToHide: "going-to-hide"
     hidden: "hidden"
     hiding: "hiding"
     goingToShow: "going-to-show"
@@ -437,14 +438,15 @@ class Opentip
     @adapter.removeClass @container, @class.hiding
     @adapter.removeClass @container, @class.hidden
     @adapter.addClass @container, @class.goingToShow
+    @setCss3Style @container, "transition-duration": "0s"
 
     @defer =>
-      @setCss3Style @container, "transition-duration": "#{@options.showEffectDuration}s"
       @adapter.removeClass @container, @class.goingToShow
       @adapter.addClass @container, @class.showing
 
       delay = 0
       delay = @options.showEffectDuration if @options.showEffect and @options.showEffectDuration
+      @setCss3Style @container, "transition-duration": "#{delay}s"
 
       @_visibilityStateTimeoutId = @setTimeout =>
         @adapter.removeClass @container, @class.showing
@@ -460,14 +462,70 @@ class Opentip
     @_draw()
 
   _abortShowing: ->
+    if @preparingToShow
+      @debug "Aborting showing."
+      @_clearTimeouts()
+      @_stopFollowingMousePosition()
+      @preparingToShow = false
+      @_setupObservers "hiding"
 
   prepareToHide: ->
+    @_abortShowing()
+
+    return unless @visible
+
+    @debug "Hiding in #{@options.hideDelay}s"
+
+    @preparingToHide = yes
+
+    # We start observing even though it is not yet hidden, so the tooltip does
+    # not disappear when a showEvent is triggered.
+    @_setupObservers "hiding"
+
+    @hideTimeoutId = @setTimeout @bound.hide, @options.hideDelay
 
   hide: ->
+    @_clearTimeouts()
+
+    return unless @visible
+
+    @debug "Hiding!"
+
+    @visible = no
+
+    @preparingToHide = no
+
+    @_stopEnsureTriggerElement()
+
+    # The order is important here! Do not reverse.
+    @_setupObservers "hidden", "hiding"
+
+    @_stopFollowingMousePosition() unless @options.fixed
+
+
+ 
+    @adapter.removeClass @container, @class.visible
+    @adapter.removeClass @container, @class.showing
+    @adapter.addClass @container, @class.goingToHide
+    @setCss3Style @container, "transition-duration": "0s"
+
+    @defer =>
+      @adapter.removeClass @container, @class.goingToHide
+      @adapter.addClass @container, @class.hiding
+
+      hideDelay = 0
+      hideDelay = @options.hideEffectDuration if @options.hideEffect and @options.hideEffectDuration
+      @setCss3Style @container, { "transition-duration": "#{hideDelay}s" }
+
+      @_visibilityStateTimeoutId = @setTimeout =>
+        @adapter.removeClass @container, @class.hiding
+        @adapter.addClass @container, @class.hidden
+        @setCss3Style @container, { "transition-duration": "0s" }
+      , hideDelay
 
   _abortHiding: ->
     if @preparingToHide
-      @debug "Aborting hiding"
+      @debug "Aborting hiding."
       @_clearTimeouts()
       @preparingToHide = no
       @_setupObservers "showing"
