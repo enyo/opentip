@@ -252,6 +252,8 @@ class Opentip
   _buildContainer: ->
     @container = @adapter.create """<div id="opentip-#{@id}" class="#{@class.container} #{@class.hidden} #{@class.stylePrefix}#{@options.className}"></div>"""
 
+    @adapter.css @container, position: "absolute"
+
     @adapter.addClass @container, @class.loading if @options.ajax
     @adapter.addClass @container, @class.fixed if @options.fixed
     @adapter.addClass @container, "#{@class.showEffectPrefix}#{@options.showEffect}" if @options.showEffect
@@ -260,15 +262,10 @@ class Opentip
   # Builds all elements inside the container and put the container in body.
   _buildElements: ->
 
-    # Create the stem
-    if @options.stem
-      stemOffset = "-#{@options.stemSize}px"
-      stemElement = @adapter.create """<div class="stem #{@dasherize @options.stem}"><canvas></canvas></div>"""
-      @adapter.append @container, stemElement
-
-
     # The actual content will be set by `_updateElementContent()`
     @tooltipElement = @adapter.create """<div class="opentip"><header></header><div class="content"></div></div>"""
+
+    @backgroundCanvas = @adapter.create """<canvas style="position: absolute;"></canvas>"""
 
     headerElement = @adapter.find @tooltipElement, "header"
 
@@ -284,7 +281,8 @@ class Opentip
     if "closeButton" in @options.hideTriggers
       @adapter.append headerElement, @adapter.create """<div class="buttons"><a href="javascript:undefined;" class="close">✖</a></div>"""
 
-    # Now put the tooltip in the container and the container in the body
+    # Now put the tooltip and the canvas in the container and the container in the body
+    @adapter.append @container, @backgroundCanvas
     @adapter.append @container, @tooltipElement
     @adapter.append document.body, @container
 
@@ -474,6 +472,8 @@ class Opentip
 
     position = @_ensureViewportContainment e, position
 
+    @_draw position
+
     return @_positionStem() if @_positionsEqual position, @lastPosition
 
     @lastPosition = position
@@ -506,6 +506,8 @@ class Opentip
       targetDimensions = @adapter.dimensions @options.target
 
       position = targetPosition
+      console.log "POSITION:", targetPosition.left, targetPosition.top
+      console.log "DIMENSIONS:", targetDimensions.width, targetDimensions.height
 
       if targetJoint.right
         # For wrapping inline elements, left + width does not give the right
@@ -518,15 +520,19 @@ class Opentip
         else
           # Well... browser doesn't support it
           position.left += targetDimensions.width
+        console.log "HI"
       else if targetJoint.center
         # Center
         position.left += Math.round targetDimensions.width / 2
+        console.log "HI"
 
       if targetJoint.bottom
         position.top += targetDimensions.height
+        console.log "HI"
       else if targetJoint.middle
         # Middle
         position.top += Math.round targetDimensions.height / 2
+        console.log "HI2"
 
     else
       # Follow mouse
@@ -536,10 +542,10 @@ class Opentip
       position = top: mousePosition.y, left: mousePosition.x
 
     if @options.autoOffset
-      stemSize = if @options.stem then @options.stemSize else 0
+      stemLength = if @options.stem then @options.stemLength else 0
 
       # If there is as stem offsets dont need to be that big if fixed.
-      offsetDistance = if stemSize and @options.fixed then 2 else 10
+      offsetDistance = if stemLength and @options.fixed then 2 else 10
 
       # Corners can be closer but when middle or center they are too close
       additionalHorizontal = if tipJoint.middle and not @options.fixed then 15 else 0
@@ -551,13 +557,13 @@ class Opentip
       if tipJoint.bottom then position.top -= offsetDistance + additionalVertical
       else if tipJoint.top then position.top += offsetDistance + additionalVertical
 
-      if stemSize
+      if stemLength
         stem ?= @options.stem
-        if stem.right then position.left -= stemSize
-        else if stem.left then position.left += stemSize
+        if stem.right then position.left -= stemLength
+        else if stem.left then position.left += stemLength
 
-        if stem.bottom then position.top -= stemSize
-        else if stem.top then position.top += stemSize
+        if stem.bottom then position.top -= stemLength
+        else if stem.top then position.top += stemLength
 
     position.left += @options.offset[0]
     position.top += @options.offset[1]
@@ -634,6 +640,136 @@ class Opentip
     #   }
     # }
     # return position;
+  _draw: ->
+    # This function could be called before _buildElements()
+    return unless @backgroundCanvas
+
+    @debug "Drawing background."
+
+    backgroundCanvas = @adapter.unwrap @backgroundCanvas
+
+    canvasDimensions = @adapter.clone @dimensions
+    canvasPosition = [ 0, 0 ]
+
+    if @options.borderWidth
+      canvasDimensions.width += @options.borderWidth * 2
+      canvasDimensions.height += @options.borderWidth * 2
+      canvasPosition[0] -= @options.borderWidth
+      canvasPosition[1] -= @options.borderWidth
+    if @options.shadow
+      canvasDimensions.width += @options.shadowBlur * 2
+      # If the shadow offset is bigger than the actual shadow blur, the whole canvas gets bigger
+      canvasDimensions.width += Math.max 0, @options.shadowOffset[0] - @options.shadowBlur * 2
+      
+      canvasDimensions.height += @options.shadowBlur * 2
+      canvasDimensions.height += Math.max 0, @options.shadowOffset[1] - @options.shadowBlur * 2
+
+      canvasPosition[0] -= Math.max 0, @options.shadowBlur - @options.shadowOffset[0]
+      canvasPosition[1] -= Math.max 0, @options.shadowBlur - @options.shadowOffset[1]
+    if @options.stem
+      if @options.stem.left || @options.stem.right
+        canvasDimensions.width += @options.stemLength
+      if @options.stem.top || @options.stem.bottom
+        canvasDimensions.height += @options.stemLength
+      if @options.stem.left
+        canvasPosition[0] -= @options.stemLength
+      if @options.stem.top
+        canvasPosition[1] -= @options.stemLength
+
+    backgroundCanvas.width = canvasDimensions.width
+    backgroundCanvas.height = canvasDimensions.height
+
+    @adapter.css @backgroundCanvas,
+      width: "#{backgroundCanvas.width}px"
+      height: "#{backgroundCanvas.height}px"
+      left: "#{canvasPosition[0]}px"
+      top: "#{canvasPosition[1]}px"
+
+    ctx = backgroundCanvas.getContext "2d"
+
+    ctx.clearRect 0, 0, backgroundCanvas.width, backgroundCanvas.height
+    ctx.beginPath()
+
+    ctx.fillStyle = @options.background
+
+    if @options.borderWidth
+      ctx.strokeStyle = @options.borderColor
+      ctx.lineWidth = @options.borderWidth
+
+
+
+    # Since borders are always in the middle and I want them outside
+    hb = @options.borderWidth / 2
+
+
+    # Draws a line with stem if necessary
+    drawLine = (length, stem, first) =>
+      if first
+        # This ensures that the outline is properly closed
+        ctx.moveTo Math.max(@options.stemBase, @options.borderRadius) + 1 - hb, -hb
+      if stem
+        ctx.lineTo length / 2 - @options.stemBase / 2, -hb
+        ctx.lineTo length / 2, - @options.stemLength
+        ctx.lineTo length / 2 + @options.stemBase / 2, -hb
+
+    # Draws a corner with stem if necessary
+    drawCorner = (stem, last) =>
+      if stem
+        ctx.lineTo -@options.stemBase + hb, 0 - hb
+        ctx.lineTo @options.stemLength + hb, -@options.stemLength - hb
+        ctx.lineTo hb, @options.stemBase - hb
+      else
+        ctx.lineTo -@options.borderRadius + hb, -hb
+        ctx.quadraticCurveTo hb, -hb, hb, @options.borderRadius - hb
+      if last
+        # This ensures that the outline is properly closed
+        ctx.lineTo hb, Math.max(@options.stemBase, @options.borderRadius) + 1 - hb
+
+
+    # Start drawing without caring about the shadows or stems
+    # The canvas position is exactly the amount that has been moved to account
+    # for shadows and stems
+    ctx.translate -canvasPosition[0], -canvasPosition[1]
+
+    ctx.save()
+
+    do => # Wrapping variables
+
+      # This part is a bit funky...
+      # All in all I just iterate over all four corners, translate the canvas
+      # to it and rotate it so the next line goes to the right.
+      # This way I can call drawLine and drawCorner withouth them knowing which
+      # line their actually currently drawing.
+      for i in [0...Opentip.positions.length/2]
+        positionIdx = i * 2
+
+        positionX = if i == 0 or i == 3 then 0 else @dimensions.width
+        positionY = if i < 2 then 0 else @dimensions.height
+        rotation = (Math.PI / 2) * i
+        lineLength = if i % 2 == 0 then @dimensions.width else @dimensions.height
+        lineStem = Opentip.positions[positionIdx]
+        cornerStem = Opentip.positions[positionIdx + 1]
+
+        ctx.save()
+        ctx.translate positionX, positionY
+        ctx.rotate rotation
+        drawLine lineLength, @options.stem.toString() == lineStem, i == 0
+        ctx.translate lineLength, 0
+        drawCorner @options.stem.toString() == cornerStem, i == 3
+        ctx.restore()
+
+    ctx.save()
+
+    if @options.shadow
+      ctx.shadowColor = @options.shadowColor
+      ctx.shadowBlur = @options.shadowBlur
+      ctx.shadowOffsetX = @options.shadowOffset[0]
+      ctx.shadowOffsetY = @options.shadowOffset[1]
+
+    ctx.fill()
+    ctx.restore() # Without shadow
+    ctx.stroke() if @options.borderWidth
+
   _positionStem: ->
     # TODO
   _searchAndActivateHideButtons: ->
@@ -773,7 +909,7 @@ Opentip::flipPosition = (position) ->
   positionIdx = Opentip.position[position]
   # There are 8 positions, and smart as I am I layed them out in a circle.
   flippedIndex = (positionIdx + 4) % 8
-  Opentip.positions[flippedIndex]
+  @sanitizePosition Opentip.positions[flippedIndex]
 
 # Returns true if top and left are equal
 Opentip::_positionsEqual = (posA, posB) ->
@@ -910,7 +1046,10 @@ Opentip.styles =
     hideEffectDuration: 0.2
 
     # integer
-    stemSize: 8
+    stemLength: 8
+
+    # integer
+    stemBase: 8
 
     # `POSITION`
     tipJoint: "top left"
@@ -940,6 +1079,30 @@ Opentip.styles =
 
     # Will be set automatically in constructor
     style: null
+
+    # The background color of the tip
+    background: "#fff18f"
+
+    # Border radius...
+    borderRadius: 5
+
+    # Set to 0 or false if you don't want a border
+    borderWidth: 1
+
+    # Normal CSS value
+    borderColor: "#f2e37b"
+
+    # Set to false if you don't want a shadow
+    shadow: yes
+
+    # How the shadow should be blurred. Set to 0 if you want a hard drop shadow 
+    shadowBlur: 10
+
+    # Shadow offset...
+    shadowOffset: [ 3, 3 ]
+
+    # Shadow color...
+    shadowColor: "rgba(0, 0, 0, 0.1)"
 
   slick:
     className: "slick"

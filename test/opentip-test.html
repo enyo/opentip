@@ -7,6 +7,9 @@
   <script src="../lib/adapter.ender.js"></script>
   <script>
     Opentip.debug = true;
+    $.domReady(function() {
+      window.x=$(".opentip-test").opentip("Hallo test", { target: true, tipJoint: "top left", stem: true, stemLength: 5})
+    });
   </script>
   <style type="text/css">
     @import url("../css/opentip.css");
@@ -18,6 +21,10 @@
       text-align: center;
       position: relative;
       margin: 40px auto;
+    }
+
+    .opentip-container .opentip {
+      padding: 10px 15px;
     }
   </style>
 </head>

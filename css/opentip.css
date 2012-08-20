@@ -21,8 +21,5 @@
   position: relative;
   font-size: 13px;
   line-height: 120%;
-  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.1);
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
-  border: 1px solid #aaa;
   padding: 3px;
 }

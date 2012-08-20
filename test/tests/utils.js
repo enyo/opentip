@@ -112,6 +112,19 @@ describe("utils", function() {
       return expect(testCount.callCount).to.be(6 * 8);
     });
   });
+  describe("flipPosition()", function() {
+    it("should properly flip the position", function() {
+      expect(Opentip.prototype.flipPosition(Opentip.prototype.sanitizePosition("top")).toString()).to.be("bottom");
+      expect(Opentip.prototype.flipPosition(Opentip.prototype.sanitizePosition("bottomRight")).toString()).to.be("topLeft");
+      expect(Opentip.prototype.flipPosition(Opentip.prototype.sanitizePosition("left top")).toString()).to.be("bottomRight");
+      return expect(Opentip.prototype.flipPosition(Opentip.prototype.sanitizePosition("bottom")).toString()).to.be("top");
+    });
+    return it("should return a sanitized position", function() {
+      var flipped;
+      flipped = Opentip.prototype.flipPosition(Opentip.prototype.sanitizePosition("top"));
+      return expect(flipped.bottom).to.be.ok();
+    });
+  });
   describe("ucfirst()", function() {
     return it("should transform the first character to uppercase", function() {
       return expect(Opentip.prototype.ucfirst("abc def")).to.equal("Abc def");

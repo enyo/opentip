@@ -88,7 +88,7 @@ describe "Opentip - Appearing", ->
     it "should log that it's showing", ->
       sinon.stub opentip, "debug"
       opentip.show()
-      expect(opentip.debug.callCount).to.be 1
+      expect(opentip.debug.callCount).to.be.above 1
       expect(opentip.debug.args[0][0]).to.be "Showing now."
 
     it "should set visible to true and preparingToShow to false", ->
