@@ -48,6 +48,11 @@ class Opentip
 
   class:
     container: "opentip-container"
+    opentip: "opentip"
+    content: "content"
+    loadingIndicator: "loading-indicator"
+    buttons: "buttons"
+    close: "close"
 
     goingToHide: "going-to-hide"
     hidden: "hidden"
@@ -94,6 +99,12 @@ class Opentip
 
     @redraw = on
 
+    @currentObservers =
+      showing: no
+      visible: no
+      hiding: no
+      hidden: no
+
     # Make sure to not overwrite the users options object
     options = @adapter.clone options
 
@@ -122,6 +133,9 @@ class Opentip
     optionSources.push options
 
     options = @adapter.extend { }, optionSources...
+
+    # Deep copying the hideTriggers array
+    options.hideTriggers = (hideTrigger for hideTrigger in options.hideTriggers)
 
     options.hideTriggers.push options.hideTrigger if options.hideTrigger
 
@@ -197,7 +211,6 @@ class Opentip
     @_buildContainer()
 
     for hideTrigger, i in @options.hideTriggers
-
       hideTriggerElement = null
 
       hideOn = if @options.hideOn instanceof Array then @options.hideOn[i] else @options.hideOn
@@ -235,7 +248,6 @@ class Opentip
             element: hideTriggerElement
             event: "mouseover"
 
-
     @bound = { }
     @bound[methodToBind] = (do (methodToBind) => return => @[methodToBind].apply this, arguments) for methodToBind in [
       "prepareToShow"
@@ -267,7 +279,7 @@ class Opentip
   _buildElements: ->
 
     # The actual content will be set by `_updateElementContent()`
-    @tooltipElement = @adapter.create """<div class="opentip"><header></header><div class="content"></div></div>"""
+    @tooltipElement = @adapter.create """<div class="#{@class.opentip}"><header></header><div class="#{@class.content}"></div></div>"""
 
     @backgroundCanvas = @adapter.create """<canvas style="position: absolute;"></canvas>"""
 
@@ -280,10 +292,10 @@ class Opentip
       @adapter.append headerElement, titleElement
 
     if @options.ajax
-      @adapter.append @tooltipElement, @adapter.create """<div class="loading-indicator"><span>Loading...</span></div>"""
+      @adapter.append @tooltipElement, @adapter.create """<div class="#{@class.loadingIndicator}"><span>Loading...</span></div>"""
 
     if "closeButton" in @options.hideTriggers
-      @adapter.append headerElement, @adapter.create """<div class="buttons"><a href="javascript:undefined;" class="close">✖</a></div>"""
+      @adapter.append headerElement, @adapter.create """<div class="#{@class.buttons}"><a href="javascript:undefined;" class="#{@class.close}">✖</a></div>"""
 
     # Now put the tooltip and the canvas in the container and the container in the body
     @adapter.append @container, @backgroundCanvas
@@ -307,7 +319,7 @@ class Opentip
       if typeof @content == "function"
         @debug "Executing content function."
         @content = @content this
-      @adapter.update contentDiv, @content, @options.escapeHtml
+      @adapter.update contentDiv, @content, @options.escapeContent
 
     @_storeAndFixDimensions()
 
@@ -331,56 +343,55 @@ class Opentip
 
   # Sets up appropriate observers
   activate: ->
-    # The order is important here!
-    # "hidden" removes the observers for the `showTriggersWhenVisible` which
-    # could be the same as the `showTriggersWhenHidden` which are added by
-    # "hiding".
-    @_setupObservers "hidden", "hiding"
+    @_setupObservers "-showing", "-visible", "hidden", "hiding"
 
   # Hides the tooltip and sets up appropriate observers
   deactivate: ->
     @debug "Deactivating tooltip."
     @hide()
-    @_setupObservers "hidden"
 
 
+  # If a state starts with a minus all observers are removed instead of set.
   _setupObservers: (states...) ->
     for state in states
+
+      removeObserver = no
+      if state.charAt(0) == "-"
+        removeObserver = yes
+        state = state.substr 1 # Remove leading -
+
+      # Do nothing if the state is already achieved
+      continue if @currentObservers[state] is not removeObserver
+      @currentObservers[state] = not removeObserver
+
+      observeOrStop = (args...) ->
+        if removeObserver then @adapter.stopObserving args...
+        else @adapter.observe args...
+
       switch state
         when "showing"
           # Setup the triggers to hide the tip
           for trigger in @hideTriggers
-            @adapter.observe trigger.element, trigger.event, @bound.prepareToHide
-
-          # Remove the triggers to to show the tip
-          for trigger in @showTriggersWhenHidden
-            @adapter.stopObserving trigger.element, trigger.event, @bound.prepareToShow
+            observeOrStop trigger.element, trigger.event, @bound.prepareToHide
 
           # Start listening to window changes
-          @adapter.observe (if document.onresize? then document else window), "resize", @bound.reposition
-          @adapter.observe window, "scroll", @bound.reposition
+          observeOrStop (if document.onresize? then document else window), "resize", @bound.reposition
+          observeOrStop window, "scroll", @bound.reposition
+
         when "visible"
           # Most of the observers have already been handled by "showing"
           # Add the triggers that make sure opentip doesn't hide prematurely
           for trigger in @showTriggersWhenVisible
-            @adapter.observe trigger.element, trigger.event, @bound.prepareToShow
+            observeOrStop trigger.element, trigger.event, @bound.prepareToShow
+
         when "hiding"
           # Setup the triggers to show the tip
           for trigger in @showTriggersWhenHidden
-            @adapter.observe trigger.element, trigger.event, @bound.prepareToShow
+            observeOrStop trigger.element, trigger.event, @bound.prepareToShow
           
-          # Remove the triggers that hide the tip
-          for trigger in @hideTriggers
-            @adapter.stopObserving trigger.element, trigger.event, @bound.prepareToHide
-
-          # No need to listen for window changes anymore
-          @adapter.stopObserving (if document.onresize? then document else window), "resize", @bound.reposition
-          @adapter.stopObserving window, "scroll", @bound.reposition
         when "hidden"
-          # Most of the observers have already been handled by "hiding"
-          # Remove the trigger that would retrigger a `show` when tip is visible.
-          for trigger in @showTriggersWhenVisible
-            @adapter.stopObserving trigger.element, trigger.event, @bound.prepareToShow
+          # Nothing to do since all observers are setup in "hiding"
+
         else
           throw new Error "Unknown state: #{state}"
 
@@ -398,7 +409,7 @@ class Opentip
 
     # Even though it is not yet visible, I already attach the observers, so the
     # tooltip won't show if a hideEvent is triggered.
-    @_setupObservers "showing"
+    @_setupObservers "-hidden", "-hiding", "showing"
 
     # Making sure the tooltip is at the right position as soon as it shows
     @_followMousePosition()
@@ -424,14 +435,14 @@ class Opentip
 
     @_loadAjax() if @options.ajax and not @loaded
 
-    @_searchAndActivateHideButtons()
+    @_searchAndActivateCloseButtons()
 
     @_startEnsureTriggerElement()
 
     @adapter.css @container, zIndex: Opentip.lastZIndex++
 
     # The order is important here! Do not reverse.
-    @_setupObservers "visible", "showing"
+    @_setupObservers "-hidden", "-hiding", "showing", "visible"
 
     @reposition()
 
@@ -467,7 +478,7 @@ class Opentip
       @_clearTimeouts()
       @_stopFollowingMousePosition()
       @preparingToShow = false
-      @_setupObservers "hiding"
+      @_setupObservers "-showing", "-visible", "hiding", "hidden"
 
   prepareToHide: ->
     @_abortShowing()
@@ -480,7 +491,7 @@ class Opentip
 
     # We start observing even though it is not yet hidden, so the tooltip does
     # not disappear when a showEvent is triggered.
-    @_setupObservers "hiding"
+    @_setupObservers "-showing", "-visible", "-hidden", "hiding"
 
     @_hideTimeoutId = @setTimeout @bound.hide, @options.hideDelay
 
@@ -497,8 +508,7 @@ class Opentip
 
     @_stopEnsureTriggerElement()
 
-    # The order is important here! Do not reverse.
-    @_setupObservers "hidden", "hiding"
+    @_setupObservers "-showing", "-visible", "hiding", "hidden"
 
     @_stopFollowingMousePosition() unless @options.fixed
 
@@ -528,7 +538,7 @@ class Opentip
       @debug "Aborting hiding."
       @_clearTimeouts()
       @preparingToHide = no
-      @_setupObservers "showing"
+      @_setupObservers "-hiding", "showing", "visible"
 
   reposition: (e) ->
     e ?= @lastEvent
@@ -887,15 +897,15 @@ class Opentip
     ctx.restore() # Without shadow
     ctx.stroke() if @options.borderWidth
 
-  _searchAndActivateHideButtons: ->
-    if "closeButton" in @options.hideTriggers
-      for element in @adapter.findAll @container, ".close"
-        @hideTriggers.push
-          element: @adapter.wrap element
-          event: "click"
+  _searchAndActivateCloseButtons: ->
+    for element in @adapter.findAll @container, ".#{@class.close}"
+      @hideTriggers.push
+        element: @adapter.wrap element
+        event: "click"
 
-      # Creating the observers for the new close buttons
-      @_setupObservers "visible" if @visible
+    # Creating the observers for the new close buttons
+    @_setupObservers "-showing", "showing" if @currentObservers.showing
+    @_setupObservers "-visible", "visible" if @currentObservers.visible
 
   _activateFirstInput: ->
     input = @adapter.unwrap @adapter.find @container, "input, textarea"
@@ -1110,6 +1120,9 @@ Opentip.styles =
     # Whether the provided title should be html escaped
     escapeTitle: yes
 
+    # Whether the content should be html escaped
+    escapeContent: no
+
     # The class name to be added to the HTML element
     className: "standard"
 
@@ -1193,8 +1206,6 @@ Opentip.styles =
 
     # You can group opentips together. So when a tooltip shows, it looks if there are others in the same group, and hides them.
     group: null
-
-    escapeHtml: false
 
     # Will be set automatically in constructor
     style: null

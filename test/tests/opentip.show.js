@@ -65,7 +65,9 @@ describe("Opentip - Appearing", function() {
       sinon.stub(opentip, "_setupObservers");
       opentip.prepareToShow();
       expect(opentip._setupObservers.callCount).to.be(1);
-      return expect(opentip._setupObservers.getCall(0).args[0]).to.be("showing");
+      expect(opentip._setupObservers.getCall(0).args[0]).to.be("-hidden");
+      expect(opentip._setupObservers.getCall(0).args[1]).to.be("-hiding");
+      return expect(opentip._setupObservers.getCall(0).args[2]).to.be("showing");
     });
     it("should start following mouseposition", function() {
       sinon.stub(opentip, "_followMousePosition");
@@ -172,39 +174,44 @@ describe("Opentip - Appearing", function() {
     beforeEach(function() {
       enderElement = $("<div><div><span></span></div></div>");
       span = enderElement.find("span");
-      element = enderElement.get(0);
-      opentip = new Opentip(element, "test", {
+      return element = enderElement.get(0);
+    });
+    return it("should activate all hide buttons", function(done) {
+      var closeClass;
+      closeClass = Opentip.prototype["class"].close;
+      opentip = new Opentip(element, "<a class=\"" + closeClass + "\">close</a>", {
+        escape: false,
         delay: 0,
         hideDelay: 0,
-        showOn: "click",
-        hideOn: "mouseout"
+        hideTrigger: "closeButton",
+        hideOn: "click"
       });
-      return sinon.stub(opentip, "_triggerElementExists", function() {
+      sinon.stub(opentip, "_triggerElementExists", function() {
         return triggerElementExists;
       });
-    });
-    return it("should not hide when hovering child elements and hideOn == mouseout", function(done) {
-      expect(opentip.visible).to.not.be.ok();
-      enderElement.trigger("click");
-      expect(opentip.preparingToShow).to.be.ok();
-      expect(opentip.visible).to.not.be.ok();
-      return setTimeout(function() {
+      sinon.stub(opentip, "prepareToHide");
+      opentip.prepareToShow();
+      setTimeout(function() {
+        var closeButtons;
         try {
-          expect(opentip.visible).to.be.ok();
-          enderElement.trigger("mouseout");
-          enderElement.trigger("mouseover");
-          setTimeout(function() {
-            try {
-              return expect(opentip.visible).to.be.ok();
-            } catch (e) {
-              return done(e);
-            }
-          }, 4);
-          return done();
+          closeButtons = $(opentip.container).find("." + closeClass);
+          expect(closeButtons.length).to.be(2);
+          expect(opentip.prepareToHide.callCount).to.be(0);
         } catch (e) {
-          return done(e);
+          done(e);
+          return;
         }
-      }, 4);
+        closeButtons.first().trigger("click");
+        return setTimeout(function() {
+          try {
+            expect(opentip.prepareToHide.callCount).to.be(1);
+            return done();
+          } catch (e) {
+            return done(e);
+          }
+        }, 4);
+      });
+      return 4;
     });
   });
 });

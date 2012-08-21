@@ -51,7 +51,9 @@ describe "Opentip - Appearing", ->
       sinon.stub opentip, "_setupObservers"
       opentip.prepareToShow()
       expect(opentip._setupObservers.callCount).to.be 1
-      expect(opentip._setupObservers.getCall(0).args[0]).to.be "showing"
+      expect(opentip._setupObservers.getCall(0).args[0]).to.be "-hidden"
+      expect(opentip._setupObservers.getCall(0).args[1]).to.be "-hiding"
+      expect(opentip._setupObservers.getCall(0).args[2]).to.be "showing"
 
     it "should start following mouseposition", ->
       sinon.stub opentip, "_followMousePosition"
@@ -139,32 +141,71 @@ describe "Opentip - Appearing", ->
       span = enderElement.find "span"
       element = enderElement.get(0)
 
-      opentip = new Opentip element, "test",
+
+    # it "should not hide when hovering child elements and hideOn == mouseout", (done) ->
+    #   opentip = new Opentip element, "test",
+    #     delay: 0
+    #     hideDelay: 0
+    #     showOn: "click"
+    #     hideOn: "mouseout"
+
+    #   sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
+
+    #   expect(opentip.visible).to.not.be.ok()
+    #   enderElement.trigger "click"
+    #   expect(opentip.preparingToShow).to.be.ok()
+    #   expect(opentip.visible).to.not.be.ok()
+    #   setTimeout ->
+    #     try
+    #       expect(opentip.visible).to.be.ok()
+    #       enderElement.trigger "mouseout"
+    #       enderElement.trigger "mouseover"
+    #       setTimeout ->
+    #         try
+    #           expect(opentip.visible).to.be.ok()
+    #         catch e
+    #           done e
+    #       , 4
+    #       done()
+    #     catch e
+    #       done e
+    #   , 4
+
+    it "should activate all hide buttons", (done) ->
+      closeClass = Opentip::class.close
+      opentip = new Opentip element, """<a class="#{closeClass}">close</a>""",
+        escape: no
         delay: 0
         hideDelay: 0
-        showOn: "click"
-        hideOn: "mouseout"
+        hideTrigger: "closeButton"
+        hideOn: "click"
 
       sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
+      sinon.stub opentip, "prepareToHide"
 
-    it "should not hide when hovering child elements and hideOn == mouseout", (done) ->
-      expect(opentip.visible).to.not.be.ok()
-      enderElement.trigger "click"
-      expect(opentip.preparingToShow).to.be.ok()
-      expect(opentip.visible).to.not.be.ok()
+      opentip.prepareToShow()
+    
+    
       setTimeout ->
         try
-          expect(opentip.visible).to.be.ok()
-          enderElement.trigger "mouseout"
-          enderElement.trigger "mouseover"
-          setTimeout ->
-            try
-              expect(opentip.visible).to.be.ok()
-            catch e
-              done e
-          , 4
-          done()
+          closeButtons = $(opentip.container).find(".#{closeClass}")
+          expect(closeButtons.length).to.be 2 # The close button created by opentip and the one in content
+
+          expect(opentip.prepareToHide.callCount).to.be 0
         catch e
           done e
-      , 4
+          return
+
+        closeButtons.first().trigger "click"
+
+        setTimeout ->
+          try
+            expect(opentip.prepareToHide.callCount).to.be 1
+            done()
+          catch e
+            done e
+        , 4
+      4
+
+
 

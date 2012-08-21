@@ -240,6 +240,32 @@ describe("Opentip", function() {
       return opentip._updateElementContent.restore();
     });
   });
+  describe("_updateElementContent()", function() {
+    it("should escape the content if @options.escapeContent", function() {
+      var element, opentip;
+      element = document.createElement("div");
+      opentip = new Opentip(element, "<div><span></span></div>", {
+        escapeContent: true
+      });
+      sinon.stub(opentip, "_triggerElementExists", function() {
+        return true;
+      });
+      opentip.show();
+      return expect($(opentip.container).find(".content").html()).to.be("&lt;div&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;");
+    });
+    return it("should not escape the content if not @options.escapeContent", function() {
+      var element, opentip;
+      element = document.createElement("div");
+      opentip = new Opentip(element, "<div><span></span></div>", {
+        escapeContent: false
+      });
+      sinon.stub(opentip, "_triggerElementExists", function() {
+        return true;
+      });
+      opentip.show();
+      return expect($(opentip.container).find(".content > div > span").length).to.be(1);
+    });
+  });
   describe("_buildContainer()", function() {
     var element, opentip;
     element = document.createElement("div");
@@ -261,7 +287,7 @@ describe("Opentip", function() {
       return expect(enderElement.hasClass("hide-effect-fade")).to.be.ok();
     });
   });
-  return describe("_buildElements()", function() {
+  describe("_buildElements()", function() {
     var element, opentip;
     element = opentip = null;
     beforeEach(function() {
@@ -296,5 +322,8 @@ describe("Opentip", function() {
       expect(closeButton.length).to.be.ok();
       return expect(closeButton.html()).to.be("✖");
     });
+  });
+  return describe("_setupObservers()", function() {
+    return it("should never setup the same observers twice");
   });
 });

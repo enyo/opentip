@@ -164,6 +164,22 @@ describe "Opentip", ->
       expect(stub.callCount).to.equal 1
       opentip._updateElementContent.restore()
 
+  describe "_updateElementContent()", ->
+    it "should escape the content if @options.escapeContent", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, "<div><span></span></div>", escapeContent: yes
+      sinon.stub opentip, "_triggerElementExists", -> yes
+      opentip.show()
+      expect($(opentip.container).find(".content").html()).to.be """&lt;div&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;"""
+
+    it "should not escape the content if not @options.escapeContent", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, "<div><span></span></div>", escapeContent: no
+      sinon.stub opentip, "_triggerElementExists", -> yes
+      opentip.show()
+      expect($(opentip.container).find(".content > div > span").length).to.be 1
+
+
   describe "_buildContainer()", ->
     element = document.createElement "div"
     opentip = new Opentip element,
@@ -208,3 +224,6 @@ describe "Opentip", ->
       expect(closeButton.html()).to.be "✖"
 
 
+
+  describe "_setupObservers()", ->
+    it "should never setup the same observers twice"
