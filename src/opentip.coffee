@@ -449,7 +449,7 @@ class Opentip
     @adapter.removeClass @container, @class.hiding
     @adapter.removeClass @container, @class.hidden
     @adapter.addClass @container, @class.goingToShow
-    @setCss3Style @container, "transition-duration": "0s"
+    @setCss3Style @container, transitionDuration: "0s"
 
     @defer =>
       @adapter.removeClass @container, @class.goingToShow
@@ -457,7 +457,7 @@ class Opentip
 
       delay = 0
       delay = @options.showEffectDuration if @options.showEffect and @options.showEffectDuration
-      @setCss3Style @container, "transition-duration": "#{delay}s"
+      @setCss3Style @container, transitionDuration: "#{delay}s"
 
       @_visibilityStateTimeoutId = @setTimeout =>
         @adapter.removeClass @container, @class.showing
@@ -517,7 +517,7 @@ class Opentip
     @adapter.removeClass @container, @class.visible
     @adapter.removeClass @container, @class.showing
     @adapter.addClass @container, @class.goingToHide
-    @setCss3Style @container, "transition-duration": "0s"
+    @setCss3Style @container, transitionDuration: "0s"
 
     @defer =>
       @adapter.removeClass @container, @class.goingToHide
@@ -525,12 +525,12 @@ class Opentip
 
       hideDelay = 0
       hideDelay = @options.hideEffectDuration if @options.hideEffect and @options.hideEffectDuration
-      @setCss3Style @container, { "transition-duration": "#{hideDelay}s" }
+      @setCss3Style @container, { transitionDuration: "#{hideDelay}s" }
 
       @_visibilityStateTimeoutId = @setTimeout =>
         @adapter.removeClass @container, @class.hiding
         @adapter.addClass @container, @class.hidden
-        @setCss3Style @container, { "transition-duration": "0s" }
+        @setCss3Style @container, { transitionDuration: "0s" }
       , hideDelay
 
   _abortHiding: ->
@@ -973,11 +973,13 @@ vendors = [
 
 # Sets a sepcific css3 value for all vendors
 Opentip::setCss3Style = (element, styles) ->
-  element = @adapter.unwrap element
+  propObj = { }
   for own prop, value of styles
     for vendor in vendors
-      element.style["-#{vendor}-#{prop}"] = value
-    element.style[prop] = value
+      propObj["#{@ucfirst vendor}#{@ucfirst prop}"] = value
+    propObj[prop] = value
+
+  @adapter.css element, propObj
 
 # Defers the call
 Opentip::defer = (func) -> setTimeout func, 0
