@@ -10,7 +10,7 @@ describe "Opentip - Drawing", ->
 
   afterEach ->
     opentip[prop]?.restore?() for own prop of opentip
-    opentip.deactivate()
+    opentip?.deactivate?()
     $(".opentip-container").remove()
 
   describe "_draw()", ->
@@ -39,3 +39,31 @@ describe "Opentip - Drawing", ->
       opentip._draw()
       expect(opentip.debug.callCount).to.be.above 0
       expect(opentip.debug.args[0][0]).to.be "Drawing background."
+
+  describe "_getColor()", ->
+    dimensions = width: 200, height: 100
+    
+    cavans = document.createElement "canvas"
+    ctx = cavans.getContext "2d"
+    gradient = ctx.createLinearGradient 0, 0, 1, 1
+
+    ctx = sinon.stub ctx
+
+    gradient = sinon.stub gradient
+    ctx.createLinearGradient.returns gradient
+
+    it "should just return the hex color", ->
+      expect(Opentip::_getColor ctx, dimensions, "#f00").to.be "#f00"
+
+    it "should just return rgba color", ->
+      expect(Opentip::_getColor ctx, dimensions, "rgba(0, 0, 0, 0.3)").to.be "rgba(0, 0, 0, 0.3)"
+
+    it "should just return named color", ->
+      expect(Opentip::_getColor ctx, dimensions, "red").to.be "red"
+
+    it "should create and return gradient", ->
+      color = Opentip::_getColor ctx, dimensions, [ [0, "black"], [1, "white"] ]
+      expect(gradient.addColorStop.callCount).to.be 2
+      expect(color).to.be gradient
+
+

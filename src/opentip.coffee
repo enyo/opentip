@@ -783,7 +783,7 @@ class Opentip
     ctx.clearRect 0, 0, backgroundCanvas.width, backgroundCanvas.height
     ctx.beginPath()
 
-    ctx.fillStyle = @options.background
+    ctx.fillStyle = @_getColor ctx, @dimensions, @options.background, @options.backgroundGradientHorizontal
     ctx.lineJoin = "miter"
     ctx.miterLimit = 500
 
@@ -896,6 +896,24 @@ class Opentip
     ctx.fill()
     ctx.restore() # Without shadow
     ctx.stroke() if @options.borderWidth
+
+  # Turns a color string into a possible gradient
+  _getColor: (ctx, dimensions, color, horizontal = no) ->
+
+    # There is no comma so just return
+    return color if typeof color == "string"
+
+    # Create gradient
+    if horizontal
+      gradient = ctx.createLinearGradient 0, 0, dimensions.width, 0
+    else
+      gradient = ctx.createLinearGradient 0, 0, 0, dimensions.height
+
+    for colorStop, i in color
+      gradient.addColorStop colorStop[0], colorStop[1]
+
+    gradient
+
 
   _searchAndActivateCloseButtons: ->
     for element in @adapter.findAll @container, ".#{@class.close}"
@@ -1180,7 +1198,7 @@ Opentip.styles =
     hideEffectDuration: 0.2
 
     # integer
-    stemLength: 8
+    stemLength: 5
 
     # integer
     stemBase: 8
@@ -1215,6 +1233,9 @@ Opentip.styles =
     # The background color of the tip
     background: "#fff18f"
 
+    # Whether the gradient should be horizontal.
+    backgroundGradientHorizontal: no
+
     # Border radius...
     borderRadius: 5
 
@@ -1246,8 +1267,17 @@ Opentip.styles =
     className: "glass"
   dark:
     className: "dark"
+    borderRadius: 13
     borderColor: "#444"
-    background: "rgba(0, 0, 0, 0.8)"
+    # background: "rgba(0, 0, 0, 0.8)"
+    shadowColor: "rgba(0, 0, 0, 0.3)"
+    shadowOffset: [ 2, 2 ]
+    background: [
+      [ 0, "rgba(30, 30, 30, 0.7)" ]
+      [ 0.5, "rgba(30, 30, 30, 0.8)" ]
+      [ 0.5, "rgba(10, 10, 10, 0.8)" ]
+      [ 1, "rgba(10, 10, 10, 0.9)" ]
+    ]
 
 
 # Change this to the style name you want all your tooltips to have as default.

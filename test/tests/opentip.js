@@ -88,7 +88,7 @@ describe("Opentip", function() {
       });
       expect(opentip.options.showOn).to.equal("click");
       expect(opentip.options.className).to.equal("glass");
-      return expect(opentip.options.stemLength).to.equal(8);
+      return expect(opentip.options.stemLength).to.equal(5);
     });
     it("should set the options to fixed if a target is provided", function() {
       var element, opentip;

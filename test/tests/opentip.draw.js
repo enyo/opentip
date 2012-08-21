@@ -21,10 +21,14 @@ describe("Opentip - Drawing", function() {
         }
       }
     }
-    opentip.deactivate();
+    if (opentip != null) {
+      if (typeof opentip.deactivate === "function") {
+        opentip.deactivate();
+      }
+    }
     return $(".opentip-container").remove();
   });
-  return describe("_draw()", function() {
+  describe("_draw()", function() {
     beforeEach(function() {
       var triggerElementExists;
       triggerElementExists = false;
@@ -55,6 +59,34 @@ describe("Opentip - Drawing", function() {
       opentip._draw();
       expect(opentip.debug.callCount).to.be.above(0);
       return expect(opentip.debug.args[0][0]).to.be("Drawing background.");
+    });
+  });
+  return describe("_getColor()", function() {
+    var cavans, ctx, dimensions, gradient;
+    dimensions = {
+      width: 200,
+      height: 100
+    };
+    cavans = document.createElement("canvas");
+    ctx = cavans.getContext("2d");
+    gradient = ctx.createLinearGradient(0, 0, 1, 1);
+    ctx = sinon.stub(ctx);
+    gradient = sinon.stub(gradient);
+    ctx.createLinearGradient.returns(gradient);
+    it("should just return the hex color", function() {
+      return expect(Opentip.prototype._getColor(ctx, dimensions, "#f00")).to.be("#f00");
+    });
+    it("should just return rgba color", function() {
+      return expect(Opentip.prototype._getColor(ctx, dimensions, "rgba(0, 0, 0, 0.3)")).to.be("rgba(0, 0, 0, 0.3)");
+    });
+    it("should just return named color", function() {
+      return expect(Opentip.prototype._getColor(ctx, dimensions, "red")).to.be("red");
+    });
+    return it("should create and return gradient", function() {
+      var color;
+      color = Opentip.prototype._getColor(ctx, dimensions, [[0, "black"], [1, "white"]]);
+      expect(gradient.addColorStop.callCount).to.be(2);
+      return expect(color).to.be(gradient);
     });
   });
 });

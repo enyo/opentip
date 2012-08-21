@@ -86,7 +86,6 @@ class Adapter
   css: (element, properties) ->
     element = @unwrap @wrap element
     for own key, value of properties
-      console.log "BB", dasherize(key), value
       element.style[dasherize key] = value
 
   # Returns an object with given dimensions

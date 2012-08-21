@@ -72,7 +72,7 @@ describe "Opentip", ->
       # Should have been set by the glass theme
       expect(opentip.options.className).to.equal "glass"
       # Should have been set by the standard theme
-      expect(opentip.options.stemLength).to.equal 8
+      expect(opentip.options.stemLength).to.equal 5
 
     it "should set the options to fixed if a target is provided", ->
       element = document.createElement "div"
