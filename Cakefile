@@ -39,10 +39,6 @@ task 'css', 'compile stylus', -> css -> log ":)", green
 
 task 'watchcss', 'compile and watch stylus', -> css true, -> log ":-)", green
 
-task 'test', 'run tests', -> build -> mocha -> log ":)", green
-
-task 'clean', 'clean generated files', -> clean -> log ";)", green
-
 
 # Internal Functions
 #
@@ -129,22 +125,6 @@ unlinkIfCoffeeFile = (file) ->
     true
   else false
 
-# ## *clean*
-#
-# **given** optional function as callback
-# **then** loop through files variable
-# **and** call unlinkIfCoffeeFile on each
-clean = (callback) ->
-  try
-    for file in files
-      unless unlinkIfCoffeeFile file
-        walk file, (err, results) ->
-          for f in results
-            unlinkIfCoffeeFile f
-
-    callback?()
-  catch err
-
 # ## *moduleExists*
 #
 # **given** name for module
@@ -159,22 +139,6 @@ moduleExists = (name) ->
     log "#{name} required: npm install #{name}", red
     false
 
-
-# ## *mocha*
-#
-# **given** optional array of option flags
-# **and** optional function as callback
-# **then** invoke launch passing mocha command
-mocha = (options, callback) ->
-  #if moduleExists('mocha')
-  if typeof options is 'function'
-    callback = options
-    options = []
-  # add coffee directive
-  options.push '--coffee'
-  options.push 'coffee:coffee-script'
-  
-  launch 'mocha', options, callback
 
 # ## *docco*
 #

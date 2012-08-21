@@ -29,18 +29,6 @@ green = '\x1b[0;32m'
 reset = '\x1b[0m'
 red = '\x1b[0;31m'
 
-# Cakefile Tasks
-#
-# ## *docs*
-#
-# Generate Annotated Documentation
-#
-# <small>Usage</small>
-#
-# ```
-# cake docs
-# ```
-task 'docs', 'generate documentation', -> docco()
 
 # ## *build*
 #
@@ -64,16 +52,6 @@ task 'build', 'compile source', -> build -> log ":)", green
 # ```
 task 'watch', 'compile and watch', -> build true, -> log ":-)", green
 
-# ## *test*
-#
-# Runs your test suite.
-#
-# <small>Usage</small>
-#
-# ```
-# cake test
-# ```
-task 'test', 'run tests', -> build -> mocha -> log ":)", green
 
 # ## *clean*
 #

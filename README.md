@@ -11,12 +11,17 @@ It supports:
 - All kind of triggers (The tooltip can be triggered by mouse over, click, form submit,... everything you can think of really)
 - CSS3 Animations if available. (If not, it uses scriptaculous if available).
 
-As of Version 1.2.6 Opentip does no longer depend on scriptaculous.
+As of Version 2.0 Opentip does no longer depend on Prototype. You can choose
+any adapter you want so you can work with the framework of your choice.
+
+Supported frameworks are:
+
+- Native. You can use this one if you don't use any framework.
+- [Ender](http://ender.no.de)
+- [Prototype](http://prototypejs.org)
 
 
-The latest stable version is always in the **master** branch (which always points at the latest version tag).
-
-The latest development version is in the **develop** branch. Use only if you want to contribute or test features.
+> If you want to contribute, please read on in the [contribute](#contribute) section!
 
 ## Usage
 
@@ -67,6 +72,27 @@ Those are the major changes you should look out for when migrating from 1.x to 2
 
 
 If you have ideas, please contact me!
+
+
+## Contribute
+
+The latest stable version is always in the **master** branch (which always
+points at the latest version tag).
+
+The latest development version is in the **develop** branch. Use only if you
+want to contribute or test features.
+
+Opentip is written in [Coffeescript](http://coffeescript.org) so *do not* make
+changes in the Javascript files. **I will not pull requests written in Javascript.**
+
+If you add a change, please make sure that all tests pass!
+
+Use `cake` in the source directory to list all commands available.
+
+For example, to watch your changes an compile them:
+
+    $ cd path/to/opentip-source 
+    $ cake watch
 
 
 ## Tagging
