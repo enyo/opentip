@@ -94,6 +94,17 @@ For example, to watch your changes an compile them:
     $ cd path/to/opentip-source 
     $ cake watch
 
+Beware that you have to do the same thing for the tests:
+
+    $ cd ./test
+    $ cake watch
+
+and for the css:
+
+    $ cake watchcss
+
+To run the tests, open `/test/index.html` in the browser.
+
 
 ## Tagging
 
