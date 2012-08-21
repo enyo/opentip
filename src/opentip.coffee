@@ -295,7 +295,7 @@ class Opentip
       @adapter.append @tooltipElement, @adapter.create """<div class="#{@class.loadingIndicator}"><span>Loading...</span></div>"""
 
     if "closeButton" in @options.hideTriggers
-      @adapter.append headerElement, @adapter.create """<div class="#{@class.buttons}"><a href="javascript:undefined;" class="#{@class.close}">✖</a></div>"""
+      @adapter.append headerElement, @adapter.create """<div class="#{@class.buttons}"><a href="javascript:undefined;" class="#{@class.close}"><span>✖</span></a></div>"""
 
     # Now put the tooltip and the canvas in the container and the container in the body
     @adapter.append @container, @backgroundCanvas
@@ -740,6 +740,13 @@ class Opentip
 
     backgroundCanvas = @adapter.unwrap @backgroundCanvas
 
+
+    if "closeButton" in @options.hideTriggers
+      closeButton = if @currentStem?.toString() == "topRight" then "topLeft" else "topRight"
+      closeButtonDist = Math.sqrt (Math.pow(@options.closeButtonRadius * 2, 2) / 2)
+
+
+    # Now for the canvas dimensions and position
     canvasDimensions = @adapter.clone @dimensions
     canvasPosition = [ 0, 0 ]
 
@@ -796,10 +803,14 @@ class Opentip
 
       # Now for some math!
       #
-      # I have to account for the border width when implementing the stems.
+      # I have to account for the border width when implementing the stems. The
+      # tip height & width obviously should be added to the outer border, but
+      # the path is drawn in the middle of the border.
+      # If I just draw the stem size specified on the path, the stem will be
+      # bigger than requested.
       #
-      # If I just draw the stem size specified the stem will be bigger if the 
-      # border width is greater than 0
+      # So I have to calculate the stemBase and stemLength of the **path**
+      # stem.
       #
       #
       #      /
@@ -812,6 +823,7 @@ class Opentip
       halfAngle = Math.atan (@options.stemBase / 2) / @options.stemLength
       angle = halfAngle * 2
 
+      # The rhombus from the border tip to the path tip
       rhombusSide = hb / Math.sin angle
 
       distanceBetweenTips = 2 * rhombusSide * Math.cos halfAngle
@@ -833,18 +845,23 @@ class Opentip
     drawLine = (length, stem, first) =>
       if first
         # This ensures that the outline is properly closed
-        ctx.moveTo Math.max(stemBase, @options.borderRadius) + 1 - hb, -hb
+        ctx.moveTo Math.max(stemBase, @options.borderRadius, @options.closeButtonRadius) + 1 - hb, -hb
       if stem
         ctx.lineTo length / 2 - stemBase / 2, -hb
         ctx.lineTo length / 2, - stemLength - hb
         ctx.lineTo length / 2 + stemBase / 2, -hb
 
     # Draws a corner with stem if necessary
-    drawCorner = (stem, last) =>
+    drawCorner = (stem, closeButton, last) =>
       if stem
         ctx.lineTo -stemBase + hb, 0 - hb
         ctx.lineTo stemLength + hb, -stemLength - hb
         ctx.lineTo hb, stemBase - hb
+      else if closeButton
+        radius = @options.closeButtonRadius
+        ctx.lineTo -closeButtonDist + hb, -hb
+        # ctx.lineTo hb, -hb + closeButtonDist
+        ctx.arc hb-closeButtonDist/2, -hb+closeButtonDist/2, radius, -(Math.PI * 3/4), Math.PI * 1/4
       else
         ctx.lineTo -@options.borderRadius + hb, -hb
         ctx.quadraticCurveTo hb, -hb, hb, @options.borderRadius - hb
@@ -882,8 +899,10 @@ class Opentip
         ctx.rotate rotation
         drawLine lineLength, @currentStem?.toString() == lineStem, i == 0
         ctx.translate lineLength, 0
-        drawCorner @currentStem?.toString() == cornerStem, i == 3
+        drawCorner @currentStem?.toString() == cornerStem, closeButton == cornerStem, i == 3
         ctx.restore()
+
+      ctx.lineTo Math.max(stemBase, @options.borderRadius, @options.closeButtonRadius) + 1 - hb, 0
 
     ctx.save()
 
@@ -896,6 +915,36 @@ class Opentip
     ctx.fill()
     ctx.restore() # Without shadow
     ctx.stroke() if @options.borderWidth
+
+    ctx.restore() # Without shadow
+
+    if closeButton
+      do =>
+        # dist = Math.sqrt(@options.closeButtonRadius^2/2) * 2
+
+        crossWidth = crossHeight = @options.closeButtonRadius * 2
+
+        if closeButton == "topRight"
+          ctx.translate @dimensions.width - closeButtonDist / 2 - @options.closeButtonRadius + hb, closeButtonDist / 2 - @options.closeButtonRadius - hb
+        else
+          ctx.translate closeButtonDist / 2 - @options.closeButtonRadius - hb, closeButtonDist / 2 - @options.closeButtonRadius - hb
+        padding = @options.closeButtonPadding
+        bw = 0
+        ctx.save()
+        ctx.beginPath()
+        ctx.strokeStyle = @options.closeButtonColor
+        ctx.lineCap = "round"
+        ctx.moveTo 0 + padding, 0 + padding
+        ctx.lineWidth = 2
+        ctx.lineTo crossWidth - padding, crossHeight - padding
+        ctx.stroke()
+        ctx.beginPath()
+        ctx.moveTo crossWidth - padding, 0 + padding
+        ctx.lineTo 0 + padding, crossHeight - padding
+        ctx.stroke()
+        ctx.restore()
+
+
 
   # Turns a color string into a possible gradient
   _getColor: (ctx, dimensions, color, horizontal = no) ->
@@ -1236,6 +1285,15 @@ Opentip.styles =
     # Whether the gradient should be horizontal.
     backgroundGradientHorizontal: no
 
+    # The little circle that stick out of a tip
+    closeButtonRadius: 7
+
+    # Distance between circle and cross
+    closeButtonPadding: 4.8
+
+    # The little circle that stick out of a tip
+    closeButtonColor: "#d2c35b"
+
     # Border radius...
     borderRadius: 5
 
@@ -1269,7 +1327,7 @@ Opentip.styles =
     className: "dark"
     borderRadius: 13
     borderColor: "#444"
-    # background: "rgba(0, 0, 0, 0.8)"
+    closeButtonColor: "rgba(240, 240, 240, 1)"
     shadowColor: "rgba(0, 0, 0, 0.3)"
     shadowOffset: [ 2, 2 ]
     background: [
