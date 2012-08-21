@@ -9,15 +9,18 @@ describe "Opentip - Appearing", ->
   beforeEach ->
     Opentip.adapter = adapter
     triggerElementExists = yes
-    opentip = new Opentip adapter.create("<div></div>"), "Test", delay: 0
-    sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
 
   afterEach ->
     opentip[prop]?.restore?() for own prop of opentip
+    opentip.deactivate()
+
     $(".opentip-container").remove()
 
   describe "prepareToShow()", ->
-    beforeEach -> triggerElementExists = no
+    beforeEach ->
+      triggerElementExists = no
+      opentip = new Opentip adapter.create("<div></div>"), "Test", delay: 0
+      sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
 
     it "should always abort a hiding process", ->
       sinon.stub opentip, "_abortHiding"
@@ -66,6 +69,10 @@ describe "Opentip - Appearing", ->
       opentip.prepareToShow()
 
   describe "show()", ->
+    beforeEach ->
+      opentip = new Opentip adapter.create("<div></div>"), "Test", delay: 0
+      sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
+
     it "should clear all timeouts", ->
       triggerElementExists = no
       sinon.stub opentip, "_clearTimeouts"
@@ -97,5 +104,64 @@ describe "Opentip - Appearing", ->
       expect(opentip.visible).to.be.ok()
       expect(opentip.preparingToShow).to.not.be.ok()
 
+  describe "events", ->
 
+    element = ""
+
+    beforeEach ->
+      element = document.createElement "div"
+
+    testEvent = (opentip, event, done) ->
+      expect(opentip.visible).to.not.be.ok()
+      $(element).trigger event
+      expect(opentip.preparingToShow).to.be.ok()
+      expect(opentip.visible).to.not.be.ok()
+      setTimeout ->
+        try
+          expect(opentip.visible).to.be.ok()
+          done()
+        catch e
+          done e
+      , 2
+
+    for event in [ "click", "mouseover", "focus" ]
+      it "should show on #{event}", (done) ->
+        opentip = new Opentip element, "test", delay: 0, showOn: event
+        sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
+        testEvent opentip, event, done
+
+  describe "visible", ->
+    enderElement = null
+    element = null
+    span = null
+    beforeEach ->
+      enderElement = $ "<div><div><span></span></div></div>"
+      span = enderElement.find "span"
+      element = enderElement.get(0)
+
+      opentip = new Opentip element, "test",
+        delay: 0
+        hideDelay: 0
+        showOn: "click"
+        hideOn: "mouseout"
+
+      sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
+
+    it "should not hide when hovering child elements and hideOn == mouseout", (done) ->
+      expect(opentip.visible).to.not.be.ok()
+      enderElement.trigger "click"
+      expect(opentip.preparingToShow).to.be.ok()
+      expect(opentip.visible).to.not.be.ok()
+      setTimeout ->
+        try
+          expect(opentip.visible).to.be.ok()
+          enderElement.trigger "mouseout"
+          enderElement.trigger "mouseover"
+          setTimeout ->
+            expect(opentip.visible).to.be.ok()
+          , 4
+          done()
+        catch e
+          done e
+      , 4
 

@@ -203,7 +203,6 @@ describe "Opentip", ->
 
     it "should add a close button if hideTrigger = close", ->
       enderElement = $ adapter.unwrap opentip.container
-      console.log enderElement
       closeButton = enderElement.find "> .opentip > header > .buttons > a.close"
       expect(closeButton.length).to.be.ok()
       expect(closeButton.html()).to.be "✖"

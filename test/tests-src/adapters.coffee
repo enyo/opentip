@@ -190,7 +190,22 @@ describe "Generic adapter", ->
             expect(element.innerHTML).to.eql "<span></span>"
 
         describe "offset()", ->
-          it "should properly return the offset position"
+          it "should only return left and top", ->
+            element = $("""<div style="display:block; position: absolute; left: 100px; top: 200px;"></div>""").get 0
+            $("body").append element
+            offset = adapter.offset element
+            for own key of offset
+              if key isnt "left" and key isnt "top"
+                throw new Error "Other keys returned"
+            $(element).remove()
+          it "should properly return the offset position", ->
+            element = $("""<div style="display:block; position: absolute; left: 100px; top: 200px;"></div>""").get 0
+            $("body").append element
+            offset = adapter.offset element
+            offset2 = adapter.offset adapter.wrap element # Testing with wrapped as well
+            expect(offset).to.eql offset2
+            expect(offset).to.eql left: 100, top: 200
+            $(element).remove()
 
         describe "observe()", ->
           it "should attach an event listener", (done) ->

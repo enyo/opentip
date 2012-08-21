@@ -96,7 +96,11 @@ class Adapter
     pos
 
   # Returns the offset of the element
-  offset: (element) -> $(element).offset()
+  offset: (element) -> 
+    offset = $(element).offset()
+    delete offset.width
+    delete offset.height
+    offset
 
   # Observe given eventName
   observe: (element, eventName, observer) ->

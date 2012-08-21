@@ -11,13 +11,7 @@ describe("Opentip - Appearing", function() {
   triggerElementExists = true;
   beforeEach(function() {
     Opentip.adapter = adapter;
-    triggerElementExists = true;
-    opentip = new Opentip(adapter.create("<div></div>"), "Test", {
-      delay: 0
-    });
-    return sinon.stub(opentip, "_triggerElementExists", function() {
-      return triggerElementExists;
-    });
+    return triggerElementExists = true;
   });
   afterEach(function() {
     var prop, _ref;
@@ -29,11 +23,18 @@ describe("Opentip - Appearing", function() {
         }
       }
     }
+    opentip.deactivate();
     return $(".opentip-container").remove();
   });
   describe("prepareToShow()", function() {
     beforeEach(function() {
-      return triggerElementExists = false;
+      triggerElementExists = false;
+      opentip = new Opentip(adapter.create("<div></div>"), "Test", {
+        delay: 0
+      });
+      return sinon.stub(opentip, "_triggerElementExists", function() {
+        return triggerElementExists;
+      });
     });
     it("should always abort a hiding process", function() {
       sinon.stub(opentip, "_abortHiding");
@@ -84,7 +85,15 @@ describe("Opentip - Appearing", function() {
       return opentip.prepareToShow();
     });
   });
-  return describe("show()", function() {
+  describe("show()", function() {
+    beforeEach(function() {
+      opentip = new Opentip(adapter.create("<div></div>"), "Test", {
+        delay: 0
+      });
+      return sinon.stub(opentip, "_triggerElementExists", function() {
+        return triggerElementExists;
+      });
+    });
     it("should clear all timeouts", function() {
       triggerElementExists = false;
       sinon.stub(opentip, "_clearTimeouts");
@@ -116,6 +125,82 @@ describe("Opentip - Appearing", function() {
       opentip.show();
       expect(opentip.visible).to.be.ok();
       return expect(opentip.preparingToShow).to.not.be.ok();
+    });
+  });
+  describe("events", function() {
+    var element, event, testEvent, _i, _len, _ref, _results;
+    element = "";
+    beforeEach(function() {
+      return element = document.createElement("div");
+    });
+    testEvent = function(opentip, event, done) {
+      expect(opentip.visible).to.not.be.ok();
+      $(element).trigger(event);
+      expect(opentip.preparingToShow).to.be.ok();
+      expect(opentip.visible).to.not.be.ok();
+      return setTimeout(function() {
+        try {
+          expect(opentip.visible).to.be.ok();
+          return done();
+        } catch (e) {
+          return done(e);
+        }
+      }, 2);
+    };
+    _ref = ["click", "mouseover", "focus"];
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      event = _ref[_i];
+      _results.push(it("should show on " + event, function(done) {
+        opentip = new Opentip(element, "test", {
+          delay: 0,
+          showOn: event
+        });
+        sinon.stub(opentip, "_triggerElementExists", function() {
+          return triggerElementExists;
+        });
+        return testEvent(opentip, event, done);
+      }));
+    }
+    return _results;
+  });
+  return describe("visible", function() {
+    var element, enderElement, span;
+    enderElement = null;
+    element = null;
+    span = null;
+    beforeEach(function() {
+      enderElement = $("<div><div><span></span></div></div>");
+      span = enderElement.find("span");
+      element = enderElement.get(0);
+      opentip = new Opentip(element, "test", {
+        delay: 0,
+        hideDelay: 0,
+        showOn: "click",
+        hideOn: "mouseout"
+      });
+      return sinon.stub(opentip, "_triggerElementExists", function() {
+        return triggerElementExists;
+      });
+    });
+    return it("should not hide when hovering child elements and hideOn == mouseout", function(done) {
+      expect(opentip.visible).to.not.be.ok();
+      enderElement.trigger("click");
+      expect(opentip.preparingToShow).to.be.ok();
+      expect(opentip.visible).to.not.be.ok();
+      return setTimeout(function() {
+        try {
+          expect(opentip.visible).to.be.ok();
+          enderElement.trigger("mouseout");
+          enderElement.trigger("mouseover");
+          setTimeout(function() {
+            return expect(opentip.visible).to.be.ok();
+          }, 4);
+          return done();
+        } catch (e) {
+          return done(e);
+        }
+      }, 4);
     });
   });
 });

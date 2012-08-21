@@ -197,7 +197,7 @@ class Opentip
     @_buildContainer()
 
     for hideTrigger, i in @options.hideTriggers
-      hideOnEvent = null
+
       hideTriggerElement = null
 
       hideOn = if @options.hideOn instanceof Array then @options.hideOn[i] else @options.hideOn
@@ -205,28 +205,28 @@ class Opentip
       if typeof hideTrigger == "string"
         switch hideTrigger
           when "trigger"
-            hideOnEvent = hideOn || "mouseout"
+            hideOn = hideOn || "mouseout"
             hideTriggerElement = @triggerElement
           when "tip"
-            hideOnEvent = hideOn || "mouseover"
+            hideOn = hideOn || "mouseover"
             hideTriggerElement = @container
           when "target"
-            hideOnEvent = hideOn || "mouseover"
+            hideOn = hideOn || "mouseover"
             hideTriggerElement = this.options.target
           when "closeButton"
             # The close button gets handled later
           else
             throw new Error "Unknown hide trigger: #{hideTrigger}."
       else
-        hideOnEvent = hideOn || "mouseover"
+        hideOn = hideOn || "mouseover"
         hideTriggerElement = @adapter.wrap hideTrigger
 
       if hideTriggerElement
         @hideTriggers.push
           element: hideTriggerElement
-          event: hideOnEvent
+          event: hideOn
 
-        if hideOnEvent == "mouseout"
+        if hideOn == "mouseout"
           # When the hide trigger is mouseout, we have to attach a mouseover
           # trigger to that element, so the tooltip doesn't disappear when
           # hovering child elements. (Hovering children fires a mouseout

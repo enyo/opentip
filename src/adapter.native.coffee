@@ -120,7 +120,7 @@ class Adapter
       offset.top += element.offsetTop
       offset.left += element.offsetLeft
 
-      if element != doc.body
+      if element != document.body
         offset.top -= element.scrollTop
         offset.left -= element.scrollLeft
 
