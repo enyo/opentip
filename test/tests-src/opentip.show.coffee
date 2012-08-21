@@ -158,7 +158,10 @@ describe "Opentip - Appearing", ->
           enderElement.trigger "mouseout"
           enderElement.trigger "mouseover"
           setTimeout ->
-            expect(opentip.visible).to.be.ok()
+            try
+              expect(opentip.visible).to.be.ok()
+            catch e
+              done e
           , 4
           done()
         catch e

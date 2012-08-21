@@ -194,7 +194,11 @@ describe("Opentip - Appearing", function() {
           enderElement.trigger("mouseout");
           enderElement.trigger("mouseover");
           setTimeout(function() {
-            return expect(opentip.visible).to.be.ok();
+            try {
+              return expect(opentip.visible).to.be.ok();
+            } catch (e) {
+              return done(e);
+            }
           }, 4);
           return done();
         } catch (e) {
