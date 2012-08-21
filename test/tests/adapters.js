@@ -157,10 +157,10 @@ describe("Generic adapter", function() {
               color: "red"
             });
             adapter.css(adapter.wrap(element), {
-              background: "green"
+              backgroundColor: "green"
             });
             expect(element.style.color).to.be("red");
-            return expect(element.style.background).to.be("green");
+            return expect(element.style.backgroundColor).to.be("green");
           });
         });
         describe("dimensions()", function() {

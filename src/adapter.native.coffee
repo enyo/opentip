@@ -12,6 +12,12 @@ class Adapter
   domReady: (callback) -> callback()
 
 
+  # Helper functions
+  # ================
+  dasherize = (string) ->
+    string.replace /([A-Z])/g, (_, char) -> char.toUpperCase()
+
+
 
   # DOM
   # ===
@@ -80,7 +86,7 @@ class Adapter
   css: (element, properties) ->
     element = @unwrap @wrap element
     for own key, value of properties
-      element.style[key] = value
+      element.style[dasherize key] = value
 
   # Returns an object with given dimensions
   dimensions: (element) ->

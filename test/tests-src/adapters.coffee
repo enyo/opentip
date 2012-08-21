@@ -104,9 +104,9 @@ describe "Generic adapter", ->
           it "should properly set the style", ->
             element = document.createElement "div"
             adapter.css element, color: "red"
-            adapter.css adapter.wrap(element), background: "green" # Testing with wrapped as well
+            adapter.css adapter.wrap(element), backgroundColor: "green" # Testing with wrapped as well
             expect(element.style.color).to.be "red"
-            expect(element.style.background).to.be "green"
+            expect(element.style.backgroundColor).to.be "green"
 
         describe "dimensions()", ->
           it "should return an object with the correct dimensions", ->
