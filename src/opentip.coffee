@@ -482,7 +482,7 @@ class Opentip
     # not disappear when a showEvent is triggered.
     @_setupObservers "hiding"
 
-    @hideTimeoutId = @setTimeout @bound.hide, @options.hideDelay
+    @_hideTimeoutId = @setTimeout @bound.hide, @options.hideDelay
 
   hide: ->
     @_clearTimeouts()
