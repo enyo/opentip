@@ -741,9 +741,12 @@ class Opentip
     backgroundCanvas = @adapter.unwrap @backgroundCanvas
 
 
+    closeButtonInnerWidth = 0
+    closeButtonOuterWidth = 0
     if "closeButton" in @options.hideTriggers
       closeButton = if @currentStem?.toString() == "topRight" then "topLeft" else "topRight"
-      closeButtonDist = Math.sqrt (Math.pow(@options.closeButtonRadius * 2, 2) / 2)
+      closeButtonInnerWidth = Math.sqrt (Math.pow(@options.closeButtonRadius * 2, 2) / 2)
+      closeButtonOuterWidth = @options.closeButtonRadius * 2 - closeButtonInnerWidth
 
 
     # Now for the canvas dimensions and position
@@ -845,7 +848,7 @@ class Opentip
     drawLine = (length, stem, first) =>
       if first
         # This ensures that the outline is properly closed
-        ctx.moveTo Math.max(stemBase, @options.borderRadius, closeButtonDist) + 1 - hb, -hb
+        ctx.moveTo Math.max(stemBase, @options.borderRadius, closeButtonInnerWidth) + 1 - hb, -hb
       if stem
         ctx.lineTo length / 2 - stemBase / 2, -hb
         ctx.lineTo length / 2, - stemLength - hb
@@ -859,9 +862,9 @@ class Opentip
         ctx.lineTo hb, stemBase - hb
       else if closeButton
         radius = @options.closeButtonRadius
-        ctx.lineTo -closeButtonDist + hb, -hb
-        # ctx.lineTo hb, -hb + closeButtonDist
-        ctx.arc hb-closeButtonDist/2, -hb+closeButtonDist/2, radius, -(Math.PI * 3/4), Math.PI * 1/4
+        ctx.lineTo -closeButtonInnerWidth + hb, -hb
+        # ctx.lineTo hb, -hb + closeButtonInnerWidth
+        ctx.arc hb-closeButtonInnerWidth/2, -hb+closeButtonInnerWidth/2, radius, -(Math.PI * 3/4), Math.PI * 1/4
       else
         ctx.lineTo -@options.borderRadius + hb, -hb
         ctx.quadraticCurveTo hb, -hb, hb, @options.borderRadius - hb
@@ -902,7 +905,7 @@ class Opentip
         drawCorner @currentStem?.toString() == cornerStem, closeButton == cornerStem, i == 3
         ctx.restore()
 
-      ctx.lineTo Math.max(stemBase, @options.borderRadius, closeButtonDist) + 1 - hb, -hb
+      ctx.lineTo Math.max(stemBase, @options.borderRadius, closeButtonInnerWidth) + 1 - hb, -hb
 
     ctx.save()
 
@@ -925,9 +928,9 @@ class Opentip
         crossWidth = crossHeight = @options.closeButtonRadius * 2
 
         if closeButton == "topRight"
-          ctx.translate @dimensions.width - closeButtonDist / 2 - @options.closeButtonRadius + hb, closeButtonDist / 2 - @options.closeButtonRadius - hb
+          ctx.translate @dimensions.width - closeButtonInnerWidth / 2 - @options.closeButtonRadius + hb, closeButtonInnerWidth / 2 - @options.closeButtonRadius - hb
         else
-          ctx.translate closeButtonDist / 2 - @options.closeButtonRadius - hb, closeButtonDist / 2 - @options.closeButtonRadius - hb
+          ctx.translate closeButtonInnerWidth / 2 - @options.closeButtonRadius - hb, closeButtonInnerWidth / 2 - @options.closeButtonRadius - hb
         padding = @options.closeButtonPadding
         bw = 0
         ctx.save()
