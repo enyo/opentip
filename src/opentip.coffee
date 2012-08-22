@@ -845,7 +845,7 @@ class Opentip
     drawLine = (length, stem, first) =>
       if first
         # This ensures that the outline is properly closed
-        ctx.moveTo Math.max(stemBase, @options.borderRadius, @options.closeButtonRadius) + 1 - hb, -hb
+        ctx.moveTo Math.max(stemBase, @options.borderRadius, closeButtonDist) + 1 - hb, -hb
       if stem
         ctx.lineTo length / 2 - stemBase / 2, -hb
         ctx.lineTo length / 2, - stemLength - hb
@@ -902,7 +902,7 @@ class Opentip
         drawCorner @currentStem?.toString() == cornerStem, closeButton == cornerStem, i == 3
         ctx.restore()
 
-      ctx.lineTo Math.max(stemBase, @options.borderRadius, @options.closeButtonRadius) + 1 - hb, 0
+      ctx.lineTo Math.max(stemBase, @options.borderRadius, closeButtonDist) + 1 - hb, -hb
 
     ctx.save()
 
@@ -935,7 +935,7 @@ class Opentip
         ctx.strokeStyle = @options.closeButtonColor
         ctx.lineCap = "round"
         ctx.moveTo 0 + padding, 0 + padding
-        ctx.lineWidth = 2
+        ctx.lineWidth = @options.closeButtonWidth
         ctx.lineTo crossWidth - padding, crossHeight - padding
         ctx.stroke()
         ctx.beginPath()
@@ -1293,6 +1293,9 @@ Opentip.styles =
 
     # The little circle that stick out of a tip
     closeButtonColor: "#d2c35b"
+
+    # The little circle that stick out of a tip
+    closeButtonWidth: 1.5
 
     # Border radius...
     borderRadius: 5
