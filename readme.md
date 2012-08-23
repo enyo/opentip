@@ -80,18 +80,38 @@ If you have ideas, please contact me!
 
 ## Contribute
 
-The latest stable version is always in the **master** branch (which always
+The latest stable version is always in the **[master](https://github.com/enyo/opentip)** branch (which always
 points at the latest version tag).
 
-The latest development version is in the **develop** branch. Use only if you
-want to contribute or test features.
+The latest development version is in the **[develop](https://github.com/enyo/opentip/tree/develop)** branch.
+
+> Use the develop branch if you want to contribute or test features.
+
+Please do also **send pull requests to the `develop` branch**.
+
+### Coffeescript
 
 Opentip is written in [Coffeescript](http://coffeescript.org) so *do not* make
-changes in the Javascript files. **I will not pull requests written in Javascript.**
+changes in the Javascript files. **I will not merge requests written in Javascript.**
+
+### Tests
 
 If you add a change, please make sure that all tests pass!
 
-Use `cake` in the source directory to list all commands available.
+Tests are also written in coffeescript and are in the `test/tests-src/` folder.
+
+To run the tests, open `/test/index.html` in the browser.
+
+It should look like this:
+
+![Tests screenshot](https://raw.github.com/enyo/opentip/develop/files/tests.png)
+
+
+### Cake
+
+To compile and build the library use `cake`.
+
+Just type the command without any arguments `$ cake` in the source directory to list all commands available.
 
 For example, to watch your changes an compile them:
 
@@ -106,12 +126,6 @@ Beware that you have to do the same thing for the tests:
 and for the css:
 
     $ cake watchcss
-
-To run the tests, open `/test/index.html` in the browser.
-
-It should look like this:
-
-![Tests screenshot](https://raw.github.com/enyo/opentip/develop/files/tests.png)
 
 ## Tagging
 
