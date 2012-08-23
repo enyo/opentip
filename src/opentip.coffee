@@ -742,15 +742,18 @@ class Opentip
 
 
     # Prepare for the close button
-    closeButtonInnerWidth = 0
-    closeButtonOuterWidth = 0
+    closeButtonInner = [ 0, 0 ]
+    closeButtonOuter = [ 0, 0 ]
     if "closeButton" in @options.hideTriggers
       closeButton = @sanitizePosition(if @currentStem?.toString() == "topRight" then "topLeft" else "topRight")
-      closeButtonInnerWidth = @options.closeButtonRadius + @options.closeButtonOffset[0]
-      closeButtonOuterWidth = @options.closeButtonRadius - @options.closeButtonOffset[0]
-      closeButtonInnerHeight = @options.closeButtonRadius + @options.closeButtonOffset[1]
-      closeButtonOuterHeight = @options.closeButtonRadius - @options.closeButtonOffset[1]
-
+      closeButtonInner = [
+        @options.closeButtonRadius + @options.closeButtonOffset[0]
+        @options.closeButtonRadius + @options.closeButtonOffset[1]
+      ]
+      closeButtonOuter = [
+        @options.closeButtonRadius - @options.closeButtonOffset[0]
+        @options.closeButtonRadius - @options.closeButtonOffset[1]
+      ]
 
     # Now for the canvas dimensions and position
     canvasDimensions = @adapter.clone @dimensions
@@ -790,11 +793,11 @@ class Opentip
 
     # Account for the close button
     if closeButton
-      if closeButton.left then bulge.left = Math.max bulge.left, closeButtonOuterWidth
-      else if closeButton.right then bulge.right = Math.max bulge.right, closeButtonOuterWidth
+      if closeButton.left then bulge.left = Math.max bulge.left, closeButtonOuter[0]
+      else if closeButton.right then bulge.right = Math.max bulge.right, closeButtonOuter[0]
 
-      if closeButton.top then bulge.top = Math.max bulge.top, closeButtonOuterHeight
-      else if closeButton.bottom then bulge.bottom = Math.max bulge.bottom, closeButtonOuterHeight
+      if closeButton.top then bulge.top = Math.max bulge.top, closeButtonOuter[1]
+      else if closeButton.bottom then bulge.bottom = Math.max bulge.bottom, closeButtonOuter[1]
 
 
     canvasDimensions.width += bulge.left + bulge.right
@@ -882,7 +885,7 @@ class Opentip
     drawLine = (length, stem, first) =>
       if first
         # This ensures that the outline is properly closed
-        ctx.moveTo Math.max(stemBase, @options.borderRadius, closeButtonInnerWidth) + 1 - hb, -hb
+        ctx.moveTo Math.max(stemBase, @options.borderRadius, closeButtonInner[0]) + 1 - hb, -hb
       if stem
         ctx.lineTo length / 2 - stemBase / 2, -hb
         ctx.lineTo length / 2, - stemLength - hb
@@ -896,14 +899,14 @@ class Opentip
         ctx.lineTo hb, stemBase - hb
       else if closeButton
         offset = @options.closeButtonOffset
-        innerWidth = closeButtonInnerWidth
+        innerWidth = closeButtonInner[0]
 
         if i % 2 != 0
           # Since the canvas gets rotated for every corner, but the close button
           # is always defined as [ horizontal, vertical ] offsets, I have to switch
           # the offsets in case the canvas is rotated by 90degs
           offset = [ offset[1], offset[0] ]
-          innerWidth = closeButtonInnerHeight
+          innerWidth = closeButtonInner[1]
 
         # Basic math
         angle1 = Math.acos(offset[1] / @options.closeButtonRadius)
