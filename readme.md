@@ -105,6 +105,9 @@ and for the css:
 
 To run the tests, open `/test/index.html` in the browser.
 
+It should look like this:
+
+![Tests screenshot](https://raw.github.com/enyo/opentip/develop/files/tests.png)
 
 ## Tagging
 
