@@ -745,8 +745,8 @@ class Opentip
     closeButtonOuterWidth = 0
     if "closeButton" in @options.hideTriggers
       closeButton = if @currentStem?.toString() == "topRight" then "topLeft" else "topRight"
-      closeButtonInnerWidth = Math.sqrt (Math.pow(@options.closeButtonRadius * 2, 2) / 2)
-      closeButtonOuterWidth = @options.closeButtonRadius * 2 - closeButtonInnerWidth
+      closeButtonInnerWidth = @options.closeButtonRadius + @options.closeButtonOffset[0]
+      closeButtonOuterWidth = @options.closeButtonRadius - @options.closeButtonOffset[0]
 
 
     # Now for the canvas dimensions and position
@@ -855,16 +855,22 @@ class Opentip
         ctx.lineTo length / 2 + stemBase / 2, -hb
 
     # Draws a corner with stem if necessary
-    drawCorner = (stem, closeButton) =>
+    drawCorner = (stem, closeButton, i) =>
       if stem
         ctx.lineTo -stemBase + hb, 0 - hb
         ctx.lineTo stemLength + hb, -stemLength - hb
         ctx.lineTo hb, stemBase - hb
       else if closeButton
-        radius = @options.closeButtonRadius
+        offset = @options.closeButtonOffset
+        if i % 2 == 0
+          offset = [ offset[1], offset[0] ]
+
+        angle1 = Math.acos(offset[1] / @options.closeButtonRadius)
+        angle2 = Math.acos(offset[0] / @options.closeButtonRadius)
+
         ctx.lineTo -closeButtonInnerWidth + hb, -hb
         # ctx.lineTo hb, -hb + closeButtonInnerWidth
-        ctx.arc hb-closeButtonInnerWidth/2, -hb+closeButtonInnerWidth/2, radius, -(Math.PI * 3/4), Math.PI * 1/4
+        ctx.arc hb-offset[0], -hb+offset[1], @options.closeButtonRadius, -(Math.PI / 2 + angle1), angle2
       else
         ctx.lineTo -@options.borderRadius + hb, -hb
         ctx.quadraticCurveTo hb, -hb, hb, @options.borderRadius - hb
@@ -899,7 +905,7 @@ class Opentip
         ctx.rotate rotation
         drawLine lineLength, @currentStem?.toString() == lineStem, i == 0
         ctx.translate lineLength, 0
-        drawCorner @currentStem?.toString() == cornerStem, closeButton == cornerStem
+        drawCorner @currentStem?.toString() == cornerStem, closeButton == cornerStem, i
         ctx.restore()
 
     ctx.closePath()
@@ -1284,17 +1290,20 @@ Opentip.styles =
     # Whether the gradient should be horizontal.
     backgroundGradientHorizontal: no
 
+    # Positive values offset inside the tooltip
+    closeButtonOffset: [ 5, 5 ]
+
     # The little circle that stick out of a tip
     closeButtonRadius: 7
 
-    # Distance between circle and cross
-    closeButtonPadding: 4.8
+    # Size of the cross
+    closeButtonCrossSize: 10
 
-    # The little circle that stick out of a tip
-    closeButtonColor: "#d2c35b"
+    # Color of the cross
+    closeButtonCrossColor: "#d2c35b"
 
-    # The little circle that stick out of a tip
-    closeButtonWidth: 1.5
+    # The stroke width of the cross
+    closeButtonCrossWidth: 1.5
 
     # Border radius...
     borderRadius: 5
