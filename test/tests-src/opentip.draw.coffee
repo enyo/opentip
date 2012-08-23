@@ -40,6 +40,18 @@ describe "Opentip - Drawing", ->
       expect(opentip.debug.callCount).to.be.above 0
       expect(opentip.debug.args[0][0]).to.be "Drawing background."
 
+  describe "_getPathStemMeasures()", ->
+    it "should just return the same measures if borderWidth is 0", ->
+      {stemBase, stemLength} = opentip._getPathStemMeasures 6, 10, 0
+      expect(stemBase).to.be 6
+      expect(stemLength).to.be 10
+    it "should properly calculate the pathStem information if borderWidth > 0", ->
+      {stemBase, stemLength} = opentip._getPathStemMeasures 6, 10, 3
+      expect(stemBase).to.be 3.767908047326835
+      expect(stemLength).to.be 6.2798467455447256
+    it "should throw an exception if the measures aren't right", ->
+      expect(-> opentip._getPathStemMeasures 6, 10, 40).to.throwError()
+
   describe "_getColor()", ->
     dimensions = width: 200, height: 100
     

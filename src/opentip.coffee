@@ -806,7 +806,8 @@ class Opentip
     canvasPosition[1] -= bulge.top
 
 
-    # * * *
+    if @options.borderWidth
+      {stemLength, stemBase} = @_getPathStemMeasures @options.stemBase, @options.stemLength, @options.borderWidth
 
 
     # Need to draw on the DOM canvas element itself
@@ -840,41 +841,6 @@ class Opentip
     if @options.borderWidth
       ctx.strokeStyle = @options.borderColor
       ctx.lineWidth = @options.borderWidth
-
-      # Now for some math!
-      #
-      # I have to account for the border width when implementing the stems. The
-      # tip height & width obviously should be added to the outer border, but
-      # the path is drawn in the middle of the border.
-      # If I just draw the stem size specified on the path, the stem will be
-      # bigger than requested.
-      #
-      # So I have to calculate the stemBase and stemLength of the **path**
-      # stem.
-      #
-      #
-      #      /
-      #     /|\
-      #    / | angle
-      #   /  |  \
-      #  /   |   \
-      # /____|____\
-      # This is the angle of the tip
-      halfAngle = Math.atan (@options.stemBase / 2) / @options.stemLength
-      angle = halfAngle * 2
-
-      # The rhombus from the border tip to the path tip
-      rhombusSide = hb / Math.sin angle
-
-      distanceBetweenTips = 2 * rhombusSide * Math.cos halfAngle
-      stemLength = hb + @options.stemLength - distanceBetweenTips
-
-      console.error "Sorry but your stemLength / stemBase ratio is strange." if stemLength < 0
-
-      stemLength = Math.max 0, stemLength
-
-      # Now calculate the new base
-      stemBase = (Math.tan(halfAngle) * stemLength) * 2
     else
       stemLength = @options.stemLength
       stemBase = @options.stemBase
@@ -1012,6 +978,44 @@ class Opentip
           top: "#{crossCenter[1] - hcs - linkOverscan}px"
           width: "#{@options.closeButtonCrossSize + linkOverscan * 2}px"
           height: "#{@options.closeButtonCrossSize + linkOverscan * 2}px"
+
+
+  # I have to account for the border width when implementing the stems. The
+  # tip height & width obviously should be added to the outer border, but
+  # the path is drawn in the middle of the border.
+  # If I just draw the stem size specified on the path, the stem will be
+  # bigger than requested.
+  #
+  # So I have to calculate the stemBase and stemLength of the **path**
+  # stem.
+  _getPathStemMeasures: (outerStemBase, outerStemLength, borderWidth) ->
+    # Now for some math!
+    #
+    #      /
+    #     /|\
+    #    / | angle
+    #   /  |  \
+    #  /   |   \
+    # /____|____\
+
+    hb = borderWidth / 2
+
+    # This is the angle of the tip
+    halfAngle = Math.atan (outerStemBase / 2) / outerStemLength
+    angle = halfAngle * 2
+
+    # The rhombus from the border tip to the path tip
+    rhombusSide = hb / Math.sin angle
+
+    distanceBetweenTips = 2 * rhombusSide * Math.cos halfAngle
+    stemLength = hb + outerStemLength - distanceBetweenTips
+
+    throw new Error "Sorry but your stemLength / stemBase ratio is strange." if stemLength < 0
+
+    # Now calculate the new base
+    stemBase = (Math.tan(halfAngle) * stemLength) * 2
+
+    { stemLength: stemLength, stemBase: stemBase }
 
 
 

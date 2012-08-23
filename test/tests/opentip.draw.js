@@ -61,6 +61,25 @@ describe("Opentip - Drawing", function() {
       return expect(opentip.debug.args[0][0]).to.be("Drawing background.");
     });
   });
+  describe("_getPathStemMeasures()", function() {
+    it("should just return the same measures if borderWidth is 0", function() {
+      var stemBase, stemLength, _ref;
+      _ref = opentip._getPathStemMeasures(6, 10, 0), stemBase = _ref.stemBase, stemLength = _ref.stemLength;
+      expect(stemBase).to.be(6);
+      return expect(stemLength).to.be(10);
+    });
+    it("should properly calculate the pathStem information if borderWidth > 0", function() {
+      var stemBase, stemLength, _ref;
+      _ref = opentip._getPathStemMeasures(6, 10, 3), stemBase = _ref.stemBase, stemLength = _ref.stemLength;
+      expect(stemBase).to.be(3.767908047326835);
+      return expect(stemLength).to.be(6.2798467455447256);
+    });
+    return it("should throw an exception if the measures aren't right", function() {
+      return expect(function() {
+        return opentip._getPathStemMeasures(6, 10, 40);
+      }).to.throwError();
+    });
+  });
   return describe("_getColor()", function() {
     var cavans, ctx, dimensions, gradient;
     dimensions = {
