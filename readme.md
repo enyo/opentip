@@ -62,6 +62,9 @@ Those are the major changes you should look out for when migrating from 1.x to 2
 
 - Most of the design is now done in JS since the whole thing is a canvas now.
 
+- The way close buttons are defined has completely changed. Please refer to the
+  docs for more information.
+
 ## Future plans
 
 - ~~Become library independant. I'm currently working on
