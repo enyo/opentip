@@ -855,7 +855,7 @@ class Opentip
         ctx.lineTo length / 2 + stemBase / 2, -hb
 
     # Draws a corner with stem if necessary
-    drawCorner = (stem, closeButton, last) =>
+    drawCorner = (stem, closeButton) =>
       if stem
         ctx.lineTo -stemBase + hb, 0 - hb
         ctx.lineTo stemLength + hb, -stemLength - hb
@@ -868,9 +868,6 @@ class Opentip
       else
         ctx.lineTo -@options.borderRadius + hb, -hb
         ctx.quadraticCurveTo hb, -hb, hb, @options.borderRadius - hb
-      if last
-        # This ensures that the outline is properly closed
-        ctx.lineTo hb, Math.max(stemBase, @options.borderRadius) + 1 - hb
 
 
     # Start drawing without caring about the shadows or stems
@@ -902,11 +899,10 @@ class Opentip
         ctx.rotate rotation
         drawLine lineLength, @currentStem?.toString() == lineStem, i == 0
         ctx.translate lineLength, 0
-        drawCorner @currentStem?.toString() == cornerStem, closeButton == cornerStem, i == 3
+        drawCorner @currentStem?.toString() == cornerStem, closeButton == cornerStem
         ctx.restore()
 
-      ctx.lineTo Math.max(stemBase, @options.borderRadius, closeButtonInnerWidth) + 1 - hb, -hb
-
+    ctx.closePath()
     ctx.save()
 
     if @options.shadow
