@@ -51,7 +51,6 @@ class Opentip
     opentip: "opentip"
     content: "content"
     loadingIndicator: "loading-indicator"
-    buttons: "buttons"
     close: "close"
 
     goingToHide: "going-to-hide"
@@ -295,7 +294,8 @@ class Opentip
       @adapter.append @tooltipElement, @adapter.create """<div class="#{@class.loadingIndicator}"><span>Loading...</span></div>"""
 
     if "closeButton" in @options.hideTriggers
-      @adapter.append headerElement, @adapter.create """<div class="#{@class.buttons}"><a href="javascript:undefined;" class="#{@class.close}"><span>✖</span></a></div>"""
+      @closeButtonElement = @adapter.create """<a href="javascript:undefined;" class="#{@class.close}"><span>Close</span></a>"""
+      @adapter.append headerElement, @closeButtonElement
 
     # Now put the tooltip and the canvas in the container and the container in the body
     @adapter.append @container, @backgroundCanvas
@@ -730,6 +730,8 @@ class Opentip
     # }
     # return position;
 
+  # This is by far the most complex and difficult function to understand.
+  # I tried to comment everything as good as possible
   _draw: ->
     # This function could be called before _buildElements()
     return unless @backgroundCanvas and @redraw
@@ -738,26 +740,30 @@ class Opentip
 
     @redraw = off
 
-    backgroundCanvas = @adapter.unwrap @backgroundCanvas
 
-
+    # Prepare for the close button
     closeButtonInnerWidth = 0
     closeButtonOuterWidth = 0
     if "closeButton" in @options.hideTriggers
-      closeButton = if @currentStem?.toString() == "topRight" then "topLeft" else "topRight"
+      closeButton = @sanitizePosition(if @currentStem?.toString() == "topRight" then "topLeft" else "topRight")
       closeButtonInnerWidth = @options.closeButtonRadius + @options.closeButtonOffset[0]
       closeButtonOuterWidth = @options.closeButtonRadius - @options.closeButtonOffset[0]
+      closeButtonInnerHeight = @options.closeButtonRadius + @options.closeButtonOffset[1]
+      closeButtonOuterHeight = @options.closeButtonRadius - @options.closeButtonOffset[1]
 
 
     # Now for the canvas dimensions and position
     canvasDimensions = @adapter.clone @dimensions
     canvasPosition = [ 0, 0 ]
 
+    # Account for border
     if @options.borderWidth
       canvasDimensions.width += @options.borderWidth * 2
       canvasDimensions.height += @options.borderWidth * 2
       canvasPosition[0] -= @options.borderWidth
       canvasPosition[1] -= @options.borderWidth
+
+    # Account for the shadow
     if @options.shadow
       canvasDimensions.width += @options.shadowBlur * 2
       # If the shadow offset is bigger than the actual shadow blur, the whole canvas gets bigger
@@ -768,15 +774,40 @@ class Opentip
 
       canvasPosition[0] -= Math.max 0, @options.shadowBlur - @options.shadowOffset[0]
       canvasPosition[1] -= Math.max 0, @options.shadowBlur - @options.shadowOffset[1]
+
+    # * * *
+
+    # Bulges could be caused by stems or close buttons
+    bulge = left: 0, right: 0, top: 0, bottom: 0
+
+    # Account for the stem
     if @currentStem
-      if @currentStem.left || @currentStem.right
-        canvasDimensions.width += @options.stemLength
-      if @currentStem.top || @currentStem.bottom
-        canvasDimensions.height += @options.stemLength
-      if @currentStem.left
-        canvasPosition[0] -= @options.stemLength
-      if @currentStem.top
-        canvasPosition[1] -= @options.stemLength
+      if @currentStem.left then bulge.left = @options.stemLength
+      else if @currentStem.right then bulge.right = @options.stemLength
+
+      if @currentStem.top then bulge.top = @options.stemLength
+      else if @currentStem.bottom then bulge.bottom = @options.stemLength
+
+    # Account for the close button
+    if closeButton
+      if closeButton.left then bulge.left = Math.max bulge.left, closeButtonOuterWidth
+      else if closeButton.right then bulge.right = Math.max bulge.right, closeButtonOuterWidth
+
+      if closeButton.top then bulge.top = Math.max bulge.top, closeButtonOuterHeight
+      else if closeButton.bottom then bulge.bottom = Math.max bulge.bottom, closeButtonOuterHeight
+
+
+    canvasDimensions.width += bulge.left + bulge.right
+    canvasDimensions.height += bulge.top + bulge.bottom
+    canvasPosition[0] -= bulge.left
+    canvasPosition[1] -= bulge.top
+
+
+    # * * *
+
+
+    # Need to draw on the DOM canvas element itself
+    backgroundCanvas = @adapter.unwrap @backgroundCanvas
 
     backgroundCanvas.width = canvasDimensions.width
     backgroundCanvas.height = canvasDimensions.height
@@ -797,7 +828,10 @@ class Opentip
     ctx.lineJoin = "miter"
     ctx.miterLimit = 500
 
-    # Since borders are always in the middle and I want them outside
+    # Since borders are always in the middle and I want them outside I need to
+    # draw the actual path half the border width outset.
+    #
+    # (hb = half border)
     hb = @options.borderWidth / 2
 
     if @options.borderWidth
@@ -862,14 +896,20 @@ class Opentip
         ctx.lineTo hb, stemBase - hb
       else if closeButton
         offset = @options.closeButtonOffset
-        if i % 2 == 0
-          offset = [ offset[1], offset[0] ]
+        innerWidth = closeButtonInnerWidth
 
+        if i % 2 != 0
+          # Since the canvas gets rotated for every corner, but the close button
+          # is always defined as [ horizontal, vertical ] offsets, I have to switch
+          # the offsets in case the canvas is rotated by 90degs
+          offset = [ offset[1], offset[0] ]
+          innerWidth = closeButtonInnerHeight
+
+        # Basic math
         angle1 = Math.acos(offset[1] / @options.closeButtonRadius)
         angle2 = Math.acos(offset[0] / @options.closeButtonRadius)
 
-        ctx.lineTo -closeButtonInnerWidth + hb, -hb
-        # ctx.lineTo hb, -hb + closeButtonInnerWidth
+        ctx.lineTo -innerWidth + hb, -hb
         ctx.arc hb-offset[0], -hb+offset[1], @options.closeButtonRadius, -(Math.PI / 2 + angle1), angle2
       else
         ctx.lineTo -@options.borderRadius + hb, -hb
@@ -905,7 +945,7 @@ class Opentip
         ctx.rotate rotation
         drawLine lineLength, @currentStem?.toString() == lineStem, i == 0
         ctx.translate lineLength, 0
-        drawCorner @currentStem?.toString() == cornerStem, closeButton == cornerStem, i
+        drawCorner @currentStem?.toString() == cornerStem, closeButton?.toString() == cornerStem, i
         ctx.restore()
 
     ctx.closePath()
@@ -925,29 +965,50 @@ class Opentip
 
     if closeButton
       do =>
-        # dist = Math.sqrt(@options.closeButtonRadius^2/2) * 2
-
+        # Draw the cross
         crossWidth = crossHeight = @options.closeButtonRadius * 2
 
-        if closeButton == "topRight"
-          ctx.translate @dimensions.width - closeButtonInnerWidth / 2 - @options.closeButtonRadius + hb, closeButtonInnerWidth / 2 - @options.closeButtonRadius - hb
+        if closeButton.toString() == "topRight"
+          crossCenter = [
+            @dimensions.width - @options.closeButtonOffset[0] + hb
+            @options.closeButtonOffset[1] - hb
+          ]
         else
-          ctx.translate closeButtonInnerWidth / 2 - @options.closeButtonRadius - hb, closeButtonInnerWidth / 2 - @options.closeButtonRadius - hb
-        padding = @options.closeButtonPadding
-        bw = 0
+          crossCenter = [
+            @options.closeButtonOffset[0] - hb
+            @options.closeButtonOffset[1] - hb
+          ]
+
+        ctx.translate crossCenter[0], crossCenter[1]
+
+        hcs = @options.closeButtonCrossSize / 2
+
         ctx.save()
+
         ctx.beginPath()
-        ctx.strokeStyle = @options.closeButtonColor
+
+        ctx.strokeStyle = @options.closeButtonCrossColor
+        ctx.lineWidth = @options.closeButtonCrossLineWidth
         ctx.lineCap = "round"
-        ctx.moveTo 0 + padding, 0 + padding
-        ctx.lineWidth = @options.closeButtonWidth
-        ctx.lineTo crossWidth - padding, crossHeight - padding
+
+        ctx.moveTo -hcs, -hcs
+        ctx.lineTo hcs, hcs
         ctx.stroke()
+
         ctx.beginPath()
-        ctx.moveTo crossWidth - padding, 0 + padding
-        ctx.lineTo 0 + padding, crossHeight - padding
+        ctx.moveTo hcs, -hcs
+        ctx.lineTo -hcs, hcs
         ctx.stroke()
+
         ctx.restore()
+
+        # Position the link
+        linkOverscan = 6 # Making sure big fingers can hit the close button
+        @adapter.css @closeButtonElement,
+          left: "#{crossCenter[0] - hcs - linkOverscan}px"
+          top: "#{crossCenter[1] - hcs - linkOverscan}px"
+          width: "#{@options.closeButtonCrossSize + linkOverscan * 2}px"
+          height: "#{@options.closeButtonCrossSize + linkOverscan * 2}px"
 
 
 
@@ -1297,13 +1358,13 @@ Opentip.styles =
     closeButtonRadius: 7
 
     # Size of the cross
-    closeButtonCrossSize: 10
+    closeButtonCrossSize: 4
 
     # Color of the cross
     closeButtonCrossColor: "#d2c35b"
 
     # The stroke width of the cross
-    closeButtonCrossWidth: 1.5
+    closeButtonCrossLineWidth: 1.5
 
     # Border radius...
     borderRadius: 5
@@ -1338,7 +1399,9 @@ Opentip.styles =
     className: "dark"
     borderRadius: 13
     borderColor: "#444"
-    closeButtonColor: "rgba(240, 240, 240, 1)"
+
+    closeButtonCrossColor: "rgba(240, 240, 240, 1)"
+
     shadowColor: "rgba(0, 0, 0, 0.3)"
     shadowOffset: [ 2, 2 ]
     background: [

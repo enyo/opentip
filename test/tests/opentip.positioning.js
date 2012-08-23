@@ -31,7 +31,7 @@ describe("Opentip - Positioning", function() {
       return $(adapter.unwrap(element)).remove();
     });
     return describe("without autoOffset", function() {
-      it("should correctly position opentip when fixed without border and stem", function() {
+      it("should correctly position opentip without border and stem", function() {
         var elementOffset;
         opentip = new Opentip(element, "Test", {
           delay: 0,
@@ -52,7 +52,7 @@ describe("Opentip - Positioning", function() {
           top: 550
         });
       });
-      it("should correctly position opentip when fixed with", function() {
+      it("should correctly position opentip with", function() {
         var elementOffset;
         opentip = new Opentip(element, "Test", {
           delay: 0,
@@ -69,7 +69,7 @@ describe("Opentip - Positioning", function() {
           top: 560
         });
       });
-      it("should correctly position opentip when fixed with stem on the left", function() {
+      it("should correctly position opentip with stem on the left", function() {
         var elementOffset;
         opentip = new Opentip(element, "Test", {
           delay: 0,
@@ -88,7 +88,7 @@ describe("Opentip - Positioning", function() {
           top: 550
         });
       });
-      it("should correctly position opentip when fixed on the bottom right", function() {
+      it("should correctly position opentip on the bottom right", function() {
         var elementDimensions, elementOffset;
         opentip = new Opentip(element, "Test", {
           delay: 0,
@@ -115,7 +115,7 @@ describe("Opentip - Positioning", function() {
           top: 300
         });
       });
-      return it("should correctly position opentip when fixed on the bottom right with stem", function() {
+      return it("should correctly position opentip on the bottom right with stem", function() {
         var elementDimensions, elementOffset;
         opentip = new Opentip(element, "Test", {
           delay: 0,

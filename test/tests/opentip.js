@@ -318,9 +318,9 @@ describe("Opentip", function() {
     return it("should add a close button if hideTrigger = close", function() {
       var closeButton, enderElement;
       enderElement = $(adapter.unwrap(opentip.container));
-      closeButton = enderElement.find("> .opentip > header > .buttons > a.close");
+      closeButton = enderElement.find("> .opentip > header > a.close > span");
       expect(closeButton.length).to.be.ok();
-      return expect(closeButton.html()).to.be("✖");
+      return expect(closeButton.html()).to.be("Close");
     });
   });
   return describe("_setupObservers()", function() {

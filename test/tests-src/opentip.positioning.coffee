@@ -22,23 +22,23 @@ describe "Opentip - Positioning", ->
       $(adapter.unwrap element).remove()
 
     describe "without autoOffset", ->
-      it "should correctly position opentip when fixed without border and stem", ->
+      it "should correctly position opentip without border and stem", ->
         opentip = new Opentip element, "Test", delay: 0, target: yes, borderWidth: 0, stem: off, offset: [ 0, 0 ], autoOffset: false
         elementOffset = adapter.offset element
         expect(elementOffset).to.eql left: 500, top: 500
         opentip.reposition()
         expect(opentip.currentPosition).to.eql left: 550, top: 550
-      it "should correctly position opentip when fixed with", ->
+      it "should correctly position opentip with", ->
         opentip = new Opentip element, "Test", delay: 0, target: yes, borderWidth: 10, stem: off, offset: [ 0, 0 ], autoOffset: false
         elementOffset = adapter.offset element
         opentip.reposition()
         expect(opentip.currentPosition).to.eql left: 560, top: 560
-      it "should correctly position opentip when fixed with stem on the left", ->
+      it "should correctly position opentip with stem on the left", ->
         opentip = new Opentip element, "Test", delay: 0, target: yes, borderWidth: 0, stem: yes, tipJoint: "top left", stemLength: 5, offset: [ 0, 0 ], autoOffset: false
         elementOffset = adapter.offset element
         opentip.reposition()
         expect(opentip.currentPosition).to.eql left: 550, top: 550
-      it "should correctly position opentip when fixed on the bottom right", ->
+      it "should correctly position opentip on the bottom right", ->
         opentip = new Opentip element, "Test", delay: 0, target: yes, borderWidth: 0, stem: off, tipJoint: "bottom right", offset: [ 0, 0 ], autoOffset: false
         opentip.dimensions = width: 200, height: 200
         elementOffset = adapter.offset element
@@ -46,7 +46,7 @@ describe "Opentip - Positioning", ->
         expect(elementDimensions).to.eql width: 50, height: 50
         opentip.reposition()
         expect(opentip.currentPosition).to.eql left: 300, top: 300
-      it "should correctly position opentip when fixed on the bottom right with stem", ->
+      it "should correctly position opentip on the bottom right with stem", ->
         opentip = new Opentip element, "Test", delay: 0, target: yes, borderWidth: 0, stem: yes, tipJoint: "bottom right", stemLength: 10, offset: [ 0, 0 ], autoOffset: false
         opentip.dimensions = width: 200, height: 200
         elementOffset = adapter.offset element
