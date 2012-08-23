@@ -1,4 +1,8 @@
-# Opentip Version 2.0.0-dev
+# Opentip
+
+*Version 2.0.0-dev*
+
+* * *
 
 The [opentip][opentip]-class is a free opensource Java-Script tooltip class based on the [prototype][prototype] framework.
 
@@ -9,10 +13,10 @@ It supports:
 - Different styles
 - Automatic repositioning of the tooltip if it's not in the viewport of the browser anymore
 - All kind of triggers (The tooltip can be triggered by mouse over, click, form submit,... everything you can think of really)
-- CSS3 Animations if available. (If not, it uses scriptaculous if available).
+- CSS3 Animations
 
-As of Version 2.0 Opentip does no longer depend on Prototype. You can choose
-any adapter you want so you can work with the framework of your choice.
+As of Version 2.0 Opentip does **no longer depend on Prototype**. You can choose
+*any* adapter you want so you can work with the framework of your choice.
 
 Supported frameworks are:
 
