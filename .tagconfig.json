@@ -11,6 +11,12 @@
       "regexs": [
         "Opentip Version ###"
       ]
+    },
+    {
+      "name": "src/opentip.coffee",
+      "regexs": [
+        "version: \"###\""
+      ]
     }
   ]
 }

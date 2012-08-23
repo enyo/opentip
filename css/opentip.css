@@ -1,0 +1,80 @@
+.opentip-container,
+.opentip-container * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.opentip-container {
+  position: absolute;
+  max-width: 300px;
+  z-index: 100;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  -ms-transition: none;
+  transition: none;
+}
+.opentip-container.hidden {
+  display: none;
+}
+.opentip-container .opentip {
+  position: relative;
+  font-size: 13px;
+  line-height: 120%;
+  padding: 3px;
+  color: rgba(0,0,0,0.7);
+  text-shadow: -1px -1px 0px rgba(255,255,255,0.2);
+}
+.opentip-container .opentip .close {
+  position: absolute;
+  top: -12px;
+  left: 60px;
+  color: rgba(0,0,0,0.5);
+  text-decoration: none;
+}
+.opentip-container .opentip .close span {
+  display: none;
+}
+.opentip-container.style-dark .opentip {
+  color: #f8f8f8;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 1px 1px 0px rgba(0,0,0,0.2);
+}
+.opentip-container.hide-effect-fade {
+  -webkit-transition: opacity 1s ease-in-out;
+  -moz-transition: opacity 1s ease-in-out;
+  -o-transition: opacity 1s ease-in-out;
+  -ms-transition: opacity 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+}
+.opentip-container.hide-effect-fade.hiding {
+  opacity: 0;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  filter: alpha(opacity=0);
+}
+.opentip-container.show-effect-appear.going-to-show,
+.opentip-container.show-effect-appear.showing {
+  -webkit-transition: opacity 1s ease-in-out;
+  -moz-transition: opacity 1s ease-in-out;
+  -o-transition: opacity 1s ease-in-out;
+  -ms-transition: opacity 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+}
+.opentip-container.show-effect-appear.going-to-show {
+  opacity: 0;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  filter: alpha(opacity=0);
+}
+.opentip-container.show-effect-appear.showing {
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+}
+.opentip-container.show-effect-appear.visible {
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+}

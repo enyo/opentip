@@ -1,0 +1,52 @@
+@import "nib"
+
+.opentip-container, .opentip-container *
+  box-sizing border-box
+
+.opentip-container
+  position absolute
+  max-width 300px
+  z-index 100
+  transition none
+    
+  &.hidden
+    display none
+
+  .opentip
+    position relative
+    font-size 13px
+    line-height 120%
+    padding 3px
+    color rgba(0, 0, 0, 0.7)
+    text-shadow -1px -1px 0px rgba(255, 255, 255, 0.2)
+
+    .close
+      position: absolute;
+      top: -12px;
+      left: 60px;
+      color: rgba(0, 0, 0, 0.5);
+      text-decoration: none;
+      span
+        display none
+  &.style-dark
+    .opentip
+      color #f8f8f8
+      color rgba(255, 255, 255, 0.9)
+      text-shadow 1px 1px 0px rgba(0, 0, 0, 0.2)
+
+  &.hide-effect-fade
+    transition opacity 1s ease-in-out
+    opacity 1
+    &.hiding
+      opacity 0
+
+  &.show-effect-appear
+    &.going-to-show
+    &.showing
+      transition opacity 1s ease-in-out
+    &.going-to-show
+      opacity 0
+    &.showing
+      opacity 1
+    &.visible
+      opacity 1
