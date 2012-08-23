@@ -30,8 +30,6 @@ describe("Opentip - Drawing", function() {
   });
   describe("_draw()", function() {
     beforeEach(function() {
-      var triggerElementExists;
-      triggerElementExists = false;
       opentip = new Opentip(adapter.create("<div></div>"), "Test", {
         delay: 0
       });
@@ -52,13 +50,97 @@ describe("Opentip - Drawing", function() {
       opentip._draw();
       return expect(opentip.debug.callCount).to.be(0);
     });
-    return it("should draw if canvas and @redraw", function() {
+    it("should draw if canvas and @redraw", function() {
       sinon.stub(opentip, "debug");
       opentip.backgroundCanvas = document.createElement("canvas");
       opentip.redraw = true;
       opentip._draw();
       expect(opentip.debug.callCount).to.be.above(0);
       return expect(opentip.debug.args[0][0]).to.be("Drawing background.");
+    });
+    it("should set the correct width of the canvas");
+    return it("should set the correct offset of the canvas");
+  });
+  describe("with close button", function() {
+    var createAndShowTooltip, options;
+    options = {};
+    beforeEach(function() {
+      return options = {
+        delay: 0,
+        stem: false,
+        hideTrigger: "closeButton",
+        closeButtonOffset: [0, 10],
+        closeButtonCrossSize: 10,
+        closeButtonLinkOverscan: 5,
+        borderWidth: 0
+      };
+    });
+    createAndShowTooltip = function() {
+      opentip = new Opentip(adapter.create("<div></div>"), "Test", options);
+      opentip._storeAndLockDimensions = function() {
+        return this.dimensions = {
+          width: 200,
+          height: 100
+        };
+      };
+      sinon.stub(opentip, "_triggerElementExists", function() {
+        return true;
+      });
+      opentip.show();
+      return expect(opentip._dimensionsEqual(opentip.dimensions, {
+        width: 200,
+        height: 100
+      })).to.be.ok();
+    };
+    it("should position the close link when no border", function() {
+      var enderElement;
+      options.borderWidth = 0;
+      options.closeButtonOffset = [0, 10];
+      options.closeButtonCrossSize = 10;
+      createAndShowTooltip();
+      enderElement = $(adapter.unwrap(opentip.closeButtonElement));
+      expect(enderElement.css("left")).to.be("190px");
+      expect(enderElement.css("top")).to.be("0px");
+      expect(enderElement.css("width")).to.be("20px");
+      return expect(enderElement.css("height")).to.be("20px");
+    });
+    it("should position the close link when border and different overscan", function() {
+      var enderElement;
+      options.borderWidth = 20;
+      options.closeButtonOffset = [0, 10];
+      options.closeButtonCrossSize = 10;
+      options.closeButtonLinkOverscan = 10;
+      createAndShowTooltip();
+      enderElement = $(adapter.unwrap(opentip.closeButtonElement));
+      expect(enderElement.css("left")).to.be("185px");
+      expect(enderElement.css("top")).to.be("-5px");
+      expect(enderElement.css("width")).to.be("30px");
+      return expect(enderElement.css("height")).to.be("30px");
+    });
+    it("should position the close link with different offsets and overscans", function() {
+      var enderElement;
+      options.closeButtonOffset = [100, 5];
+      options.closeButtonCrossSize = 10;
+      options.closeButtonLinkOverscan = 0;
+      createAndShowTooltip();
+      enderElement = $(adapter.unwrap(opentip.closeButtonElement));
+      expect(enderElement.css("left")).to.be("95px");
+      expect(enderElement.css("top")).to.be("0px");
+      expect(enderElement.css("width")).to.be("10px");
+      return expect(enderElement.css("height")).to.be("10px");
+    });
+    return it("should correctly position the close link on the left when stem on top right", function() {
+      var enderElement;
+      options.closeButtonOffset = [20, 17];
+      options.closeButtonCrossSize = 12;
+      options.closeButtonLinkOverscan = 5;
+      options.stem = "top right";
+      createAndShowTooltip();
+      enderElement = $(adapter.unwrap(opentip.closeButtonElement));
+      expect(enderElement.css("left")).to.be("9px");
+      expect(enderElement.css("top")).to.be("6px");
+      expect(enderElement.css("width")).to.be("22px");
+      return expect(enderElement.css("height")).to.be("22px");
     });
   });
   describe("_getPathStemMeasures()", function() {

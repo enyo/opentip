@@ -15,7 +15,6 @@ describe "Opentip - Drawing", ->
 
   describe "_draw()", ->
     beforeEach ->
-      triggerElementExists = no
       opentip = new Opentip adapter.create("<div></div>"), "Test", delay: 0
       sinon.stub opentip, "_triggerElementExists", -> yes
 
@@ -39,6 +38,89 @@ describe "Opentip - Drawing", ->
       opentip._draw()
       expect(opentip.debug.callCount).to.be.above 0
       expect(opentip.debug.args[0][0]).to.be "Drawing background."
+
+    it "should set the correct width of the canvas"
+    it "should set the correct offset of the canvas"
+
+  describe "with close button", ->
+    options = { }
+
+    beforeEach ->
+      options = 
+        delay: 0
+        stem: no
+        hideTrigger: "closeButton"
+        closeButtonOffset: [ 0, 10 ]
+        closeButtonCrossSize: 10
+        closeButtonLinkOverscan: 5
+        borderWidth: 0
+
+    createAndShowTooltip = ->
+      opentip = new Opentip adapter.create("<div></div>"), "Test", options
+      opentip._storeAndLockDimensions = -> @dimensions = { width: 200, height: 100 }
+      sinon.stub opentip, "_triggerElementExists", -> yes
+      opentip.show()
+      expect(opentip._dimensionsEqual opentip.dimensions, { width: 200, height: 100 }).to.be.ok()
+
+
+    it "should position the close link when no border", ->
+      options.borderWidth = 0
+      options.closeButtonOffset = [ 0, 10 ]
+      options.closeButtonCrossSize = 10
+
+      createAndShowTooltip()
+
+      enderElement = $(adapter.unwrap opentip.closeButtonElement)
+
+      expect(enderElement.css "left").to.be "190px"
+      expect(enderElement.css "top").to.be "0px"
+      expect(enderElement.css "width").to.be "20px" # cross size + overscan*2
+      expect(enderElement.css "height").to.be "20px"
+
+    it "should position the close link when border and different overscan", ->
+      options.borderWidth = 20
+      options.closeButtonOffset = [ 0, 10 ]
+      options.closeButtonCrossSize = 10
+      options.closeButtonLinkOverscan = 10
+
+      createAndShowTooltip()
+
+      enderElement = $(adapter.unwrap opentip.closeButtonElement)
+
+      expect(enderElement.css "left").to.be "185px"
+      expect(enderElement.css "top").to.be "-5px"
+      expect(enderElement.css "width").to.be "30px" # cross size + overscan*2
+      expect(enderElement.css "height").to.be "30px"
+
+    it "should position the close link with different offsets and overscans", ->
+      options.closeButtonOffset = [ 100, 5 ]
+      options.closeButtonCrossSize = 10
+      options.closeButtonLinkOverscan = 0
+
+      createAndShowTooltip()
+
+      enderElement = $(adapter.unwrap opentip.closeButtonElement)
+
+      expect(enderElement.css "left").to.be "95px"
+      expect(enderElement.css "top").to.be "0px"
+      expect(enderElement.css "width").to.be "10px" # cross size + overscan*2
+      expect(enderElement.css "height").to.be "10px"
+
+    it "should correctly position the close link on the left when stem on top right", ->
+      options.closeButtonOffset = [ 20, 17 ]
+      options.closeButtonCrossSize = 12
+      options.closeButtonLinkOverscan = 5
+      options.stem = "top right"
+
+      createAndShowTooltip()
+
+      enderElement = $(adapter.unwrap opentip.closeButtonElement)
+
+      expect(enderElement.css "left").to.be "9px"
+      expect(enderElement.css "top").to.be "6px"
+      expect(enderElement.css "width").to.be "22px" # cross size + overscan*2
+      expect(enderElement.css "height").to.be "22px"
+
 
   describe "_getPathStemMeasures()", ->
     it "should just return the same measures if borderWidth is 0", ->

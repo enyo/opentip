@@ -321,12 +321,12 @@ class Opentip
         @content = @content this
       @adapter.update contentDiv, @content, @options.escapeContent
 
-    @_storeAndFixDimensions()
+    @_storeAndLockDimensions()
 
   # Sets width auto to the element so it uses the appropriate width, gets the
   # dimensions and sets them so the tolltip won't change in size (which can be
   # annoying when the tooltip gets too close to the browser edge)
-  _storeAndFixDimensions: ->
+  _storeAndLockDimensions: ->
     @adapter.css @container,
       width: "auto"
       left: "0px" # So it doesn't force wrapping
@@ -806,7 +806,7 @@ class Opentip
     canvasPosition[1] -= bulge.top
 
 
-    if @options.borderWidth
+    if @currentStem and @options.borderWidth
       {stemLength, stemBase} = @_getPathStemMeasures @options.stemBase, @options.stemLength, @options.borderWidth
 
 
@@ -938,14 +938,22 @@ class Opentip
         crossWidth = crossHeight = @options.closeButtonRadius * 2
 
         if closeButton.toString() == "topRight"
+          linkCenter = [
+            @dimensions.width - @options.closeButtonOffset[0]
+            @options.closeButtonOffset[1]
+          ]
           crossCenter = [
-            @dimensions.width - @options.closeButtonOffset[0] + hb
-            @options.closeButtonOffset[1] - hb
+            linkCenter[0] + hb
+            linkCenter[1] - hb
           ]
         else
+          linkCenter = [
+            @options.closeButtonOffset[0]
+            @options.closeButtonOffset[1]
+          ]
           crossCenter = [
-            @options.closeButtonOffset[0] - hb
-            @options.closeButtonOffset[1] - hb
+            linkCenter[0] - hb
+            linkCenter[1] - hb
           ]
 
         ctx.translate crossCenter[0], crossCenter[1]
@@ -972,12 +980,12 @@ class Opentip
         ctx.restore()
 
         # Position the link
-        linkOverscan = 6 # Making sure big fingers can hit the close button
+        
         @adapter.css @closeButtonElement,
-          left: "#{crossCenter[0] - hcs - linkOverscan}px"
-          top: "#{crossCenter[1] - hcs - linkOverscan}px"
-          width: "#{@options.closeButtonCrossSize + linkOverscan * 2}px"
-          height: "#{@options.closeButtonCrossSize + linkOverscan * 2}px"
+          left: "#{linkCenter[0] - hcs - @options.closeButtonLinkOverscan}px"
+          top: "#{linkCenter[1] - hcs - @options.closeButtonLinkOverscan}px"
+          width: "#{@options.closeButtonCrossSize + @options.closeButtonLinkOverscan * 2}px"
+          height: "#{@options.closeButtonCrossSize + @options.closeButtonLinkOverscan * 2}px"
 
 
   # I have to account for the border width when implementing the stems. The
@@ -1372,6 +1380,11 @@ Opentip.styles =
 
     # The stroke width of the cross
     closeButtonCrossLineWidth: 1.5
+
+    # You will most probably never want to change this.
+    # It specifies how many pixels the invisible <a> element should be larger
+    # than the actual cross
+    closeButtonLinkOverscan: 6
 
     # Border radius...
     borderRadius: 5
