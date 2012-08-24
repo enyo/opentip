@@ -1,6 +1,11 @@
-# Opentip
+Opentip
+=======
 
 [Opentip][opentip] is a free opensource Java-Script tooltip class based on the [prototype][prototype] framework.
+
+
+Features
+--------
 
 It supports:
 
@@ -21,9 +26,12 @@ Supported frameworks are:
 - [Prototype](http://prototypejs.org)
 
 
-> If you want to contribute, please read on in the [contribute](#contribute) section!
+> If you want to contribute, please read on in the [contribute](#contribute)
+> section. If you are migrating from version **1.x** please refer to the
+> [migration section](#migrating-from-opentip-1x-to-2x)
 
-## Usage
+Usage
+-----
 
 *Version 2.0.0-dev*
 
@@ -40,34 +48,8 @@ $('elementId').opentip('Content', { ...options... });
 For the complete documentation please visit [www.opentip.org][opentip].
 
 
-## Migrating from Opentip 1.x to 2.x
-
-Those are the major changes you should look out for when migrating from 1.x to 2.x:
-
-- There's no `Tip` or `Tips` object anymore. Everything is done through
-  `Opentip`
-
-- The recommend way to create opentips now is to call
-  `new Opentip(element, content, title, options)`, or with the framework of
-  your choice (eg, ender: `$("#my-div").opentip(content, title options)`)
-
-- The instantiation of new tips inside an event (eg: `onclick`, `onmouseover`)
-  is no   longer supported! This would create new opentips everytime the event
-  is fired.
-
-- `Opentip.debugging = true;` does no longer exist. Use `Opentip.debug = true;`
-
-- Positions are no longer of the weird form `[ "left", "top" ]` but simply
-  strings   like `"top left"` or `"right"`
-
-- `stem.size` has been dropped in favor of `stem.length` and `stem.base`
-
-- Most of the design is now done in JS since the whole thing is a canvas now.
-
-- The way close buttons are defined has completely changed. Please refer to the
-  docs for more information.
-
-## Future plans
+Future plans
+------------
 
 - ~~Become library independant. I'm currently working on
   extracting all prototype functionality, so I can switch library easily. The
@@ -83,7 +65,8 @@ Those are the major changes you should look out for when migrating from 1.x to 2
 If you have ideas, please contact me!
 
 
-## Contribute
+Contribute
+----------
 
 The latest stable version is always in the **[master](https://github.com/enyo/opentip)** branch (which always
 points at the latest version tag).
@@ -132,14 +115,46 @@ and for the css:
 
     $ cake watchcss
 
-## Tagging
+
+Migrating from Opentip 1.x to 2.x
+---------------------------------
+
+Those are the major changes you should look out for when migrating from 1.x to 2.x:
+
+- There's no `Tip` or `Tips` object anymore. Everything is done through
+  `Opentip`
+
+- The recommend way to create opentips now is to call
+  `new Opentip(element, content, title, options)`, or with the framework of
+  your choice (eg, ender: `$("#my-div").opentip(content, title options)`)
+
+- The instantiation of new tips inside an event (eg: `onclick`, `onmouseover`)
+  is no   longer supported! This would create new opentips everytime the event
+  is fired.
+
+- `Opentip.debugging = true;` does no longer exist. Use `Opentip.debug = true;`
+
+- Positions are no longer of the weird form `[ "left", "top" ]` but simply
+  strings   like `"top left"` or `"right"`
+
+- `stem.size` has been dropped in favor of `stem.length` and `stem.base`
+
+- Most of the design is now done in JS since the whole thing is a canvas now.
+
+- The way close buttons are defined has completely changed. Please refer to the
+  docs for more information.
+
+Tagging
+-------
 
 Tagging in this project is done with my [tag script](http://github.com/enyo/tag).
 
 
-## Author
+Authors
+-------
+
 Opentip is written by Matias Meno.<br>
-All graphics by Tjandra Mayerhold.
+Website design by Tjandra Mayerhold.
 
 ### Contributors
 
@@ -157,7 +172,8 @@ If I forgot somebody, please just tell me.
 You might also be interested in my [formwatcher](http://www.formwatcher.org/) or
 [dropzone](http://www.dropzonejs.com/).
 
-## License
+License
+-------
 Copyright (c) 2012 Matias Meno<br>
 Licenced under the MIT Licence.
 
