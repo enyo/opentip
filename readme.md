@@ -1,10 +1,6 @@
 # Opentip
 
-*Version 2.0.0-dev*
-
-* * *
-
-The [opentip][opentip]-class is a free opensource Java-Script tooltip class based on the [prototype][prototype] framework.
+[Opentip][opentip] is a free opensource Java-Script tooltip class based on the [prototype][prototype] framework.
 
 It supports:
 
@@ -29,11 +25,17 @@ Supported frameworks are:
 
 ## Usage
 
-    <div onmouseover="javascript:Tips.add(this, event, 'Content', { options });"></div>
+*Version 2.0.0-dev*
+
+```html
+<div data-ot="Tooltip content">Hover me</div>
+```
 
 Or the preferred external method:
 
-	$('elementId').addTip('Content', { options });
+```js
+$('elementId').opentip('Content', { ...options... });
+```
 
 For the complete documentation please visit [www.opentip.org][opentip].
 
