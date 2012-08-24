@@ -1,7 +1,7 @@
 Opentip
 =======
 
-[Opentip][opentip] is a free opensource Java-Script tooltip class based on the [prototype][prototype] framework.
+[Opentip][opentip] is a free opensource Java-Script tooltip class.
 
 
 Features
