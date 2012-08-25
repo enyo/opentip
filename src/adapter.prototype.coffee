@@ -38,5 +38,4 @@ class Adapter
 
 adapter = new Adapter
 
-Opentip.adapters.prototype = adapter
-Opentip.adapter = adapter
+Opentip.addAdapter adapter, "prototype"

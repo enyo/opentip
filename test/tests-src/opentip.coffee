@@ -140,12 +140,12 @@ describe "Opentip", ->
 
     it "should attach itself to the elements `data-opentips` property", ->
       element = $("<div></div>").get(0)
-      expect(adapter.data element, "opentipIds").to.not.be.ok()
+      expect(adapter.data element, "opentips").to.not.be.ok()
       opentip = new Opentip element
-      expect(adapter.data element, "opentipIds").to.eql [ opentip.id ]
+      expect(adapter.data element, "opentips").to.eql [ opentip ]
       opentip2 = new Opentip element
       opentip3 = new Opentip element
-      expect(adapter.data element, "opentipIds").to.eql [ opentip.id, opentip2.id, opentip3.id ]
+      expect(adapter.data element, "opentips").to.eql [ opentip, opentip2, opentip3 ]
 
 
 
@@ -190,10 +190,12 @@ describe "Opentip", ->
 
   describe "_buildContainer()", ->
     element = document.createElement "div"
-    opentip = new Opentip element,
-      style: "glass"
-      showEffect: "appear"
-      hideEffect: "fade"
+    opentip = null
+    beforeEach ->
+      opentip = new Opentip element,
+        style: "glass"
+        showEffect: "appear"
+        hideEffect: "fade"
 
     it "should set the id", ->
       expect(adapter.attr opentip.container, "id").to.equal "opentip-" + opentip.id
@@ -231,7 +233,9 @@ describe "Opentip", ->
       expect(closeButton.length).to.be.ok()
       expect(closeButton.html()).to.be "Close"
 
-
+  describe "setAdapter()", ->
+    it "should set the current adapter, and add the adapter to the list"
+    it "should use adapter.domReady to call findElements() with it"
 
   describe "_setupObservers()", ->
     it "should never setup the same observers twice"

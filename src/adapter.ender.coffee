@@ -134,6 +134,4 @@ class Adapter
 adapter = new Adapter
 
 # Add the adapter to the list
-Opentip.adapters.ender = adapter
-# Set as adapter in use
-Opentip.adapter = adapter
+Opentip.addAdapter adapter, "ender"

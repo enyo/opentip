@@ -78,9 +78,9 @@ class Opentip
     @adapter = Opentip.adapter
 
     # Add the ID to the element
-    elementsOpentipIds = @adapter.data(element, "opentipIds") || [ ]
-    elementsOpentipIds.push @id
-    @adapter.data element, "opentipIds", elementsOpentipIds
+    elementsOpentips = @adapter.data(element, "opentips") || [ ]
+    elementsOpentips.push this
+    @adapter.data element, "opentips", elementsOpentips
 
     @triggerElement = @adapter.wrap element
 
@@ -1218,13 +1218,11 @@ Opentip::debug = (args...) ->
 Opentip.findElements = ->
   adapter = Opentip.adapter
 
-  htmlOptionNames = (["data-ot-#{Opentip::dasherize(optionName)}", optionName] for optionName in Opentip.styles.standard)
-
   # Go through all elements with `data-ot="[...]"`
   for element in adapter.findAll document.body, "[data-ot]"
     options = { }
 
-    content = adapter.attr element, "data-ot"
+    content = adapter.data element, "ot"
 
     if content in [ "", "true", "yes"]
       # Take the content from the title attribute
@@ -1233,20 +1231,11 @@ Opentip.findElements = ->
 
     content = content || ""
 
-    for [htmlOptionName, optionName] in htmlOptionNames
-      if optionValue = adapter.attr element, htmlOptionName
-        try
-          # See if it's a JSON string.
-          optionValue = JSON.parse optionValue.replace /\'/g, '"' # Valid JSON is only with double quotes.
-        catch err
-          # Well, it's not.
-
+    for optionName of Opentip.styles.standard
+      if optionValue = adapter.data element, "ot#{Opentip::ucfirst optionName}"
         options[optionName] = optionValue
 
-    new Opentip content, options
-
-# Hook up the startup
-Opentip.adapter?.domReady? Opentip.findElements
+    new Opentip element, content, options
 
 
 # Publicly available
@@ -1275,6 +1264,13 @@ Opentip.adapters = { }
 # The current adapter used.
 Opentip.adapter = null
 
+firstAdapter = yes
+Opentip.addAdapter = (adapter, name) ->
+  Opentip.adapters[name] = adapter
+  if firstAdapter
+    Opentip.adapter = adapter
+    adapter.domReady Opentip.findElements
+    firstAdapter = no
 
 Opentip.positions = [
   "top"
@@ -1317,7 +1313,7 @@ Opentip.styles =
     # - `false` (no stem)
     # - `true` (stem at tipJoint position)
     # - `POSITION` (for stems in other directions)
-    stem: no
+    stem: yes
 
     # `float` (in seconds)
     # If null, the default is used: 0.2 for mouseover, 0 for click

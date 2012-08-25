@@ -29,8 +29,23 @@ describe("Opentip - Startup", function() {
     $("[data-ot]").remove();
     return $(".opentip-container").remove();
   });
-  return it("should find all elements with data-ot()", function() {
-    $("<div data-ot=\"Content text\"></div>");
-    return Opentip.findElements();
+  it("should find all elements with data-ot()", function() {
+    var trigger;
+    trigger = $("<div data-ot=\"Content text\"></div>").get(0);
+    $(document.body).append(trigger);
+    Opentip.findElements();
+    expect(adapter.data(trigger, "opentips")).to.be.an(Array);
+    expect(adapter.data(trigger, "opentips").length).to.equal(1);
+    return expect(adapter.data(trigger, "opentips")[0]).to.be.an(Opentip);
+  });
+  return it("should take configuration from data- attributes", function() {
+    var trigger;
+    trigger = $("<div data-ot=\"Content text\" data-ot-show-on=\"click\" data-ot-hide-trigger=\"closeButton\"></div>").get(0);
+    $(document.body).append(trigger);
+    Opentip.findElements();
+    expect(adapter.data(trigger, "opentips")[0]).to.be.an(Opentip);
+    opentip = adapter.data(trigger, "opentips")[0];
+    expect(opentip.options.hideTrigger).to.eql("closeButton");
+    return expect(opentip.options.showOn).to.eql("click");
   });
 });

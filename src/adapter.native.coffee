@@ -62,7 +62,6 @@ class Adapter
     if arguments.length == 3
       # Setter
       dataValues[dataId][name] = value
-      console.log name, value
     else
       value = dataValues[dataId][name]
       return value if value?
@@ -184,6 +183,4 @@ adapter = new Adapter
 
 
 # Add the adapter to the list
-Opentip.adapters.native = adapter
-# Set as adapter in use
-Opentip.adapter = adapter
+Opentip.addAdapter adapter, "native"
