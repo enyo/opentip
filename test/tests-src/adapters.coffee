@@ -89,18 +89,26 @@ describe "Generic adapter", ->
             element = document.createElement "div"
             element2 = document.createElement "div"
             adapter.data element, "test", [ "a", "b" ]
-            adapter.data adapter.wrap(element), "test2", "simple string"
+            adapter.data adapter.wrap(element), "someOtherTest", "simple string"
 
             expect(adapter.data element, "test").to.eql [ "a", "b" ]
-            expect(adapter.data adapter.wrap(element), "test2").to.equal "simple string"
+            expect(adapter.data adapter.wrap(element), "someOtherTest").to.equal "simple string"
 
-            expect(adapter.data element2, "test2").to.equal undefined
+            expect(adapter.data element2, "someOtherTest").to.not.be.ok()
+
           it "should set empty data element", ->
             element = document.createElement "a"
             adapter.data element, "test", [ "a", "b" ]
             expect(adapter.data element, "test").to.eql [ "a", "b" ]
             adapter.data element, "test", null
             expect(adapter.data element, "test").to.eql null
+
+          it "should return existing data", ->
+            nodeElement = $ """<div data-ot="hello" data-my-test="some string"></div>"""
+            element = nodeElement.get 0
+
+            expect(adapter.data element, "ot").to.equal "hello"
+            expect(adapter.data element, "myTest").to.equal "some string"
 
         describe "addClass()", ->
           it "should properly add the class", ->

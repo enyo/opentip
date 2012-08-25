@@ -54,15 +54,22 @@ class Adapter
   # Returns or sets the given data of element
   data: (element, name, value) ->
     dataId = @attr element, "data-id"
+    unless dataId
+      dataId = ++lastDataId
+      @attr element, "data-id", dataId
+      dataValues[dataId] = { }
     if arguments.length == 3
-      unless dataId
-        dataId = ++lastDataId
-        @attr element, "data-id", dataId
-        dataValues[dataId] = { }
       dataValues[dataId][name] = value
     else
-      return undefined unless dataId
-      dataValues[dataId][name]
+      value = dataValues[dataId][name]
+      return value if value?
+
+      value = @attr element, "data-#{Opentip::dasherize name}"
+      if value
+        dataValues[dataId][name] = value
+      return value
+
+
 
   # Finds elements by selector
   find: (element, selector) -> @unwrap(element).querySelector selector
