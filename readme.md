@@ -53,14 +53,16 @@ Usage
 
 *Version 2.0.0-dev*
 
+With HTML data attributes:
+
 ```html
-<div data-ot="Tooltip content">Hover me</div>
+<div data-ot="Tooltip content" data-ot-show-on="click">Click me</div>
 ```
 
-Or the preferred external method:
+or with the Javascript API:
 
 ```js
-$('elementId').opentip('Content', { ...options... });
+$('elementId').opentip('Content', { showOn: "click", ...options... });
 ```
 
 For the complete documentation please visit [www.opentip.org][opentip].
