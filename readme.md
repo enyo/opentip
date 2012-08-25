@@ -120,17 +120,23 @@ Just type the command without any arguments `$ cake` in the source directory to 
 
 For example, to watch your changes an compile them:
 
-    $ cd path/to/opentip-source 
-    $ cake watch
+```bash
+$ cd path/to/opentip-source 
+$ cake watch
+```
 
 Beware that you have to do the same thing for the tests:
 
-    $ cd ./test
-    $ cake watch
+```bash
+$ cd ./test
+$ cake watch
+```
 
 and for the css:
 
-    $ cake watchcss
+```bash
+$ cake watchcss
+```
 
 
 Migrating from Opentip 1.x to 2.x
