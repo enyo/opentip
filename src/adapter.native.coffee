@@ -43,10 +43,26 @@ class Adapter
 
   # Returns or sets the given attribute of element
   attr: (element, attr, value) ->
-    if value?
+    if arguments.length == 3
       @unwrap(element).setAttribute attr, value
     else
       @unwrap(element).getAttribute? attr
+
+
+  lastDataId = 0
+  dataValues = { }
+  # Returns or sets the given data of element
+  data: (element, name, value) ->
+    dataId = @attr element, "data-id"
+    if arguments.length == 3
+      unless dataId
+        dataId = ++lastDataId
+        @attr element, "data-id", dataId
+        dataValues[dataId] = { }
+      dataValues[dataId][name] = value
+    else
+      return undefined unless dataId
+      dataValues[dataId][name]
 
   # Finds elements by selector
   find: (element, selector) -> @unwrap(element).querySelector selector

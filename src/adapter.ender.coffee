@@ -49,6 +49,9 @@ class Adapter
   # Returns or sets the given attribute of element
   attr: (element, attr, value) -> $(element).attr attr, value
 
+  # Returns or sets the given data of element
+  data: (element, name, value) -> $(element).data name, value
+
   # Finds elements by selector
   find: (element, selector) -> $(element).find selector
 

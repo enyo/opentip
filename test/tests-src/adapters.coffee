@@ -83,6 +83,25 @@ describe "Generic adapter", ->
             expect(adapter.attr element, "class").to.equal "test-class"
             expect(adapter.attr element, "href").to.equal "http://link"
 
+
+        describe "data()", ->
+          it "should set and return arbitrary data for element", ->
+            element = document.createElement "div"
+            element2 = document.createElement "div"
+            adapter.data element, "test", [ "a", "b" ]
+            adapter.data adapter.wrap(element), "test2", "simple string"
+
+            expect(adapter.data element, "test").to.eql [ "a", "b" ]
+            expect(adapter.data adapter.wrap(element), "test2").to.equal "simple string"
+
+            expect(adapter.data element2, "test2").to.equal undefined
+          it "should set empty data element", ->
+            element = document.createElement "a"
+            adapter.data element, "test", [ "a", "b" ]
+            expect(adapter.data element, "test").to.eql [ "a", "b" ]
+            adapter.data element, "test", null
+            expect(adapter.data element, "test").to.eql null
+
         describe "addClass()", ->
           it "should properly add the class", ->
             element = document.createElement "div"

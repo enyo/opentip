@@ -101,6 +101,26 @@ describe("Generic adapter", function() {
             return expect(adapter.attr(element, "href")).to.equal("http://link");
           });
         });
+        describe("data()", function() {
+          it("should set and return arbitrary data for element", function() {
+            var element, element2;
+            element = document.createElement("div");
+            element2 = document.createElement("div");
+            adapter.data(element, "test", ["a", "b"]);
+            adapter.data(adapter.wrap(element), "test2", "simple string");
+            expect(adapter.data(element, "test")).to.eql(["a", "b"]);
+            expect(adapter.data(adapter.wrap(element), "test2")).to.equal("simple string");
+            return expect(adapter.data(element2, "test2")).to.equal(void 0);
+          });
+          return it("should set empty data element", function() {
+            var element;
+            element = document.createElement("a");
+            adapter.data(element, "test", ["a", "b"]);
+            expect(adapter.data(element, "test")).to.eql(["a", "b"]);
+            adapter.data(element, "test", null);
+            return expect(adapter.data(element, "test")).to.eql(null);
+          });
+        });
         describe("addClass()", function() {
           return it("should properly add the class", function() {
             var element, val;
