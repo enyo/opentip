@@ -23,6 +23,7 @@ Supported frameworks are:
 
 - Native. You can use this one if you don't use any framework.
 - [Ender]
+- [jQuery]
 - [Prototype]
 
 
@@ -203,6 +204,7 @@ Licenced under the MIT Licence.
 
 [opentip]: http://www.opentip.org/
 [prototype]: http://www.prototypejs.org/
+[jquery]: http://jquery.com/
 [ajax]: http://en.wikipedia.org/wiki/Ajax_(programming)
 [excanvas]: http://code.google.com/p/explorercanvas/
 [ender]: http://ender.no.de
