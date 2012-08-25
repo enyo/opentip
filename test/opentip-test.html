@@ -2,12 +2,25 @@
 <head>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="lib/mocha.css" />
+
+  
+  <!--
   <script src="lib/ender.js"></script>
   <script src="../lib/opentip.js"></script>
   <script src="../lib/adapter.ender.js"></script>
+  
+
+  <script src="../lib/opentip.js"></script>
+  <script src="../lib/adapter.native.js"></script>
+  -->
+
+  <script src="lib/jquery-1.8.0.js"></script>
+  <script src="../lib/opentip.js"></script>
+  <script src="../lib/adapter.jquery.js"></script>
+
   <script>
     Opentip.debug = true;
-    $.domReady(function() {
+    Opentip.adapter.domReady(function() {
 
       Opentip.styles.test = {
         target: true,
@@ -23,6 +36,8 @@
         // closeButtonCrossSize: 5
       }
       // window.x=$(".opentip-test2").opentip("Hallo test", { target: true, tipJoint: "right", borderWidth: 0  })
+
+
 
       window.x=$(".opentip-test").opentip("Hallo test", { style: "test", tipJoint: "top" })
       window.x=$(".opentip-test").opentip("Hallo test", { style: "test", tipJoint: "top right" })

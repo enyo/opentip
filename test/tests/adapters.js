@@ -19,7 +19,9 @@ describe("Generic adapter", function() {
       adapter = Opentip.adapters[adapterName];
       describe("domReady()", function() {
         return it("should call the callback", function(done) {
-          return adapter.domReady(done);
+          return adapter.domReady(function() {
+            return done();
+          });
         });
       });
       describe("clone()", function() {
@@ -87,9 +89,7 @@ describe("Generic adapter", function() {
           it("should return the attribute of passed element", function() {
             var element;
             element = document.createElement("a");
-            element.setAttribute("class", "test-class");
             element.setAttribute("href", "http://link");
-            expect(adapter.attr(element, "class")).to.equal("test-class");
             return expect(adapter.attr(adapter.wrap(element), "href")).to.equal("http://link");
           });
           return it("should set the attribute of passed element", function() {
@@ -191,7 +191,7 @@ describe("Generic adapter", function() {
           });
         });
         describe("dimensions()", function() {
-          return it("should return an object with the correct dimensions", function() {
+          it("should return an object with the correct dimensions", function() {
             var dim, dim2, element;
             element = $("<div style=\"display:block; position: absolute; width: 100px; height: 200px;\"></div>").get(0);
             $("body").append(element);
@@ -201,6 +201,17 @@ describe("Generic adapter", function() {
             expect(dim).to.eql({
               width: 100,
               height: 200
+            });
+            return $(element).remove();
+          });
+          return it("should return an object with the correct dimensions including border and padding", function() {
+            var dim, element;
+            element = $("<div style=\"display:block; position: absolute; width: 100px; height: 200px; padding: 20px; border: 2px solid black;\"></div>").get(0);
+            $("body").append(element);
+            dim = adapter.dimensions(element);
+            expect(dim).to.eql({
+              width: 144,
+              height: 244
             });
             return $(element).remove();
           });
@@ -218,7 +229,7 @@ describe("Generic adapter", function() {
             var a, element;
             element = $("<div></div>").get(0);
             a = adapter.unwrap(adapter.find(element, ".a"));
-            return expect(a).to.be(null);
+            return expect(a).to.not.be.ok();
           });
         });
         describe("findAll()", function() {

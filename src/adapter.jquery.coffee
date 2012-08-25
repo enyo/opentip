@@ -4,107 +4,120 @@
 # Uses jQuery
 
 # Because $ is my favorite character
-$ = jQuery
+(($) ->
 
 
-# Augment jQuery
-$.fn.opentip = (content, title, options) ->
-  new Opentip this, content, title, options
+  # Augment jQuery
+  $.fn.opentip = (content, title, options) ->
+    new Opentip this, content, title, options
 
 
-# And now the class
-class Adapter
+  # And now the class
+  class Adapter
 
-  name: "jquery"
+    name: "jquery"
 
-  # Simply using $.domReady
-  domReady: (callback) -> $.domReady callback
-
-
-  # DOM
-  # ===
-
-  # Using bonzo to create html
-  create: (html) -> $ html
+    # Simply using $.domReady
+    domReady: (callback) -> $ callback
 
 
-  # Element handling
-  # ----------------
+    # DOM
+    # ===
 
-  # Wraps the element in ender
-  wrap: (element) ->
-    element = $ element
-    throw new Error "Multiple elements provided." if element.length > 1
-    element
-
-  # Returns the unwrapped element
-  unwrap: (element) -> $(element)[0]
-
-  # Returns the tag name of the element
-  tagName: (element) -> @unwrap(element).tagName
-
-  # Returns or sets the given attribute of element
-  attr: (element, attr, value) -> $(element).attr attr, value
-
-  # Returns or sets the given data of element
-  data: (element, name, value) -> $(element).data name, value
-
-  # Finds elements by selector
-  find: (element, selector) -> $(element).find selector
-
-  # Finds all elements by selector
-  findAll: -> @find.apply @, arguments
-
-  # Updates the content of the element
-  update: (element, content, escape) ->
-    element = $ element
-    if escape
-      element.text content
-    else
-      element.html content
-
-  # Appends given child to element
-  append: (element, child) -> $(element).append child
-
-  # Add a class
-  addClass: (element, className) -> $(element).addClass className
-
-  # Remove a class
-  removeClass: (element, className) -> $(element).removeClass className
-
-  # Set given css properties
-  css: (element, properties) -> $(element).css properties
-
-  # Returns an object with given dimensions
-  dimensions: (element) ->
-    {
-      width: $(element).width()
-      height: $(element).height()
-    }
-
-  # Returns an object with x and y 
-  mousePosition: (e) -> x: e.pageX, y: e.pageY
+    # Using bonzo to create html
+    create: (html) -> $ html
 
 
-  # Returns the offset of the element
-  offset: (element) -> $(element).offset()
+    # Element handling
+    # ----------------
 
-  # Observe given eventName
-  observe: (element, eventName, observer) -> $(element).bind eventName, observer
+    # Wraps the element in ender
+    wrap: (element) ->
+      element = $ element
+      throw new Error "Multiple elements provided." if element.length > 1
+      element
 
-  # Stop observing event
-  stopObserving: (element, eventName, observer) -> $(element).unbind eventName, observer
+    # Returns the unwrapped element
+    unwrap: (element) -> $(element)[0]
+
+    # Returns the tag name of the element
+    tagName: (element) -> @unwrap(element).tagName
+
+    # Returns or sets the given attribute of element
+    #
+    # It's important not to simply forward name and value because the value
+    # is set whether or not the value argument is present
+    attr: (element, args...) -> $(element).attr args...
+
+    # Returns or sets the given data of element
+    # It's important not to simply forward name and value because the value
+    # is set whether or not the value argument is present
+    data: (element, args...) -> $(element).data args...
+
+    # Finds elements by selector
+    find: (element, selector) -> $(element).find selector
+
+    # Finds all elements by selector
+    findAll: -> @find.apply @, arguments
+
+    # Updates the content of the element
+    update: (element, content, escape) ->
+      element = $ element
+      if escape
+        element.text content
+      else
+        element.html content
+
+    # Appends given child to element
+    append: (element, child) -> $(element).append child
+
+    # Add a class
+    addClass: (element, className) -> $(element).addClass className
+
+    # Remove a class
+    removeClass: (element, className) -> $(element).removeClass className
+
+    # Set given css properties
+    css: (element, properties) -> $(element).css properties
+
+    # Returns an object with given dimensions
+    dimensions: (element) ->
+      {
+        width: $(element).outerWidth()
+        height: $(element).outerHeight()
+      }
+
+    # Returns an object with x and y 
+    mousePosition: (e) ->
+      return null unless e?
+      x: e.pageX, y: e.pageY
 
 
-  # Utility functions
-  # =================
+    # Returns the offset of the element
+    offset: (element) ->
+      offset = $(element).offset()
+      {
+        left: offset.left
+        top: offset.top
+      }
 
-  # Creates a shallow copy of the object
-  clone: (object) -> $.extend { }, object
+    # Observe given eventName
+    observe: (element, eventName, observer) -> $(element).bind eventName, observer
 
-  # Copies all properties from sources to target
-  extend: (target, sources...) -> $.extend target, sources...
+    # Stop observing event
+    stopObserving: (element, eventName, observer) -> $(element).unbind eventName, observer
 
 
-# Add the adapter to the list
-Opentip.addAdapter new Adapter
+    # Utility functions
+    # =================
+
+    # Creates a shallow copy of the object
+    clone: (object) -> $.extend { }, object
+
+    # Copies all properties from sources to target
+    extend: (target, sources...) -> $.extend target, sources...
+
+  # Add the adapter to the list
+  Opentip.addAdapter new Adapter
+
+)(jQuery)

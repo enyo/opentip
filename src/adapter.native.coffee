@@ -9,7 +9,43 @@ class Adapter
   name: "native"
 
   # Invoke callback as soon as dom is ready
-  domReady: (callback) -> callback()
+  # Source: https://github.com/dperini/ContentLoaded/blob/master/src/contentloaded.js
+  domReady: (callback) ->
+    done = no
+    top = true
+    win = window
+    doc = document
+
+    return callback() if doc.readyState in [ "complete", "loaded" ]
+
+    root = doc.documentElement
+    add = (if doc.addEventListener then "addEventListener" else "attachEvent")
+    rem = (if doc.addEventListener then "removeEventListener" else "detachEvent")
+    pre = (if doc.addEventListener then "" else "on")
+
+    init = (e) ->
+      return  if e.type is "readystatechange" and doc.readyState isnt "complete"
+      (if e.type is "load" then win else doc)[rem] pre + e.type, init, false
+      unless done
+        done = yes
+        callback()
+
+    poll = ->
+      try
+        root.doScroll "left"
+      catch e
+        setTimeout poll, 50
+        return
+      init "poll"
+
+    unless doc.readyState is "complete"
+      if doc.createEventObject and root.doScroll
+        try
+          top = not win.frameElement
+        poll()  if top
+      doc[add] pre + "DOMContentLoaded", init, false
+      doc[add] pre + "readystatechange", init, false
+      win[add] pre + "load", init, false
 
 
   # DOM
