@@ -193,7 +193,7 @@ describe("Opentip", function() {
       expect(opentip.showTriggersWhenVisible).to.eql([]);
       return expect(opentip.hideTriggers).to.eql([]);
     });
-    return it("should copy options.hideTrigger onto options.hideTriggers", function() {
+    it("should copy options.hideTrigger onto options.hideTriggers", function() {
       var element, opentip;
       element = adapter.create("<div></div>");
       opentip = new Opentip(element, {
@@ -201,6 +201,14 @@ describe("Opentip", function() {
         hideTriggers: ["trigger"]
       });
       return expect(opentip.options.hideTriggers).to.eql(["trigger", "closeButton"]);
+    });
+    return it("should attach itself to the elements `data-opentips` property", function() {
+      var element, opentip;
+      element = $("<div></div>");
+      expect(element.attr("data-opentip-ids")).to.be(null);
+      opentip = new Opentip(element.get(0));
+      console.log(element);
+      return expect(element.attr("data-opentip-ids")).to.be(opentip.id);
     });
   });
   describe("init()", function() {

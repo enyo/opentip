@@ -138,6 +138,12 @@ describe "Opentip", ->
       opentip = new Opentip element, hideTrigger: "closeButton", hideTriggers: [ "trigger" ]
       expect(opentip.options.hideTriggers).to.eql [ "trigger", "closeButton"]
 
+    it "should attach itself to the elements `data-opentips` property", ->
+      element = $ "<div></div>"
+      expect(element.attr("data-opentip-ids")).to.be null
+      opentip = new Opentip element.get 0
+      console.log element
+      expect(element.attr("data-opentip-ids")).to.be opentip.id
 
 
 

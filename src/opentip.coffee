@@ -77,6 +77,14 @@ class Opentip
 
     @adapter = Opentip.adapter
 
+    # Add the ID to the element
+    elementsOpentipIds = @adapter.attr(element, "data-opentip-ids") || ""
+    if elementsOpentipIds
+      elementsOpentipIds += ",#{@id}"
+    else
+      elementsOpentipIds = "#{@id}"
+    @adapter.attr element, "data-opentip-ids", elementsOpentipIds
+
     @triggerElement = @adapter.wrap element
 
     throw new Error "You can't call Opentip on multiple elements." if @triggerElement.length > 1
@@ -875,6 +883,10 @@ class Opentip
           innerWidth = closeButtonInner[1]
 
         # Basic math
+        #
+        # I added a graphical explanation since it's sometimes hard to understand 
+        # geometrical calculations without visualization:
+        # https://raw.github.com/enyo/opentip/develop/files/close-button-angle.png
         angle1 = Math.acos(offset[1] / @options.closeButtonRadius)
         angle2 = Math.acos(offset[0] / @options.closeButtonRadius)
 
@@ -1206,12 +1218,43 @@ Opentip::debug = (args...) ->
 # Startup
 # -------
 
-# TODO write startup script
+Opentip.findElements = ->
+  adapter = Opentip.adapter
 
+  htmlOptionNames = (["data-ot-#{Opentip::dasherize(optionName)}", optionName] for optionName in Opentip.styles.standard)
+
+  # Go through all elements with `data-ot="[...]"`
+  for element in adapter.findAll document.body, "[data-ot]"
+    options = { }
+
+    content = adapter.attr element, "data-ot"
+
+    if content in [ "", "true", "yes"]
+      # Take the content from the title attribute
+      content = adapter.attr element, "title"
+      adapter.attr element, "title", ""
+
+    content = content || ""
+
+    for [htmlOptionName, optionName] in htmlOptionNames
+      if optionValue = adapter.attr element, htmlOptionName
+        try
+          # See if it's a JSON string.
+          optionValue = JSON.parse optionValue.replace /\'/g, '"' # Valid JSON is only with double quotes.
+        catch err
+          # Well, it's not.
+
+        options[optionName] = optionValue
+
+    new Opentip content, options
+
+# Hook up the startup
+Opentip.adapter?.domReady? Opentip.findElements
 
 
 # Publicly available
 # ------------------
+
 Opentip.version = "2.0.0-dev"
 
 Opentip.debug = off
@@ -1234,8 +1277,6 @@ Opentip.adapters = { }
 
 # The current adapter used.
 Opentip.adapter = null
-
-Opentip.documentIsLoaded = no
 
 
 Opentip.positions = [
