@@ -5,7 +5,7 @@
   "keywords": [ "tooltip", "ender" ],
   "homepage": "http://www.opentip.org",
   "main": [
-    "./lib/opentip.js"
+    "./lib/opentip.js",
     "./lib/adapter.ender.js"
   ],
   "maintainers": [
