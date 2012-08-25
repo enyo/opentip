@@ -4,7 +4,7 @@ $ = ender
 
 class Adapter
 
-  name: "Prototype"
+  name: "prototype"
 
   # Simply using $.domReady
   domReady: (callback) -> Event.observe window, "dom:loaded", callback
@@ -38,4 +38,4 @@ class Adapter
 
 adapter = new Adapter
 
-Opentip.addAdapter adapter, "prototype"
+Opentip.addAdapter adapter

@@ -369,7 +369,7 @@ class Opentip
       continue if @currentObservers[state] is not removeObserver
       @currentObservers[state] = not removeObserver
 
-      observeOrStop = (args...) ->
+      observeOrStop = (args...) =>
         if removeObserver then @adapter.stopObserving args...
         else @adapter.observe args...
 
@@ -1265,8 +1265,8 @@ Opentip.adapters = { }
 Opentip.adapter = null
 
 firstAdapter = yes
-Opentip.addAdapter = (adapter, name) ->
-  Opentip.adapters[name] = adapter
+Opentip.addAdapter = (adapter) ->
+  Opentip.adapters[adapter.name] = adapter
   if firstAdapter
     Opentip.adapter = adapter
     adapter.domReady Opentip.findElements

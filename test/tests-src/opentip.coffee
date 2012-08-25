@@ -2,8 +2,9 @@
 $ = ender
 
 describe "Opentip", ->
-  adapter = Opentip.adapters.native
+  adapter = null
   beforeEach ->
+    adapter = Opentip.adapters.native
     Opentip.adapter = adapter
 
   afterEach ->

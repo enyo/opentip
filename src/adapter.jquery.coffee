@@ -1,24 +1,21 @@
-# Ender Opentip Adapter
-# =====================
+# jQuery Opentip Adapter
+# ======================
 #
-# Uses ender packages
+# Uses jQuery
 
 # Because $ is my favorite character
-$ = ender
+$ = jQuery
 
-# Using bean as event handler
-bean = require "bean"
 
-# Augment ender
-$.ender {
-  opentip: (content, title, options) -> new Opentip this, content, title, options
-}, true
+# Augment jQuery
+$.fn.opentip = (content, title, options) ->
+  new Opentip this, content, title, options
 
 
 # And now the class
 class Adapter
 
-  name: "ender"
+  name: "jquery"
 
   # Simply using $.domReady
   domReady: (callback) -> $.domReady callback
@@ -41,7 +38,7 @@ class Adapter
     element
 
   # Returns the unwrapped element
-  unwrap: (element) -> $(element).get 0
+  unwrap: (element) -> $(element)[0]
 
   # Returns the tag name of the element
   tagName: (element) -> @unwrap(element).tagName
@@ -79,35 +76,21 @@ class Adapter
   css: (element, properties) -> $(element).css properties
 
   # Returns an object with given dimensions
-  dimensions: (element) -> $(element).dim()
+  dimensions: (element) ->
+    {
+      width: $(element).width()
+      height: $(element).height()
+    }
 
   # Returns an object with x and y 
-  mousePosition: (e) ->
-    pos = x: 0, y: 0
+  mousePosition: (e) -> x: e.pageX, y: e.pageY
 
-    e ?= window.event
-
-    return unless e?
-
-    if e.pageX or e.pageY
-      pos.x = e.pageX
-      pos.y = e.pageY
-    else if e.clientX or e.clientY
-      pos.x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft
-      pos.y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop
-
-    pos
 
   # Returns the offset of the element
-  offset: (element) -> 
-    offset = $(element).offset()
-    delete offset.width
-    delete offset.height
-    offset
+  offset: (element) -> $(element).offset()
 
   # Observe given eventName
-  observe: (element, eventName, observer) ->
-    $(element).on eventName, observer
+  observe: (element, eventName, observer) -> $(element).bind eventName, observer
 
   # Stop observing event
   stopObserving: (element, eventName, observer) -> $(element).unbind eventName, observer
@@ -117,18 +100,10 @@ class Adapter
   # =================
 
   # Creates a shallow copy of the object
-  clone: (object) ->
-    newObject = { }
-    for own key, val of object
-      newObject[key] = val
-    newObject
+  clone: (object) -> $.extend { }, object
 
   # Copies all properties from sources to target
-  extend: (target, sources...) ->
-    for source in sources
-      for own key, val of source
-        target[key] = val
-    target
+  extend: (target, sources...) -> $.extend target, sources...
 
 
 # Add the adapter to the list

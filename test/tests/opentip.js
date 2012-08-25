@@ -5,8 +5,9 @@ $ = ender;
 
 describe("Opentip", function() {
   var adapter;
-  adapter = Opentip.adapters["native"];
+  adapter = null;
   beforeEach(function() {
+    adapter = Opentip.adapters["native"];
     return Opentip.adapter = adapter;
   });
   afterEach(function() {

@@ -6,7 +6,7 @@
 # really care about oldschool browser compatibility.
 class Adapter
 
-  name: "Native"
+  name: "native"
 
   # Invoke callback as soon as dom is ready
   domReady: (callback) -> callback()
@@ -176,11 +176,5 @@ class Adapter
 
 
 
-
-
-# Create the adapter
-adapter = new Adapter
-
-
 # Add the adapter to the list
-Opentip.addAdapter adapter, "native"
+Opentip.addAdapter new Adapter

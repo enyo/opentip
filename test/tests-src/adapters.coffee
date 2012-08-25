@@ -4,6 +4,7 @@ $ = ender
 adapters = [
   "native"
   "ender"
+  "jquery"
 ]
 
 describe "Generic adapter", ->

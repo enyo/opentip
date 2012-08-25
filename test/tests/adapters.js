@@ -4,7 +4,7 @@ var $, adapters,
 
 $ = ender;
 
-adapters = ["native", "ender"];
+adapters = ["native", "ender", "jquery"];
 
 describe("Generic adapter", function() {
   var adapterName, _i, _len, _results;
