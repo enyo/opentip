@@ -58,8 +58,11 @@ class Adapter
       dataId = ++lastDataId
       @attr element, "data-id", dataId
       dataValues[dataId] = { }
+
     if arguments.length == 3
+      # Setter
       dataValues[dataId][name] = value
+      console.log name, value
     else
       value = dataValues[dataId][name]
       return value if value?

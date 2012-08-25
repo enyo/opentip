@@ -78,12 +78,9 @@ class Opentip
     @adapter = Opentip.adapter
 
     # Add the ID to the element
-    elementsOpentipIds = @adapter.attr(element, "data-opentip-ids") || ""
-    if elementsOpentipIds
-      elementsOpentipIds += ",#{@id}"
-    else
-      elementsOpentipIds = "#{@id}"
-    @adapter.attr element, "data-opentip-ids", elementsOpentipIds
+    elementsOpentipIds = @adapter.data(element, "opentipIds") || [ ]
+    elementsOpentipIds.push @id
+    @adapter.data element, "opentipIds", elementsOpentipIds
 
     @triggerElement = @adapter.wrap element
 

@@ -203,12 +203,14 @@ describe("Opentip", function() {
       return expect(opentip.options.hideTriggers).to.eql(["trigger", "closeButton"]);
     });
     return it("should attach itself to the elements `data-opentips` property", function() {
-      var element, opentip;
-      element = $("<div></div>");
-      expect(element.attr("data-opentip-ids")).to.be(null);
-      opentip = new Opentip(element.get(0));
-      console.log(element);
-      return expect(element.attr("data-opentip-ids")).to.be(opentip.id);
+      var element, opentip, opentip2, opentip3;
+      element = $("<div></div>").get(0);
+      expect(adapter.data(element, "opentipIds")).to.not.be.ok();
+      opentip = new Opentip(element);
+      expect(adapter.data(element, "opentipIds")).to.eql([opentip.id]);
+      opentip2 = new Opentip(element);
+      opentip3 = new Opentip(element);
+      return expect(adapter.data(element, "opentipIds")).to.eql([opentip.id, opentip2.id, opentip3.id]);
     });
   });
   describe("init()", function() {
