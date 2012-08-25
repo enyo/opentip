@@ -16,19 +16,28 @@ It supports:
 - All kind of triggers (The tooltip can be triggered by mouse over, click, form submit,... everything you can think of really)
 - CSS3 Animations
 
-As of Version 2.0 Opentip does **no longer depend on Prototype**. You can choose
+As of Version 2.0 Opentip does **no longer depend on [Prototype]**. You can choose
 *any* adapter you want so you can work with the framework of your choice.
 
 Supported frameworks are:
 
 - Native. You can use this one if you don't use any framework.
-- [Ender](http://ender.no.de)
-- [Prototype](http://prototypejs.org)
+- [Ender]
+- [Prototype]
 
 
 > If you want to contribute, please read on in the [contribute](#contribute)
 > section. If you are migrating from version **1.x** please refer to the
 > [migration section](#migrating-from-opentip-1x-to-2x)
+
+Installation
+------------
+
+The easies and recommended way to install *opentip* is with [ender]:
+
+```bash
+$ ender build opentip
+```
 
 Usage
 -----
@@ -126,7 +135,7 @@ Those are the major changes you should look out for when migrating from 1.x to 2
 
 - The recommend way to create opentips now is to call
   `new Opentip(element, content, title, options)`, or with the framework of
-  your choice (eg, ender: `$("#my-div").opentip(content, title options)`)
+  your choice (eg, [ender]: `$("#my-div").opentip(content, title options)`)
 
 - The instantiation of new tips inside an event (eg: `onclick`, `onmouseover`)
   is no   longer supported! This would create new opentips everytime the event
@@ -182,3 +191,4 @@ Licenced under the MIT Licence.
 [prototype]: http://www.prototypejs.org/
 [ajax]: http://en.wikipedia.org/wiki/Ajax_(programming)
 [excanvas]: http://code.google.com/p/explorercanvas/
+[ender]: http://ender.no.de
