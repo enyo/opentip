@@ -103,17 +103,38 @@ Please do also **send pull requests to the `develop` branch**.
 Opentip is written in [Coffeescript](http://coffeescript.org) so *do not* make
 changes in the Javascript files. **I will not merge requests written in Javascript.**
 
-### Tests
+### Node
 
-If you add a change, please make sure that all tests pass!
+To start the test environment [install node](http://nodejs.org) first if you haven't done so already.
 
-Tests are also written in coffeescript and are in the `test/tests-src/` folder.
+Then go into the `test/` directory and install all dependencies. (You only have
+to do this the first time):
 
-To run the tests, open `/test/index.html` in the browser.
+```bash
+$ cd test/
+$ npm install
+```
+
+And you're ready to launch the server:
+
+```bash
+$ ./server.js
+```
+
+Now simply visit `http://localhost:3000` in your browser to see the tests.
 
 It should look like this:
 
 ![Tests screenshot](https://raw.github.com/enyo/opentip/develop/files/tests.png)
+
+All tests are located in `assets/js/tests/` and are written in coffeescript but
+compiled on the fly.
+
+The webserver also automatically compiles any opentip changes (as well as the
+adapter changes), so don't worry about compiling coffeescript. When the time comes
+to deploy everything, I'll take care of properly bundling all Javascript files.
+
+If you add a change, please make sure that all tests pass!
 
 
 ### Cake
