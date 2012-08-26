@@ -9,6 +9,8 @@
     "express": "3.x",
     "jade": "*",
     "connect-assets": "2.x",
-    "coffee-script": "1.x"
+    "coffee-script": "1.x",
+    "stylus": "0.x",
+    "nib": "0.x"
   }
 }

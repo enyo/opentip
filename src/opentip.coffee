@@ -338,7 +338,6 @@ class Opentip
       left: "0px" # So it doesn't force wrapping
       top: "0px"
     dimensions = @adapter.dimensions @container
-    console.log dimensions.width, dimensions.height
 
     @redraw = on unless @_dimensionsEqual @dimensions, dimensions
 

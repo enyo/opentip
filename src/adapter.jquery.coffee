@@ -107,7 +107,7 @@
     # Stop observing event
     stopObserving: (element, eventName, observer) -> $(element).unbind eventName, observer
 
-
+    # Perform an AJAX request and call the appropriate callbacks.
     ajax: (options) ->
       throw new Error "No url provided" unless options.url?
       $.ajax(
