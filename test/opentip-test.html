@@ -8,15 +8,17 @@
   <script src="lib/ender.js"></script>
   <script src="../lib/opentip.js"></script>
   <script src="../lib/adapter.ender.js"></script>
-  
-
-  <script src="../lib/opentip.js"></script>
-  <script src="../lib/adapter.native.js"></script>
   -->
+  
 
   <script src="lib/jquery-1.8.0.js"></script>
   <script src="../lib/opentip.js"></script>
   <script src="../lib/adapter.jquery.js"></script>
+
+  <!--
+  <script src="../lib/opentip.js"></script>
+  <script src="../lib/adapter.native.js"></script>
+  -->
 
   <script>
     Opentip.debug = true;
@@ -38,21 +40,24 @@
       // window.x=$(".opentip-test2").opentip("Hallo test", { target: true, tipJoint: "right", borderWidth: 0  })
 
 
+      var element = document.querySelector(".opentip-test")
 
-      window.x=$(".opentip-test").opentip("Hallo test", { style: "test", tipJoint: "top" })
-      window.x=$(".opentip-test").opentip("Hallo test", { style: "test", tipJoint: "top right" })
-      window.x=$(".opentip-test").opentip("Hallo test", { style: "test", tipJoint: "right"  })
-      window.x=$(".opentip-test").opentip("Hallo test", { style: "test", tipJoint: "bottom right" })
-      window.x=$(".opentip-test").opentip("Hallo test", { style: "test", tipJoint: "bottom" })
-      window.x=$(".opentip-test").opentip("Hallo test", { style: "test", tipJoint: "bottom left" })
-      window.x=$(".opentip-test").opentip("Hallo test", { style: "test", tipJoint: "left" })
-      window.x=$(".opentip-test").opentip("Hallo test", { style: "test", tipJoint: "top left" })
 
-      window.x=$(".opentip-test").opentip("Hallo test", { style: "dark", hideDelay: 0.5, tipJoint: "left", stem: true, borderWidth: 2})
+      window.x= new Opentip(element, "Hallo test", { style: "test", tipJoint: "top" })
+      window.x= new Opentip(element, "Hallo test", { style: "test", tipJoint: "top right" })
+      window.x= new Opentip(element, "Hallo test", { style: "test", tipJoint: "right"  })
+      window.x= new Opentip(element, "Hallo test", { style: "test", tipJoint: "bottom right" })
+      window.x= new Opentip(element, "Hallo test", { style: "test", tipJoint: "bottom" })
+      window.x= new Opentip(element, "Hallo test", { style: "test", tipJoint: "bottom left" })
+      window.x= new Opentip(element, "Hallo test", { style: "test", tipJoint: "left" })
+      window.x= new Opentip(element, "Hallo test", { style: "test", tipJoint: "top left" })
 
-      window.x=$(".opentip-test2").opentip("Hallo test", { style: "dark", stem: true, target: true, delay: 0, showEffect: false, hideDelay: 0, hideEffectDuration: 3 })
+      window.x= new Opentip(element, "Hallo test", { style: "dark", hideDelay: 0.5, tipJoint: "left", stem: true, borderWidth: 2})
 
-      window.x=$(".opentip-test2").opentip("Hallo test bla test bl<br />kjsdlfksjdlf", { style: "dark", hideTrigger: "closeButton", stem: true, tipJoint: "top right", target: true, delay: 0, hideDelay: 0, showOn: "creation", borderRadius: 15 })
+      var element = document.querySelector(".opentip-test2")
+      window.x= new Opentip(element, "Hallo test", { style: "dark", stem: true, target: true, delay: 0, showEffect: false, hideDelay: 0, hideEffectDuration: 3 })
+
+      window.x= new Opentip(element, "Hallo test bla test bl<br />kjsdlfksjdlf", { style: "dark", hideTrigger: "closeButton", stem: true, tipJoint: "top right", target: true, delay: 0, hideDelay: 0, showOn: "creation", borderRadius: 15 })
     });
   </script>
   <style type="text/css">

@@ -31,3 +31,11 @@ describe "Opentip - Startup", ->
     expect(opentip.options.hideTrigger).to.eql "closeButton"
     expect(opentip.options.showOn).to.eql "click"
 
+  it "should properly parse boolean data- attributes", ->
+    trigger = $("""<div data-ot="Content text" data-ot-shadow="yes" data-ot-auto-offset="no"></div>""").get(0)
+    $(document.body).append trigger
+    Opentip.findElements()
+    opentip = adapter.data(trigger, "opentips")[0]
+    expect(opentip.options.shadow).to.be yes
+    expect(opentip.options.autoOffset).to.be no
+

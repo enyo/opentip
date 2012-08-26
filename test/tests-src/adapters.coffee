@@ -151,6 +151,12 @@ describe "Generic adapter", ->
             dim = adapter.dimensions element
             expect(dim).to.eql width: 144, height: 244
             $(element).remove()
+          it "should return an object with the correct dimensions even if display none", ->
+            element = $("""<div style="display:none; position: absolute; width: 100px; height: 200px;"></div>""").get 0
+            $("body").append element
+            dim = adapter.dimensions element
+            expect(dim).to.eql width: 100, height: 200
+            $(element).remove()
 
 
         describe "find()", ->

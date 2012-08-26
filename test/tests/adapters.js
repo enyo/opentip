@@ -204,7 +204,7 @@ describe("Generic adapter", function() {
             });
             return $(element).remove();
           });
-          return it("should return an object with the correct dimensions including border and padding", function() {
+          it("should return an object with the correct dimensions including border and padding", function() {
             var dim, element;
             element = $("<div style=\"display:block; position: absolute; width: 100px; height: 200px; padding: 20px; border: 2px solid black;\"></div>").get(0);
             $("body").append(element);
@@ -212,6 +212,17 @@ describe("Generic adapter", function() {
             expect(dim).to.eql({
               width: 144,
               height: 244
+            });
+            return $(element).remove();
+          });
+          return it("should return an object with the correct dimensions even if display none", function() {
+            var dim, element;
+            element = $("<div style=\"display:none; position: absolute; width: 100px; height: 200px;\"></div>").get(0);
+            $("body").append(element);
+            dim = adapter.dimensions(element);
+            expect(dim).to.eql({
+              width: 100,
+              height: 200
             });
             return $(element).remove();
           });

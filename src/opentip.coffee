@@ -337,6 +337,7 @@ class Opentip
       left: "0px" # So it doesn't force wrapping
       top: "0px"
     dimensions = @adapter.dimensions @container
+    console.log dimensions.width, dimensions.height
 
     @redraw = on unless @_dimensionsEqual @dimensions, dimensions
 
@@ -1233,10 +1234,11 @@ Opentip.findElements = ->
 
     for optionName of Opentip.styles.standard
       if optionValue = adapter.data element, "ot#{Opentip::ucfirst optionName}"
+        if optionValue in [ "yes", "true", "on" ] then optionValue = true 
+        else if optionValue in [ "no", "false", "off" ] then optionValue = false
         options[optionName] = optionValue
 
     new Opentip element, content, options
-
 
 # Publicly available
 # ------------------

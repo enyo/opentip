@@ -38,7 +38,7 @@ describe("Opentip - Startup", function() {
     expect(adapter.data(trigger, "opentips").length).to.equal(1);
     return expect(adapter.data(trigger, "opentips")[0]).to.be.an(Opentip);
   });
-  return it("should take configuration from data- attributes", function() {
+  it("should take configuration from data- attributes", function() {
     var trigger;
     trigger = $("<div data-ot=\"Content text\" data-ot-show-on=\"click\" data-ot-hide-trigger=\"closeButton\"></div>").get(0);
     $(document.body).append(trigger);
@@ -47,5 +47,14 @@ describe("Opentip - Startup", function() {
     opentip = adapter.data(trigger, "opentips")[0];
     expect(opentip.options.hideTrigger).to.eql("closeButton");
     return expect(opentip.options.showOn).to.eql("click");
+  });
+  return it("should properly parse boolean data- attributes", function() {
+    var trigger;
+    trigger = $("<div data-ot=\"Content text\" data-ot-shadow=\"yes\" data-ot-auto-offset=\"no\"></div>").get(0);
+    $(document.body).append(trigger);
+    Opentip.findElements();
+    opentip = adapter.data(trigger, "opentips")[0];
+    expect(opentip.options.shadow).to.be(true);
+    return expect(opentip.options.autoOffset).to.be(false);
   });
 });

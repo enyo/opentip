@@ -145,10 +145,31 @@ class Adapter
   # Returns an object with given dimensions
   dimensions: (element) ->
     element = @unwrap @wrap element
-    {
+    dimensions =
       width: element.offsetWidth
       height: element.offsetHeight
-    }
+
+    unless dimensions.width and dimensions.height
+      unless element.style
+        console.log "AAAH", element
+      # The element is probably invisible. So make it visible
+      revert =
+        position: element.style.position || ''
+        visibility: element.style.visibility || ''
+        display: element.style.display || ''
+
+      @css element,
+        position: "absolute"
+        visibility: "hidden"
+        display: "block"
+
+      dimensions =
+        width: element.offsetWidth
+        height: element.offsetHeight
+
+      @css element, revert      
+
+    dimensions
 
   # Returns an object with x and y 
   mousePosition: (e) ->
