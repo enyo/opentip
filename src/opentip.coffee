@@ -1498,5 +1498,6 @@ Opentip.defaultStyle = "standard"
 
 
 
+window.Opentip = Opentip
 
 

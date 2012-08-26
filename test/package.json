@@ -1,0 +1,14 @@
+{
+  "name": "opentip-tests",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "dependencies": {
+    "express": "3.x",
+    "jade": "*",
+    "connect-assets": "2.x",
+    "coffee-script": "1.x"
+  }
+}

@@ -1,0 +1,41 @@
+html5
+head
+  meta(charset="utf-8")
+
+  != css('mocha.css')
+
+  != js('lib/jquery-1.8.0')
+  :coffeescript
+    jQuery.noConflict()
+
+  != js('lib/expect')
+  != js('lib/mocha')
+  :coffeescript
+    mocha.setup "bdd"
+
+  != js('lib/sinon-1.4.2')
+
+  != js('src/opentip')
+
+  != js('lib/ender')
+  :coffeescript
+    ender.noConflict()
+
+  != js('src/adapter.ender')
+  != js('src/adapter.native')
+  != js('src/adapter.jquery')
+  
+
+  != js('test')
+
+  :coffeescript
+    jQuery -> mocha.run()
+
+  style(type="text/css")
+    .opentip-container {
+      display: none;
+    }
+
+body
+
+  #mocha
