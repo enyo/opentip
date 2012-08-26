@@ -41,7 +41,8 @@
     "qwery": "3.x",
     "domready": "0.x",
     "bean": "0.x",
-    "bonzo": "1.x"
+    "bonzo": "1.x",
+    "reqwest": "0.x"
   },
   "ender": "noop"
 }

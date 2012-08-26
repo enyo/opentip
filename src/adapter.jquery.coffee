@@ -107,6 +107,17 @@
     # Stop observing event
     stopObserving: (element, eventName, observer) -> $(element).unbind eventName, observer
 
+    # Perform an AJAX request and call the appropriate callbacks.
+    ajax: (options) ->
+      throw new Error "No url provided" unless options.url?
+      $.ajax(
+        url: options.url
+        type: options.method?.toUpperCase() ? "GET"
+      )
+        .done((content) -> options.onSuccess? content)
+        .fail((request) -> options.onError? "Server responded with status #{request.status}")
+        .always(-> options.onComplete?())
+
 
     # Utility functions
     # =================

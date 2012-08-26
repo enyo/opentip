@@ -150,8 +150,6 @@ class Adapter
       height: element.offsetHeight
 
     unless dimensions.width and dimensions.height
-      unless element.style
-        console.log "AAAH", element
       # The element is probably invisible. So make it visible
       revert =
         position: element.style.position || ''
@@ -213,6 +211,40 @@ class Adapter
   # Stop observing event
   stopObserving: (element, eventName, observer) -> @unwrap(element).removeEventListener eventName, observer
 
+
+  # Perform an AJAX request and call the appropriate callbacks.
+  ajax: (options) ->
+    throw new Error "No url provided" unless options.url?
+
+    if window.XMLHttpRequest
+      # Mozilla, Safari, ...
+      request = new XMLHttpRequest
+    else if window.ActiveXObject
+      # IE
+      try
+        request = new ActiveXObject "Msxml2.XMLHTTP"
+      catch e
+        try
+          request = new ActiveXObject "Microsoft.XMLHTTP"
+        catch e
+
+    throw new Error "Can't create XMLHttpRequest" unless request
+
+    request.onreadystatechange = ->
+      if request.readyState == 4
+        try
+          if request.status == 200
+            options.onSuccess? request.responseText
+          else
+            options.onError? "Server responded with status #{request.status}"
+        catch e
+          options.onError? e.message
+
+        options.onComplete?()
+
+
+    request.open options.method?.toUpperCase() ? "GET", options.url
+    request.send()
 
   # Utility functions
   # =================

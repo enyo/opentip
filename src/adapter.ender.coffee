@@ -9,6 +9,9 @@
   # Using bean as event handler
   bean = require "bean"
 
+  # Using reqwest as AJAX lib
+  reqwest = require "reqwest"
+
   # Augment ender
   $.ender {
     opentip: (content, title, options) -> new Opentip this, content, title, options
@@ -116,6 +119,17 @@
 
     # Stop observing event
     stopObserving: (element, eventName, observer) -> $(element).unbind eventName, observer
+
+    # Perform an AJAX request and call the appropriate callbacks.
+    ajax: (options) ->
+      throw new Error "No url provided" unless options.url?
+      reqwest
+        url: options.url
+        type: 'html'
+        method: options.method?.toUpperCase() ? "GET"
+        error: (resp) -> options.onError? "Server responded with status #{resp.status}"
+        success: (resp) -> options.onSuccess? resp
+        complete: -> options.onComplete?()
 
 
     # Utility functions
