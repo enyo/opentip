@@ -280,3 +280,44 @@ describe "Generic adapter", ->
             element.click()
             expect(listener.callCount).to.equal 2 # Shouldn't have changed
 
+        describe "ajax()", ->
+          it "should properly download the content with get", (done) ->
+            success = sinon.stub()
+            adapter.ajax
+              url: "./ajax-test"
+              method: "GET"
+              onSuccess: (response) ->
+                expect(response).to.be "success get"
+                success()
+              onError: (error) -> done error
+              onComplete: ->
+                expect(success.callCount).to.be 1
+                done()
+          it "should properly download the content with post", (done) ->
+            success = sinon.stub()
+            adapter.ajax
+              url: "./ajax-test"
+              method: "post"
+              onSuccess: (response) ->
+                expect(response).to.be "success post"
+                success()
+              onError: (error) -> done error
+              onComplete: ->
+                expect(success.callCount).to.be 1
+                done()
+
+          it "should properly call onError if error", (done) ->
+            errorStub = sinon.stub()
+            adapter.ajax
+              url: "./ajax-test404"
+              method: "GET"
+              onSuccess: (response) ->
+                done "Shouldn't have called onSuccess"
+              onError: (error) ->
+                expect(error).to.be "Server responded with status 404."
+                errorStub()
+              onComplete: ->
+                expect(errorStub.callCount).to.be 1
+                done()
+
+

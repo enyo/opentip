@@ -214,6 +214,46 @@ class Adapter
   stopObserving: (element, eventName, observer) -> @unwrap(element).removeEventListener eventName, observer
 
 
+  ajax: (options) ->
+    throw new Error "Now url provided" unless options.url?
+
+    options = @extend {
+      method: "GET"
+      onSuccess: ->
+      onError: ->
+      onComplete: ->
+    }, options
+
+    if window.XMLHttpRequest
+      # Mozilla, Safari, ...
+      request = new XMLHttpRequest
+    else if window.ActiveXObject
+      # IE
+      try
+        request = new ActiveXObject "Msxml2.XMLHTTP"
+      catch e
+        try
+          request = new ActiveXObject "Microsoft.XMLHTTP"
+        catch e
+
+    throw new Error "Can't create XMLHttpRequest" unless request
+
+    request.onreadystatechange = ->
+      if request.readyState == 4
+        try
+          if request.status == 200
+            options.onSuccess request.responseText
+          else
+            options.onError "Server responded with status #{request.status}."
+        catch e
+          options.onError e.message
+
+        options.onComplete()
+
+
+    request.open options.method.toUpperCase(), options.url
+    request.send()
+
   # Utility functions
   # =================
 
