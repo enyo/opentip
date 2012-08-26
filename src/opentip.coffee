@@ -333,19 +333,22 @@ class Opentip
   # dimensions and sets them so the tolltip won't change in size (which can be
   # annoying when the tooltip gets too close to the browser edge)
   _storeAndLockDimensions: ->
+    prevDimension = @dimensions
+
     @adapter.css @container,
       width: "auto"
       left: "0px" # So it doesn't force wrapping
       top: "0px"
-    dimensions = @adapter.dimensions @container
-
-    @redraw = on unless @_dimensionsEqual @dimensions, dimensions
-
-    @dimensions = dimensions
+    @dimensions = @adapter.dimensions @container
+    console.log @dimensions, @content
     @adapter.css @container,
       width: "#{@dimensions.width}px"
       top: "#{@currentPosition.top}px"
       left: "#{@currentPosition.left}px"
+
+    unless @_dimensionsEqual @dimensions, prevDimension
+      @redraw = on 
+      @_draw()
 
   # Sets up appropriate observers
   activate: ->
@@ -1094,7 +1097,7 @@ class Opentip
     # TODO: Add a check if the element is actually visible
     return no
 
-  @_loadAjax: ->
+  _loadAjax: ->
     return if @loading
 
     @loaded = no
@@ -1108,6 +1111,9 @@ class Opentip
       method: @options.ajax.method
       onSuccess: (responseText) =>
         @debug "Loading successful."
+        # This has to happen before setting the content since loading indicators
+        # may still be visible.
+        @adapter.removeClass @container, @class.loading
         @setContent responseText
       onError: (error) =>
         message = "There was a problem downloading the content."

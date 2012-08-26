@@ -28,5 +28,6 @@ app.get "/", (req, res) -> res.render "index"
 app.get "/playground", (req, res) -> res.render "playground"
 app.get "/ajax-test", (req, res) -> res.send "success get"
 app.post "/ajax-test", (req, res) -> res.send "success post"
+app.get "/ajax-test-delayed", (req, res) -> setTimeout (-> res.send "success get"), 500
 
 http.createServer(app).listen app.get("port"), -> console.log "Express server listening on port #{app.get "port"}"
