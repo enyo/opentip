@@ -16,4 +16,14 @@ describe "Opentip - AJAX", ->
     $(".opentip-container").remove()
 
   describe "_loadAjax()", ->
-    it "should use adapter.ajax"
+    beforeEach ->
+      sinon.stub adapter, "ajax"
+    afterEach ->
+      adapter.ajax.restore()
+    it "should use adapter.ajax", ->
+      opentip = new Opentip adapter.create("<div></div>"), "Test", ajax: { url: "http://www.test.com", method: "post" }
+      opentip._loadAjax()
+      expect(adapter.ajax.callCount).to.be 1
+      expect(adapter.ajax.args[0][0].url).to.equal "http://www.test.com"
+      expect(adapter.ajax.args[0][0].method).to.equal "post"
+    it "should be called by show()"

@@ -340,7 +340,7 @@ class Opentip
       left: "0px" # So it doesn't force wrapping
       top: "0px"
     @dimensions = @adapter.dimensions @container
-    console.log @dimensions, @content
+
     @adapter.css @container,
       width: "#{@dimensions.width}px"
       top: "#{@currentPosition.top}px"
