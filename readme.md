@@ -40,13 +40,14 @@ The easies and recommended way to install *opentip* is with [ender]:
 $ ender build opentip
 ```
 
-You should include opentip's CSS as well. It's in `css/opentip.css`.
-
 ### Without ender
 
 If you don't use ender, just download `lib/opentip.js` and `lib/adapter.FRAMEWORK.js`
 and include them in this order.
 
+* * *
+
+You should include opentip's CSS as well. It's in `css/opentip.css`.
 
 Usage
 -----
