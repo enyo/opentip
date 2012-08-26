@@ -240,3 +240,10 @@ describe "Opentip", ->
 
   describe "_setupObservers()", ->
     it "should never setup the same observers twice"
+
+  describe "_searchAndActivateCloseButtons()"
+    it "should do what it says"
+
+  describe "_activateFirstInput()"
+    it "should do what it says"
+

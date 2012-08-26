@@ -341,7 +341,8 @@ describe("Opentip", function() {
     it("should set the current adapter, and add the adapter to the list");
     return it("should use adapter.domReady to call findElements() with it");
   });
-  return describe("_setupObservers()", function() {
+  describe("_setupObservers()", function() {
     return it("should never setup the same observers twice");
   });
+  return describe("_searchAndActivateCloseButtons()");
 });

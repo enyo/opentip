@@ -61,6 +61,7 @@ class Opentip
     visible: "visible"
 
     loading: "loading"
+    ajaxError: "ajax-error"
     fixed: "fixed"
     showEffectPrefix: "show-effect-"
     hideEffectPrefix: "hide-effect-"
@@ -439,7 +440,7 @@ class Opentip
     @_buildElements() unless @tooltipElement?
     @_updateElementContent()
 
-    @_loadAjax() if @options.ajax and not @loaded
+    @_loadAjax() if @options.ajax and (not @loaded or not @options.ajax.cache)
 
     @_searchAndActivateCloseButtons()
 
@@ -1095,9 +1096,32 @@ class Opentip
     return no
 
   @_loadAjax: ->
-    # TODO
-    throw new Error "Not supported yet."
+    return if @loading
 
+    @loaded = no
+    @loading = yes
+    @adapter.addClass @container, @class.loading
+
+    @debug "Loading content from #{@options.ajax.url}"
+
+    @adapter.ajax
+      url: @options.ajax.url
+      method: @options.ajax.method
+      onSuccess: (responseText) =>
+        @debug "Loading successful."
+        @setContent responseText
+      onError: (error) =>
+        message = "There was a problem downloading the content."
+        @debug message, error
+        @setContent message
+        @adapter.addClass @container, @class.ajaxError
+      onComplete: =>
+        @adapter.removeClass @container, @class.loading
+        @loading = no
+        @loaded = yes
+        @_searchAndActivateCloseButtons()
+        @_activateFirstInput()
+        @reposition()
 
   # Regularely checks if the element is still in the dom.
   _ensureTriggerElement: ->
@@ -1385,6 +1409,7 @@ Opentip.styles =
     #
     #   - **url**
     #   - **method**
+    #   - **cache**
     #
     # If opentip is attached to an `<a />` element, and no url is provided, it will use
     # The elements `href` attribute.
