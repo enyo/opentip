@@ -215,14 +215,7 @@ class Adapter
 
 
   ajax: (options) ->
-    throw new Error "Now url provided" unless options.url?
-
-    options = @extend {
-      method: "GET"
-      onSuccess: ->
-      onError: ->
-      onComplete: ->
-    }, options
+    throw new Error "No url provided" unless options.url?
 
     if window.XMLHttpRequest
       # Mozilla, Safari, ...
@@ -242,16 +235,16 @@ class Adapter
       if request.readyState == 4
         try
           if request.status == 200
-            options.onSuccess request.responseText
+            options.onSuccess? request.responseText
           else
-            options.onError "Server responded with status #{request.status}."
+            options.onError? "Server responded with status #{request.status}"
         catch e
-          options.onError e.message
+          options.onError? e.message
 
-        options.onComplete()
+        options.onComplete?()
 
 
-    request.open options.method.toUpperCase(), options.url
+    request.open options.method?.toUpperCase() ? "GET", options.url
     request.send()
 
   # Utility functions

@@ -281,6 +281,13 @@ describe "Generic adapter", ->
             expect(listener.callCount).to.equal 2 # Shouldn't have changed
 
         describe "ajax()", ->
+          it "should throw an exception if no url provided", ->
+            try
+              adapter.ajax { }
+              expect(true).to.be false
+            catch e
+              expect(e.message).to.be "No url provided"
+
           it "should properly download the content with get", (done) ->
             success = sinon.stub()
             adapter.ajax
@@ -314,7 +321,7 @@ describe "Generic adapter", ->
               onSuccess: (response) ->
                 done "Shouldn't have called onSuccess"
               onError: (error) ->
-                expect(error).to.be "Server responded with status 404."
+                expect(error).to.be "Server responded with status 404"
                 errorStub()
               onComplete: ->
                 expect(errorStub.callCount).to.be 1
