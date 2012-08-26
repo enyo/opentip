@@ -139,29 +139,20 @@ If you add a change, please make sure that all tests pass!
 
 ### Cake
 
-To compile and build the library use `cake`.
+To compile and bundle the library use `cake`.
 
 Just type the command without any arguments `$ cake` in the source directory to list all commands available.
 
-For example, to watch your changes an compile them:
+To compile all source files:
 
 ```bash
 $ cd path/to/opentip-source 
-$ cake watch
+$ cake build
 ```
 
-Beware that you have to do the same thing for the tests:
-
-```bash
-$ cd ./test
-$ cake watch
-```
-
-and for the css:
-
-```bash
-$ cake watchcss
-```
+> You don't have to do this if you simply want me to merge a change. The test
+> webserver compiles on the fly, and I only build and bundle the files before
+> I release a new version.
 
 
 Migrating from Opentip 1.x to 2.x
