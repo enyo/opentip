@@ -46,13 +46,12 @@ describe "Opentip", ->
     it "should use the href attribute if AJAX and an A element", ->
       element = $("""<a href="http://testlink">link</a>""").get(0)
       opentip = new Opentip element, ajax: on
-      expect(opentip.options.ajax).to.be.a "object"
-      expect(opentip.options.ajax.url).to.equal "http://testlink"
+      expect(opentip.options.ajax).to.equal "http://testlink"
 
     it "should disable AJAX if neither URL or a link HREF is provided", ->
       element = $("""<div>text</div>""").get(0)
       opentip = new Opentip element, ajax: on
-      expect(opentip.options.ajax).to.not.be.ok()
+      expect(opentip.options.ajax).to.be false
 
     it "should disable a link if the event is onClick", ->
       sinon.spy adapter, "observe"
@@ -149,7 +148,6 @@ describe "Opentip", ->
       expect(adapter.data element, "opentips").to.eql [ opentip, opentip2, opentip3 ]
 
 
-
   describe "init()", ->
     describe "showOn == creation", ->
       element = document.createElement "div"
@@ -163,15 +161,18 @@ describe "Opentip", ->
     it "should update the content if tooltip currently visible", ->
       element = document.createElement "div"
       opentip = new Opentip element, showOn: "click"
-      stub = sinon.stub opentip, "_updateElementContent"
+      sinon.stub opentip, "_updateElementContent"
       opentip.visible = no
       opentip.setContent "TEST"
       expect(opentip.content).to.equal "TEST"
       opentip.visible = yes
       opentip.setContent "TEST2"
       expect(opentip.content).to.equal "TEST2"
-      expect(stub.callCount).to.equal 1
+      expect(opentip._updateElementContent.callCount).to.equal 1
       opentip._updateElementContent.restore()
+      
+
+
 
   describe "_updateElementContent()", ->
     it "should escape the content if @options.escapeContent", ->
@@ -188,6 +189,15 @@ describe "Opentip", ->
       opentip.show()
       expect($(opentip.container).find(".content > div > span").length).to.be 1
 
+    it "should storeAndLock dimensions and reposition the element", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, showOn: "click"
+      sinon.stub opentip, "_storeAndLockDimensions"
+      sinon.stub opentip, "reposition"
+      opentip.visible = yes
+      opentip._updateElementContent()
+      expect(opentip._storeAndLockDimensions.callCount).to.equal 1
+      expect(opentip.reposition.callCount).to.equal 1
 
   describe "_buildContainer()", ->
     element = document.createElement "div"

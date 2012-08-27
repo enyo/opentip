@@ -152,7 +152,7 @@ class Opentip
     ]
 
     # If the url of an Ajax request is not set, get it from the link it's attached to.
-    if options.ajax and options.ajax == on or not options.ajax
+    if options.ajax and (options.ajax == on or not options.ajax)
       if @adapter.tagName(@triggerElement) == "A"
         options.ajax = @adapter.attr @triggerElement, "href"
       else 
@@ -327,6 +327,7 @@ class Opentip
       @adapter.update contentDiv, @content, @options.escapeContent
 
     @_storeAndLockDimensions()
+    @reposition()
 
   # Sets width auto to the element so it uses the appropriate width, gets the
   # dimensions and sets them so the tolltip won't change in size (which can be
@@ -1409,14 +1410,9 @@ Opentip.styles =
     # - `null` (targetJoint is the opposite of tipJoint)
     targetJoint: null 
 
-    # AJAX options object consisting of:
-    #
-    #   - **url**
-    #   - **method**
-    #   - **cache**
-    #
-    # If opentip is attached to an `<a />` element, and no url is provided, it will use
-    # The elements `href` attribute.
+    # AJAX URL
+    # Set to `false` if no AJAX or `true` if it's attached to an `<a />`
+    # element. In the latter case the `href` attribute will be used.
     ajax: off
 
     # Which method should AJAX use.
