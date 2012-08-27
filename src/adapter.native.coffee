@@ -140,7 +140,7 @@ class Adapter
   css: (element, properties) ->
     element = @unwrap @wrap element
     for own key, value of properties
-      element.style[Opentip::dasherize key] = value
+      element.style[key] = value
 
   # Returns an object with given dimensions
   dimensions: (element) ->

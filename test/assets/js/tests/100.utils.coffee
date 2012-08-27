@@ -1,5 +1,6 @@
 
 describe "utils", ->
+  adapter = Opentip.adapter
 
   describe "debug()", ->
     consoleDebug = console.debug
@@ -52,11 +53,27 @@ describe "utils", ->
     opentip = new Opentip adapter.create("<div></div>"), "Test"
     it "should set the style for all vendors", ->
       element = document.createElement "div"
-      opentip.setCss3Style element, { opacity: "0.5", "transition-duration": "1s" }
-      expect(element.style["-moz-transition-duration"]).to.be "1s"
-      expect(element.style["-moz-opacity"]).to.be "0.5"
-      expect(element.style["-webkit-transition-duration"]).to.be "1s"
-      expect(element.style["-o-transition-duration"]).to.be "1s"
+      opentip.setCss3Style element, { opacity: "0.5", transitionDuration: "1s" }
+      transitionDuration = false
+      opacity = false
+
+      for vendor in [
+        ""
+        "Khtml"
+        "Ms"
+        "O"
+        "Moz"
+        "Webkit"
+      ]
+        prop = if vendor then "#{vendor}TransitionDuration" else "transitionDuration"
+        transitionDuration = true if element.style[prop] == "1s"
+        prop = if vendor then "#{vendor}Opacity" else "opacity"
+        opacity = true if element.style[prop] == "0.5"
+      # expect(element.style["-moz-transition-duration"]).to.be "1s"
+      # expect(element.style["-moz-opacity"]).to.be "0.5"
+      expect(transitionDuration).to.be true
+      expect(opacity).to.be true
+      # expect(element.style["-o-transition-duration"]).to.be "1s"
 
   describe "defer()", ->
     it "should call the callback as soon as possible"

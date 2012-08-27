@@ -66,6 +66,7 @@ describe "Opentip - Drawing", ->
       sinon.stub opentip, "_triggerElementExists", -> yes
       opentip.show()
       expect(opentip._dimensionsEqual opentip.dimensions, { width: 200, height: 100 }).to.be.ok()
+      opentip
 
 
     it "should position the close link when no border", ->
@@ -117,9 +118,11 @@ describe "Opentip - Drawing", ->
       options.closeButtonLinkOverscan = 5
       options.stem = "top right"
 
-      createAndShowTooltip()
+      opentip = createAndShowTooltip()
 
       enderElement = $(adapter.unwrap opentip.closeButtonElement)
+
+      expect(opentip.options.stem.toString()).to.be "top right"
 
       expect(enderElement.css "left").to.be "9px"
       expect(enderElement.css "top").to.be "6px"

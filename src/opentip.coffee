@@ -176,7 +176,7 @@ class Opentip
     else if options.target
       options.target = @adapter.wrap options.target
 
-    @currentStemPosition = options.stem
+    @currentStem = options.stem
 
     unless options.delay?
       options.delay = if options.showOn == "mouseover" then 0.2 else 0
@@ -1213,13 +1213,14 @@ vendors = [
 
 # Sets a sepcific css3 value for all vendors
 Opentip::setCss3Style = (element, styles) ->
-  propObj = { }
+  element = @adapter.unwrap element
   for own prop, value of styles
-    for vendor in vendors
-      propObj["#{@ucfirst vendor}#{@ucfirst prop}"] = value
-    propObj[prop] = value
-
-  @adapter.css element, propObj
+    if element.style[prop]?
+      element.style[prop] = value
+    else
+      for vendor in vendors
+        vendorProp = "#{@ucfirst vendor}#{@ucfirst prop}"
+        element.style[vendorProp] = value if element.style[vendorProp]?
 
 # Defers the call
 Opentip::defer = (func) -> setTimeout func, 0

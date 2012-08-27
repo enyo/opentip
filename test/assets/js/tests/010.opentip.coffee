@@ -103,7 +103,7 @@ describe "Opentip", ->
     it "currentStemPosition should be set to inital stemPosition", ->
       element = adapter.create "<div></div>"
       opentip = new Opentip element, stem: "topLeft"
-      expect(opentip.currentStemPosition.toString()).to.eql "top left"
+      expect(opentip.currentStem.toString()).to.eql "top left"
 
     it "delay should be automatically set if none provided", ->
       element = document.createElement "div"
