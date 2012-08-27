@@ -58,3 +58,9 @@ describe "Opentip - Positioning", ->
 
   describe "following mouse", ->
     it "should correctly position opentip when following mouse"
+
+  describe "_ensureViewportContainment()", ->
+    it "should put the tooltip on the other side when it's sticking out"
+    it "shouldn't do anything if the viewport is smaller than the tooltip"
+    it "should revert if the tooltip sticks out the other side as well"
+

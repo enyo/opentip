@@ -51,7 +51,6 @@ describe "Opentip.Joint", ->
         thisPositions = Opentip.adapters.native.extend { }, positions, thisPositions
         for positionName, shouldBeTrue of thisPositions
           testCount()
-          console.log position, positionName, shouldBeTrue
           if shouldBeTrue then expect(position[positionName]).to.be.ok()
           else expect(position[positionName]).to.not.be.ok()
 

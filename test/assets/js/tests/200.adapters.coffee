@@ -158,6 +158,25 @@ describe "Generic adapter", ->
             expect(dim).to.eql width: 100, height: 200
             $(element).remove()
 
+        describe "viewportDimensions()", ->
+          it "should return the viewportDimensions", ->
+            # I know it's not pretty, but I trus my adapter
+            origDimensions = Opentip.adapters.native.viewportDimensions()
+            dims = adapter.viewportDimensions()
+            expect(dims).to.eql origDimensions
+            expect(dims.width).to.be.above 0
+            expect(dims.height).to.be.above 0
+
+        describe "scrollOffset()", ->
+          it "should return the correct scroll offset", ->
+            # I know it's not pretty, but I trus my adapter
+            origScrollOffset = Opentip.adapters.native.scrollOffset()
+            scrollOffset = adapter.scrollOffset()
+            expect(scrollOffset).to.eql origScrollOffset
+            expect(scrollOffset).to.be.an Array
+            expect(scrollOffset.length).to.be 2
+
+
 
         describe "find()", ->
           it "should properly retrieve child elements", ->
