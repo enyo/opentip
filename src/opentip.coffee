@@ -152,10 +152,9 @@ class Opentip
     ]
 
     # If the url of an Ajax request is not set, get it from the link it's attached to.
-    if options.ajax and not options.ajax.url?
+    if options.ajax and options.ajax == on or not options.ajax
       if @adapter.tagName(@triggerElement) == "A"
-        options.ajax = { } if typeof options.ajax != "object"
-        options.ajax.url = @adapter.attr @triggerElement, "href"
+        options.ajax = @adapter.attr @triggerElement, "href"
       else 
         options.ajax = off
 
@@ -442,7 +441,7 @@ class Opentip
     @_buildElements() unless @tooltipElement?
     @_updateElementContent()
 
-    @_loadAjax() if @options.ajax and (not @loaded or not @options.ajax.cache)
+    @_loadAjax() if @options.ajax and (not @loaded or not @options.ajaxCache)
 
     @_searchAndActivateCloseButtons()
 
@@ -1104,11 +1103,11 @@ class Opentip
     @loading = yes
     @adapter.addClass @container, @class.loading
 
-    @debug "Loading content from #{@options.ajax.url}"
+    @debug "Loading content from #{@options.ajax}"
 
     @adapter.ajax
-      url: @options.ajax.url
-      method: @options.ajax.method
+      url: @options.ajax
+      method: @options.ajaxMethod
       onSuccess: (responseText) =>
         @debug "Loading successful."
         # This has to happen before setting the content since loading indicators
@@ -1419,6 +1418,12 @@ Opentip.styles =
     # If opentip is attached to an `<a />` element, and no url is provided, it will use
     # The elements `href` attribute.
     ajax: off
+
+    # Which method should AJAX use.
+    ajaxMethod: "GET"
+
+    # If off, the content will be downloaded every time the tooltip is shown.
+    ajaxCache: on
 
     # You can group opentips together. So when a tooltip shows, it looks if there are others in the same group, and hides them.
     group: null
