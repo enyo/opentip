@@ -15,6 +15,7 @@ It supports:
 - Automatic repositioning of the tooltip if it's not in the viewport of the browser anymore
 - All kind of triggers (The tooltip can be triggered by mouse over, click, form submit,... everything you can think of really)
 - CSS3 Animations
+- Well tested, with over 200 unit tests
 
 As of Version 2.0 Opentip does **no longer depend on [Prototype]**. You can choose
 *any* adapter you want so you can work with the framework of your choice.
@@ -34,7 +35,7 @@ Supported frameworks are:
 Installation
 ------------
 
-The easies and recommended way to install *opentip* is with [ender]:
+The easiest and recommended way to install *opentip* is with [ender]:
 
 ```bash
 $ ender build opentip

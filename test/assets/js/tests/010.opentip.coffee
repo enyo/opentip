@@ -223,7 +223,7 @@ describe "Opentip", ->
 
     beforeEach ->
       element = document.createElement "div"
-      opentip = new Opentip element, "the content", "the title", hideTrigger: "closeButton", stem: "top left", ajax: { url: "bla" }
+      opentip = new Opentip element, "the content", "the title", hideTrigger: "closeButton", stem: "top left", ajax: "bla"
       opentip._buildElements()
 
     it "should add a h1 if title is provided", ->
@@ -244,8 +244,13 @@ describe "Opentip", ->
       expect(closeButton.length).to.be.ok()
       expect(closeButton.html()).to.be "Close"
 
-  describe "setAdapter()", ->
-    it "should set the current adapter, and add the adapter to the list"
+  describe "addAdapter()", ->
+    it "should set the current adapter, and add the adapter to the list", ->
+      expect(Opentip.adapters.testa).to.not.be.ok()
+      testAdapter = { name: "testa" }
+      Opentip.addAdapter testAdapter
+      expect(Opentip.adapters.testa).to.equal testAdapter
+
     it "should use adapter.domReady to call findElements() with it"
 
   describe "_setupObservers()", ->
@@ -255,5 +260,17 @@ describe "Opentip", ->
     it "should do what it says"
 
   describe "_activateFirstInput()", ->
-    it "should do what it says"
+    it "should do what it says", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, "<input /><textarea>", escapeContent: false
+      sinon.stub opentip, "_triggerElementExists", -> yes
+      opentip.show()
+
+      input = $("input", opentip.container).get(0)
+      expect(document.activeElement).to.not.be input
+      opentip._activateFirstInput()
+      input.focus()
+      expect(document.activeElement).to.be input
+
+
 
