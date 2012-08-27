@@ -204,6 +204,7 @@ Thanks to the following people for providing bug reports, feature requests and f
 - Aaron Peckham
 - Oguri
 - MaxKirillov
+- Nick Daugherty
 
 If I forgot somebody, please just tell me.
 
