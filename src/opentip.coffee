@@ -145,11 +145,11 @@ class Opentip
     options.hideTriggers.push options.hideTrigger if options.hideTrigger
 
     # Sanitize all positions
-    options[prop] = @sanitizePosition options[prop] for prop in [
+    options[prop] = new Opentip.Pointer(options[prop]) for prop in [
       "tipJoint"
       "targetJoint"
       "stem"
-    ]
+    ] when options[prop] and typeof options[prop] == "string"
 
     # If the url of an Ajax request is not set, get it from the link it's attached to.
     if options.ajax and (options.ajax == on or not options.ajax)
@@ -169,7 +169,7 @@ class Opentip
     # Doesn't make sense to use a target without the opentip being fixed
     options.fixed = yes if options.target
 
-    options.stem = options.tipJoint if options.stem == yes
+    options.stem = new Opentip.Pointer(options.tipJoint) if options.stem == yes
 
     if options.target == yes
       options.target = @triggerElement
@@ -181,7 +181,8 @@ class Opentip
     unless options.delay?
       options.delay = if options.showOn == "mouseover" then 0.2 else 0
 
-    options.targetJoint = @flipPosition options.tipJoint unless options.targetJoint?
+    unless options.targetJoint?
+      options.targetJoint = new Opentip.Pointer(options.tipJoint).flip()
 
     # Used to show the opentip obviously
     @showTriggersWhenHidden = [ ]
@@ -561,7 +562,7 @@ class Opentip
     return if @_positionsEqual position, @currentPosition
 
     # The only time the canvas has to bee redrawn is when the stem changes.
-    @redraw = on unless @_positionsEqual stem, @currentStem
+    @redraw = on unless !@options.stem or stem.eql @currentStem
 
     @currentPosition = position
     @currentStem = stem
@@ -671,22 +672,34 @@ class Opentip
     position
 
   _ensureViewportContainment: (e, position) ->
-    # Sometimes the element is theoretically visible, but an effect is not yet showing it.
-    # So the calculation of the offsets is incorrect sometimes, which results in faulty repositioning.
-    return position: position, stem: @options.stem unless @visible and position
-    
-    # var sticksOut = [ this.sticksOutX(position), this.sticksOutY(position) ];
-    # if (!sticksOut[0] && !sticksOut[1]) return position;
 
-    {
+    return pair = {
       position: position
       stem: @options.stem
     }
 
+    # Sometimes the element is theoretically visible, but an effect is not yet showing it.
+    # So the calculation of the offsets is incorrect sometimes, which results in faulty repositioning.
+    return pair unless @visible and position
+    
+    sticksOut = @_sticksOut()
+
+    return pair unless sticksOut[0] or sticksOut[1]
+
+    tipJoint = @options.tipJoint
+    targetJoint = @options.targetJoint
+
+    scrollOffset = @adapter.scrollOffset()
+    viewportDimensions = @adapter.getDimensions document.viewport
+    positionOffset = [
+      position.left - scrollOffset[0]
+      position.top - scrollOffset[1]
+    ]
+
+    needsRepositioning = true
 
 
-    # var tipJ = this.options.tipJoint.clone();
-    # var trgJ = this.options.targetJoint.clone();
+
 
     # var viewportScrollOffset = $(document.viewport).getScrollOffsets();
     # var dimensions = this.dimensions;
@@ -739,6 +752,30 @@ class Opentip
     # }
     # return position;
 
+  _sticksOut: (position) ->
+    scrollOffset = @adapter.scrollOffset()
+      
+    viewportDimensions = @adapter.getDimensions document.viewport
+   
+    positionOffset = [
+      position.left - scrollOffset[0]
+      position.top - scrollOffset[1]
+    ]
+
+    sticksOut = [ no, no ]
+
+    if positionOffset[0] < 0
+      sticksOut[0] = @STICKS_OUT_LEFT 
+    else if positionOffset[0] + @dimensions.width > viewportDimensions.width
+      sticksOut[0] = @STICKS_OUT_RIGHT
+
+    if positionOffset[1] < 0
+      sticksOut[1] = @STICKS_OUT_TOP 
+    else if positionOffset[1] + @dimensions.height > viewportDimensions.height
+      sticksOut[1] = @STICKS_OUT_BOTTOM 
+
+    sticksOut
+
   # This is by far the most complex and difficult function to understand.
   # I tried to comment everything as good as possible
   _draw: ->
@@ -754,7 +791,7 @@ class Opentip
     closeButtonInner = [ 0, 0 ]
     closeButtonOuter = [ 0, 0 ]
     if "closeButton" in @options.hideTriggers
-      closeButton = @sanitizePosition(if @currentStem?.toString() == "topRight" then "topLeft" else "topRight")
+      closeButton = new Opentip.Pointer(if @currentStem?.toString() == "top right" then "top left" else "top right")
       closeButtonInner = [
         @options.closeButtonRadius + @options.closeButtonOffset[0]
         @options.closeButtonRadius + @options.closeButtonOffset[1]
@@ -919,15 +956,15 @@ class Opentip
         positionY = if i < 2 then 0 else @dimensions.height
         rotation = (Math.PI / 2) * i
         lineLength = if i % 2 == 0 then @dimensions.width else @dimensions.height
-        lineStem = Opentip.positions[positionIdx]
-        cornerStem = Opentip.positions[positionIdx + 1]
+        lineStem = new Opentip.Pointer Opentip.positions[positionIdx]
+        cornerStem = new Opentip.Pointer Opentip.positions[positionIdx + 1]
 
         ctx.save()
         ctx.translate positionX, positionY
         ctx.rotate rotation
-        drawLine lineLength, @currentStem?.toString() == lineStem, i == 0
+        drawLine lineLength, lineStem.eql(@currentStem), i == 0
         ctx.translate lineLength, 0
-        drawCorner @currentStem?.toString() == cornerStem, closeButton?.toString() == cornerStem, i
+        drawCorner cornerStem.eql(@currentStem), cornerStem.eql(closeButton), i
         ctx.restore()
 
     ctx.closePath()
@@ -950,7 +987,7 @@ class Opentip
         # Draw the cross
         crossWidth = crossHeight = @options.closeButtonRadius * 2
 
-        if closeButton.toString() == "topRight"
+        if closeButton.toString() == "top right"
           linkCenter = [
             @dimensions.width - @options.closeButtonOffset[0]
             @options.closeButtonOffset[1]
@@ -1183,47 +1220,74 @@ Opentip::ucfirst = (string) ->
 Opentip::dasherize = (string) ->
   string.replace /([A-Z])/g, (_, char) -> "-#{char.toLowerCase()}"
 
-# Every position goes through this function
-#
-# Accepts positions in nearly every form.
-#
-#   - "top left"
-#   - "topLeft"
-#   - "top-left"
-#   - "RIGHT to TOP"
-# 
-# All that counts is that the words top, bottom, left or right are present.
-Opentip::sanitizePosition = (position) ->
-  return position if typeof position == "boolean"
-  return null unless position
 
-  position = position.toLowerCase()
 
-  verticalPosition = i for i in [ "top", "bottom" ] when ~position.indexOf i
-  horizontalPosition = i for i in [ "left", "right" ] when ~position.indexOf i
-  horizontalPosition = @ucfirst horizontalPosition if verticalPosition?
+# Every position is converted to this class
+class Opentip.Pointer
+  # Accepts pointer in nearly every form.
+  #
+  #   - "top left"
+  #   - "topLeft"
+  #   - "top-left"
+  #   - "RIGHT to TOP"
+  # 
+  # All that counts is that the words top, bottom, left or right are present.
+  #
+  # It also accepts a Pointer object, creating a new object then
+  constructor: (pointerString) ->
+    return unless pointerString?
 
-  position = new String "#{verticalPosition ? ""}#{horizontalPosition ? ""}"
-  
-  throw new Error "Unknown position: " + position unless Opentip.position[position]?
+    if pointerString instanceof Opentip.Pointer
+      pointerString = pointerString.toString()
 
-  switch horizontalPosition?.toLowerCase()
-    when "left" then position.left = yes
-    when "right" then position.right = yes
-    else position.center = yes
-  switch verticalPosition?.toLowerCase()
-    when "top" then position.top = yes
-    when "bottom" then position.bottom = yes
-    else position.middle = yes
+    @_parseString pointerString
 
-  position
+    @
 
-# Turns topLeft into bottomRight
-Opentip::flipPosition = (position) ->
-  positionIdx = Opentip.position[position]
-  # There are 8 positions, and smart as I am I layed them out in a circle.
-  flippedIndex = (positionIdx + 4) % 8
-  @sanitizePosition Opentip.positions[flippedIndex]
+  _parseString: (string) ->
+    string = string.toLowerCase()
+
+    vertical = i.toLowerCase() for i in [ "top", "bottom" ] when ~string.indexOf i
+    horizontal = i.toLowerCase() for i in [ "left", "right" ] when ~string.indexOf i
+
+    throw new Error "Invalid pointer: " + string unless vertical? or horizontal?
+
+    vertical = "middle" unless vertical?
+    horizontal = "center" unless horizontal?
+
+    @vertical = vertical
+    @horizontal = horizontal
+
+    for i in [ "top", "middle", "bottom", "left", "center", "right" ]
+      if @vertical == i or @horizontal == i
+        this[i] = i
+      else
+        this[i] = undefined
+    null
+
+
+  # Checks if two pointers point in the same direction
+  eql: (pointer) ->
+    pointer? and @horizontal == pointer.horizontal and @vertical == pointer.vertical
+
+  # Turns topLeft into bottomRight
+  flip: ->
+    positionIdx = Opentip.position[@toString yes]
+    # There are 8 positions, and smart as I am I layed them out in a circle.
+    flippedIndex = (positionIdx + 4) % 8
+    @_parseString Opentip.positions[flippedIndex]
+    @
+
+  toString: (camelized = no) ->
+    vertical = if @vertical == "middle" then "" else @vertical
+    horizontal = if @horizontal == "center" then "" else @horizontal
+
+    if vertical and horizontal
+      if camelized then horizontal = Opentip::ucfirst horizontal
+      else horizontal = " #{horizontal}"
+
+    "#{vertical}#{horizontal}"
+
 
 # Returns true if top and left are equal
 Opentip::_positionsEqual = (posA, posB) ->

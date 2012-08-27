@@ -87,7 +87,7 @@ describe "Opentip", ->
     it "should take the tipJoint as stem if stem is just true", ->
       element = document.createElement "div"
       opentip = new Opentip element, stem: yes, tipJoint: "top left"
-      expect(opentip.options.stem.toString()).to.eql "topLeft"
+      expect(opentip.options.stem.toString()).to.eql "top left"
 
     it "should use provided target", ->
       element = adapter.create "<div></div>"
@@ -103,7 +103,7 @@ describe "Opentip", ->
     it "currentStemPosition should be set to inital stemPosition", ->
       element = adapter.create "<div></div>"
       opentip = new Opentip element, stem: "topLeft"
-      expect(opentip.currentStemPosition.toString()).to.eql "topLeft"
+      expect(opentip.currentStemPosition.toString()).to.eql "top left"
 
     it "delay should be automatically set if none provided", ->
       element = document.createElement "div"
@@ -118,8 +118,8 @@ describe "Opentip", ->
       expect(opentip.options.targetJoint.toString()).to.eql "right"
       opentip = new Opentip element, tipJoint: "top"
       expect(opentip.options.targetJoint.toString()).to.eql "bottom"
-      opentip = new Opentip element, tipJoint: "bottomRight"
-      expect(opentip.options.targetJoint.toString()).to.eql "topLeft"
+      opentip = new Opentip element, tipJoint: "bottom right"
+      expect(opentip.options.targetJoint.toString()).to.eql "top left"
 
 
     it "should setup all trigger elements", ->

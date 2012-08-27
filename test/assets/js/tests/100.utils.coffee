@@ -21,64 +21,6 @@ describe "utils", ->
       opentip.debug "test"
       expect(console.debug.getCall(0).args[0]).to.be "##{opentip.id} |"
 
-  describe "sanitizePosition()", ->
-    it "should properly camelize positions", ->
-      expect(Opentip::sanitizePosition("top-left").toString()).to.eql "topLeft"
-      expect(Opentip::sanitizePosition("top-Right").toString()).to.eql "topRight"
-      expect(Opentip::sanitizePosition("BOTTOM left").toString()).to.eql "bottomLeft"
-    it "should handle any order of positions", ->
-      expect(Opentip::sanitizePosition("right bottom").toString()).to.eql "bottomRight"
-      expect(Opentip::sanitizePosition("left left middle").toString()).to.eql "left"
-      expect(Opentip::sanitizePosition("left - top").toString()).to.eql "topLeft"
-    it "should throw an exception if unknonwn position", ->
-      try
-        Opentip::sanitizePosition "center middle"
-        expect(false).to.be.ok()
-      catch e
-      try
-        Opentip::sanitizePosition ""
-        expect(false).to.be.ok()
-      catch e
-
-    it "should add .bottom, .left etc... properties on the position", ->
-      positions = 
-        top: no
-        bottom: no
-        middle: no
-        left: no
-        center: no
-        right: no
-
-      testCount = sinon.stub()
-      testPositions = (position, thisPositions) ->
-        thisPositions = Opentip.adapters.native.extend { }, positions, thisPositions
-        for positionName, shouldBeTrue of thisPositions
-          testCount()
-          if shouldBeTrue then expect(position[positionName]).to.be.ok()
-          else expect(position[positionName]).to.not.be.ok()
-
-      testPositions Opentip::sanitizePosition("top"), center: yes, top: yes
-      testPositions Opentip::sanitizePosition("top right"), right: yes, top: yes
-      testPositions Opentip::sanitizePosition("right"), right: yes, middle: yes
-      testPositions Opentip::sanitizePosition("bottom right"), right: yes, bottom: yes
-      testPositions Opentip::sanitizePosition("bottom"), center: yes, bottom: yes
-      testPositions Opentip::sanitizePosition("bottom left"), left: yes, bottom: yes
-      testPositions Opentip::sanitizePosition("left"), left: yes, middle: yes
-      testPositions Opentip::sanitizePosition("top left"), left: yes, top: yes
-
-      # Just making sure that the tests are actually called
-      expect(testCount.callCount).to.be 6 * 8
-
-  describe "flipPosition()", ->
-    it "should properly flip the position", ->
-      expect(Opentip::flipPosition(Opentip::sanitizePosition "top").toString()).to.be "bottom"
-      expect(Opentip::flipPosition(Opentip::sanitizePosition "bottomRight").toString()).to.be "topLeft"
-      expect(Opentip::flipPosition(Opentip::sanitizePosition "left top").toString()).to.be "bottomRight"
-      expect(Opentip::flipPosition(Opentip::sanitizePosition "bottom").toString()).to.be "top"
-    it "should return a sanitized position", ->
-      flipped = Opentip::flipPosition Opentip::sanitizePosition "top"
-      expect(flipped.bottom).to.be.ok()
-
   describe "ucfirst()", ->
     it "should transform the first character to uppercase", ->
       expect(Opentip::ucfirst "abc def").to.equal "Abc def"

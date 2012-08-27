@@ -87,6 +87,13 @@
         height: $(element).outerHeight()
       }
 
+    # Returns the scroll offsets of current document
+    scrollOffset: ->
+    [
+      window.pageXOffset or document.documentElement.scrollLeft or document.body.scrollLeft
+      window.pageYOffset or document.documentElement.scrollTop or document.body.scrollTop
+    ]
+
     # Returns an object with x and y 
     mousePosition: (e) ->
       return null unless e?
