@@ -21,9 +21,13 @@
   position: relative;
   font-size: 13px;
   line-height: 120%;
-  padding: 3px;
+  padding: 9px 14px;
   color: rgba(0,0,0,0.7);
   text-shadow: -1px -1px 0px rgba(255,255,255,0.2);
+}
+.opentip-container .opentip header {
+  margin: 0;
+  padding: 0;
 }
 .opentip-container .opentip .close {
   position: absolute;
