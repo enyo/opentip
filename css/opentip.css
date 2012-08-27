@@ -35,6 +35,12 @@
 .opentip-container .opentip .close span {
   display: none;
 }
+.opentip-container .opentip .loading-indicator {
+  display: none;
+}
+.opentip-container.loading .loading-indicator {
+  display: block;
+}
 .opentip-container.style-dark .opentip {
   color: #f8f8f8;
   color: rgba(255,255,255,0.9);
