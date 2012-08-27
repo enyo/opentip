@@ -2,11 +2,11 @@
 describe "Opentip.Pointer", ->
 
   describe "constructor()", ->
-    it "should forward to _parseString()", ->
-      sinon.stub Opentip.Pointer::, "_parseString"
+    it "should forward to set()", ->
+      sinon.stub Opentip.Pointer::, "set"
       new Opentip.Pointer "abc"
-      expect(Opentip.Pointer::_parseString.args[0][0]).to.be "abc"
-      Opentip.Pointer::_parseString.restore()
+      expect(Opentip.Pointer::set.args[0][0]).to.be "abc"
+      Opentip.Pointer::set.restore()
     it "should accept Pointer objects", ->
       p = new Opentip.Pointer "top left"
       expect(p.toString()).to.be "top left"
@@ -14,39 +14,28 @@ describe "Opentip.Pointer", ->
       expect(p).to.not.be p2
       expect(p2.toString()).to.be "top left"
 
-  describe "_parseString()", ->
+  describe "set()", ->
     it "should properly set the positions", ->
       p = new Opentip.Pointer
-      p._parseString "top-left"
+      p.set "top-left"
       expect(p.toString()).to.eql "top left"
       
-      p._parseString "top-Right"
+      p.set "top-Right"
       expect(p.toString()).to.eql "top right"
 
-      p._parseString "BOTTOM left"
+      p.set "BOTTOM left"
       expect(p.toString()).to.eql "bottom left"
 
     it "should handle any order of positions", ->
       p = new Opentip.Pointer
-      p._parseString "right bottom"
+      p.set "right bottom"
       expect(p.toString()).to.eql "bottom right"
 
-      p._parseString "left left middle"
+      p.set "left left middle"
       expect(p.toString()).to.eql "left"
 
-      p._parseString "left - top"
+      p.set "left - top"
       expect(p.toString()).to.eql "top left"
-
-    it "should throw an exception if unknonwn position", (done) ->
-      try
-        new Opentip.Pointer "center middle"
-        done "Should have thrown 1"
-      catch e
-      try
-        new Opentip.Pointer ""
-        done "Should have thrown 2"
-      catch e
-      done()
 
     it "should add .bottom, .left etc... properties on the position", ->
       positions = 
@@ -77,6 +66,26 @@ describe "Opentip.Pointer", ->
 
       # Just making sure that the tests are actually called
       expect(testCount.callCount).to.be 6 * 8
+
+  describe "setHorizontal()", ->
+    it "should set the horizontal position", ->
+      p = new Opentip.Pointer "top left"
+      expect(p.left).to.be.ok();
+      expect(p.top).to.be.ok();
+      p.setHorizontal "right"
+      expect(p.left).to.not.be.ok();
+      expect(p.top).to.be.ok();
+      expect(p.right).to.be.ok();
+
+  describe "setVertical()", ->
+    it "should set the vertical position", ->
+      p = new Opentip.Pointer "top left"
+      expect(p.top).to.be.ok();
+      expect(p.left).to.be.ok();
+      p.setVertical "bottom"
+      expect(p.top).to.not.be.ok();
+      expect(p.left).to.be.ok();
+      expect(p.bottom).to.be.ok();
 
   describe "flip()", ->
     it "should return itself for chaining", ->

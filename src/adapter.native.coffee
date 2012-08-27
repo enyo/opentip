@@ -176,6 +176,13 @@ class Adapter
       window.pageYOffset or document.documentElement.scrollTop or document.body.scrollTop
     ]
 
+  # Returns the dimensions of the viewport (currently visible browser area)
+  viewportDimensions: ->
+    {
+      width: document.documentElement.clientWidth
+      height: document.documentElement.clientHeight
+    }
+
   # Returns an object with x and y 
   mousePosition: (e) ->
     pos = x: 0, y: 0

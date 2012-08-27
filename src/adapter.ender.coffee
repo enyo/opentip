@@ -90,10 +90,17 @@
 
     # Returns the scroll offsets of current document
     scrollOffset: ->
-    [
-      window.pageXOffset or document.documentElement.scrollLeft or document.body.scrollLeft
-      window.pageYOffset or document.documentElement.scrollTop or document.body.scrollTop
-    ]
+      [
+        window.pageXOffset or document.documentElement.scrollLeft or document.body.scrollLeft
+        window.pageYOffset or document.documentElement.scrollTop or document.body.scrollTop
+      ]
+
+    # Returns the dimensions of the viewport (currently visible browser area)
+    viewportDimensions: ->
+      {
+        width: document.documentElement.clientWidth
+        height: document.documentElement.clientHeight
+      }
 
     # Returns an object with x and y 
     mousePosition: (e) ->

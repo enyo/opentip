@@ -522,7 +522,6 @@ class Opentip
 
     @_stopFollowingMousePosition() unless @options.fixed
 
-
  
     @adapter.removeClass @container, @class.visible
     @adapter.removeClass @container, @class.showing
@@ -673,89 +672,106 @@ class Opentip
 
   _ensureViewportContainment: (e, position) ->
 
-    return pair = {
+    stem = @options.stem
+
+    originals = {
       position: position
-      stem: @options.stem
+      stem: stem
     }
 
     # Sometimes the element is theoretically visible, but an effect is not yet showing it.
     # So the calculation of the offsets is incorrect sometimes, which results in faulty repositioning.
-    return pair unless @visible and position
+    return originals unless @visible and position
     
-    sticksOut = @_sticksOut()
+    sticksOut = @_sticksOut position
 
-    return pair unless sticksOut[0] or sticksOut[1]
+    return originals unless sticksOut[0] or sticksOut[1]
 
-    tipJoint = @options.tipJoint
-    targetJoint = @options.targetJoint
+    tipJoint = new Opentip.Pointer @options.tipJoint
+    targetJoint = new Opentip.Pointer @options.targetJoint if @options.targetJoint
 
     scrollOffset = @adapter.scrollOffset()
-    viewportDimensions = @adapter.getDimensions document.viewport
-    positionOffset = [
+    viewportDimensions = @adapter.viewportDimensions()
+
+    # The opentip's position inside the viewport
+    viewportPosition = [
       position.left - scrollOffset[0]
       position.top - scrollOffset[1]
     ]
 
-    needsRepositioning = true
+    needsRepositioning = no
 
 
 
+    if viewportDimensions.width >= @dimensions.width
+      # Well if the viewport is smaller than the tooltip there's not much to do
+      if sticksOut[0]
+        needsRepositioning = yes
 
-    # var viewportScrollOffset = $(document.viewport).getScrollOffsets();
-    # var dimensions = this.dimensions;
-    # var viewportOffset = {left: position.left - viewportScrollOffset.left, top: position.top - viewportScrollOffset.top};
-    # var viewportDimensions = document.viewport.getDimensions();
-    # var reposition = false;
+        switch sticksOut[0]
+          when @STICKS_OUT_LEFT
+            tipJoint.setHorizontal "left"
+            targetJoint.setHorizontal "right" if @options.targetJoint
+          when @STICKS_OUT_RIGHT
+            tipJoint.setHorizontal "right"
+            targetJoint.setHorizontal "left" if @options.targetJoint
 
-    # if (viewportDimensions.width >= dimensions.width) {
-    #   if (viewportOffset.left < 0) {
-    #     reposition = true;
-    #     tipJ[0] = 'left';
-    #     if (this.options.target && trgJ[0] == 'left') {trgJ[0] = 'right';}
-    #   }
-    #   else if (viewportOffset.left + dimensions.width > viewportDimensions.width) {
-    #     reposition = true;
-    #     tipJ[0] = 'right';
-    #     if (this.options.target && trgJ[0] == 'right') {trgJ[0] = 'left';}
-    #   }
-    # }
+    if viewportDimensions.height >= @dimensions.height
+      # Well if the viewport is smaller than the tooltip there's not much to do
+      if sticksOut[1]
+        needsRepositioning = yes
 
-    # if (viewportDimensions.height >= dimensions.height) {
-    #   if (viewportOffset.top < 0) {
-    #     reposition = true;
-    #     tipJ[1] = 'top';
-    #     if (this.options.target && trgJ[1] == 'top') {trgJ[1] = 'bottom';}
-    #   }
-    #   else if (viewportOffset.top + dimensions.height > viewportDimensions.height) {
-    #     reposition = true;
-    #     tipJ[1] = 'bottom';
-    #     if (this.options.target && trgJ[1] == 'bottom') {trgJ[1] = 'top';}
-    #   }
-    # }
-    # if (reposition) {
-    #   var newPosition = this.getPosition(evt, tipJ, trgJ, tipJ);
-    #   var newSticksOut = [ this.sticksOutX(newPosition), this.sticksOutY(newPosition) ];
-    #   var revertedCount = 0;
-    #   for (var i = 0; i <=1; i ++) {
-    #     if (newSticksOut[i] && newSticksOut[i] != sticksOut[i]) {
-    #       // The tooltip changed sides, but now is sticking out the other side of the window.
-    #       // If its still sticking out, but on the same side, it's ok. At least, it sticks out less.
-    #       revertedCount ++;
-    #       tipJ[i] = this.options.tipJoint[i];
-    #       if (this.options.target) {trgJ[i] = this.options.targetJoint[i];}
-    #     }
-    #   }
-    #   if (revertedCount < 2) {
-    #     this.currentStemPosition = tipJ;
-    #     return this.getPosition(evt, tipJ, trgJ, tipJ);
-    #   }
-    # }
-    # return position;
+        switch sticksOut[1]
+          when @STICKS_OUT_TOP
+            tipJoint.setVertical "top"
+            targetJoint.setVertical "bottom" if @options.targetJoint
+          when @STICKS_OUT_BOTTOM
+            tipJoint.setVertical "bottom"
+            targetJoint.setVertical "top" if @options.targetJoint
+
+    return originals unless needsRepositioning
+
+    # Needs to reposition
+
+    # TODO: actually handle the stem here
+    stem = tipJoint if @options.stem
+    position = @getPosition e, tipJoint, targetJoint, stem
+
+    newSticksOut = @_sticksOut position
+
+    revertedX = no
+    revertedY = no
+
+    if newSticksOut[0] and (newSticksOut[0] isnt sticksOut[0])
+      # The tooltip changed sides, but now is sticking out the other side of
+      # the window.
+      revertedX = yes
+      tipJoint.setHorizontal @options.tipJoint.horizontal
+      targetJoint.setHorizontal @options.targetJoint.horizontal if @options.targetJoint
+    if newSticksOut[1] and (newSticksOut[1] isnt sticksOut[1])
+      revertedY = yes
+      tipJoint.setVertical @options.tipJoint.vertical
+      targetJoint.setVertical @options.targetJoint.vertical if @options.targetJoint
+
+
+    return originals if revertedX and revertedY
+      
+    if revertedX or revertedY
+      # One of the positions have been reverted. So get the position again.
+      stem = tipJoint if @options.stem
+      position = @getPosition e, tipJoint, targetJoint, stem
+
+    {
+      position: position
+      stem: stem
+    }
+
+
 
   _sticksOut: (position) ->
     scrollOffset = @adapter.scrollOffset()
       
-    viewportDimensions = @adapter.getDimensions document.viewport
+    viewportDimensions = @adapter.viewportDimensions()
    
     positionOffset = [
       position.left - scrollOffset[0]
@@ -1240,30 +1256,33 @@ class Opentip.Pointer
     if pointerString instanceof Opentip.Pointer
       pointerString = pointerString.toString()
 
-    @_parseString pointerString
+    @set pointerString
 
     @
 
-  _parseString: (string) ->
+  set: (string) ->
     string = string.toLowerCase()
 
-    vertical = i.toLowerCase() for i in [ "top", "bottom" ] when ~string.indexOf i
-    horizontal = i.toLowerCase() for i in [ "left", "right" ] when ~string.indexOf i
+    @setHorizontal string
+    @setVertical string
 
-    throw new Error "Invalid pointer: " + string unless vertical? or horizontal?
+    @
 
-    vertical = "middle" unless vertical?
-    horizontal = "center" unless horizontal?
+  setHorizontal: (string) ->
+    valid = [ "left", "center", "right" ]
+    @horizontal = i.toLowerCase() for i in valid when ~string.indexOf i
+    @horizontal = "center" unless @horizontal?
 
-    @vertical = vertical
-    @horizontal = horizontal
+    for i in valid
+      this[i] = if @horizontal == i then i else undefined
 
-    for i in [ "top", "middle", "bottom", "left", "center", "right" ]
-      if @vertical == i or @horizontal == i
-        this[i] = i
-      else
-        this[i] = undefined
-    null
+  setVertical: (string) ->
+    valid = [ "top", "middle", "bottom" ]
+    @vertical = i.toLowerCase() for i in valid when ~string.indexOf i
+    @vertical = "middle" unless @vertical?
+    for i in valid
+      this[i] = if @vertical == i then i else undefined
+
 
 
   # Checks if two pointers point in the same direction
@@ -1275,7 +1294,7 @@ class Opentip.Pointer
     positionIdx = Opentip.position[@toString yes]
     # There are 8 positions, and smart as I am I layed them out in a circle.
     flippedIndex = (positionIdx + 4) % 8
-    @_parseString Opentip.positions[flippedIndex]
+    @set Opentip.positions[flippedIndex]
     @
 
   toString: (camelized = no) ->
@@ -1389,8 +1408,8 @@ Opentip.styles =
     #
     # Following abbreviations are used:
     #
-    # - `POSITION` : a string that contains at least one of top, bottom, right or left
-    # - `COORDINATE` : [ XVALUE, YVALUE ] (integers)
+    # - `POINTER` : a string that contains at least one of top, bottom, right or left
+    # - `OFFSET` : [ XVALUE, YVALUE ] (integers)
     # - `ELEMENT` : element or element id
 
     # Will be set if provided in constructor
@@ -1407,7 +1426,7 @@ Opentip.styles =
 
     # - `false` (no stem)
     # - `true` (stem at tipJoint position)
-    # - `POSITION` (for stems in other directions)
+    # - `POINTER` (for stems in other directions)
     stem: yes
 
     # `float` (in seconds)
@@ -1442,7 +1461,7 @@ Opentip.styles =
     # - `null` (let Opentip decide)
     hideOn: null
 
-    # `COORDINATE`
+    # `OFFSET`
     offset: [ 0, 0 ]
 
     # Whether the targetJoint/tipJoint should be changed if the tooltip is not in the viewport anymore.
@@ -1462,7 +1481,7 @@ Opentip.styles =
     # integer
     stemBase: 8
 
-    # `POSITION`
+    # `POINTER`
     tipJoint: "top left"
 
     # - `null` (no target, opentip uses mouse as target)
@@ -1470,7 +1489,7 @@ Opentip.styles =
     # - `ELEMENT` (for another element)
     target: null 
 
-    # - `POSITION` (Ignored if target == `null`)
+    # - `POINTER` (Ignored if target == `null`)
     # - `null` (targetJoint is the opposite of tipJoint)
     targetJoint: null 
 

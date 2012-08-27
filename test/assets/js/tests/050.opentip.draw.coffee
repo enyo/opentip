@@ -58,6 +58,11 @@ describe "Opentip - Drawing", ->
     createAndShowTooltip = ->
       opentip = new Opentip adapter.create("<div></div>"), "Test", options
       opentip._storeAndLockDimensions = -> @dimensions = { width: 200, height: 100 }
+      opentip._ensureViewportContainment = (e, position) ->
+        {
+          position: position
+          stem: @options.stem
+        }
       sinon.stub opentip, "_triggerElementExists", -> yes
       opentip.show()
       expect(opentip._dimensionsEqual opentip.dimensions, { width: 200, height: 100 }).to.be.ok()
