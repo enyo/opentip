@@ -145,7 +145,7 @@ class Opentip
     options.hideTriggers.push options.hideTrigger if options.hideTrigger
 
     # Sanitize all positions
-    options[prop] = new Opentip.Pointer(options[prop]) for prop in [
+    options[prop] = new Opentip.Joint(options[prop]) for prop in [
       "tipJoint"
       "targetJoint"
       "stem"
@@ -169,7 +169,7 @@ class Opentip
     # Doesn't make sense to use a target without the opentip being fixed
     options.fixed = yes if options.target
 
-    options.stem = new Opentip.Pointer(options.tipJoint) if options.stem == yes
+    options.stem = new Opentip.Joint(options.tipJoint) if options.stem == yes
 
     if options.target == yes
       options.target = @triggerElement
@@ -182,7 +182,7 @@ class Opentip
       options.delay = if options.showOn == "mouseover" then 0.2 else 0
 
     unless options.targetJoint?
-      options.targetJoint = new Opentip.Pointer(options.tipJoint).flip()
+      options.targetJoint = new Opentip.Joint(options.tipJoint).flip()
 
     # Used to show the opentip obviously
     @showTriggersWhenHidden = [ ]
@@ -687,8 +687,8 @@ class Opentip
 
     return originals unless sticksOut[0] or sticksOut[1]
 
-    tipJoint = new Opentip.Pointer @options.tipJoint
-    targetJoint = new Opentip.Pointer @options.targetJoint if @options.targetJoint
+    tipJoint = new Opentip.Joint @options.tipJoint
+    targetJoint = new Opentip.Joint @options.targetJoint if @options.targetJoint
 
     scrollOffset = @adapter.scrollOffset()
     viewportDimensions = @adapter.viewportDimensions()
@@ -807,7 +807,7 @@ class Opentip
     closeButtonInner = [ 0, 0 ]
     closeButtonOuter = [ 0, 0 ]
     if "closeButton" in @options.hideTriggers
-      closeButton = new Opentip.Pointer(if @currentStem?.toString() == "top right" then "top left" else "top right")
+      closeButton = new Opentip.Joint(if @currentStem?.toString() == "top right" then "top left" else "top right")
       closeButtonInner = [
         @options.closeButtonRadius + @options.closeButtonOffset[0]
         @options.closeButtonRadius + @options.closeButtonOffset[1]
@@ -972,8 +972,8 @@ class Opentip
         positionY = if i < 2 then 0 else @dimensions.height
         rotation = (Math.PI / 2) * i
         lineLength = if i % 2 == 0 then @dimensions.width else @dimensions.height
-        lineStem = new Opentip.Pointer Opentip.positions[positionIdx]
-        cornerStem = new Opentip.Pointer Opentip.positions[positionIdx + 1]
+        lineStem = new Opentip.Joint Opentip.positions[positionIdx]
+        cornerStem = new Opentip.Joint Opentip.positions[positionIdx + 1]
 
         ctx.save()
         ctx.translate positionX, positionY
@@ -1239,7 +1239,7 @@ Opentip::dasherize = (string) ->
 
 
 # Every position is converted to this class
-class Opentip.Pointer
+class Opentip.Joint
   # Accepts pointer in nearly every form.
   #
   #   - "top left"
@@ -1253,7 +1253,7 @@ class Opentip.Pointer
   constructor: (pointerString) ->
     return unless pointerString?
 
-    if pointerString instanceof Opentip.Pointer
+    if pointerString instanceof Opentip.Joint
       pointerString = pointerString.toString()
 
     @set pointerString
