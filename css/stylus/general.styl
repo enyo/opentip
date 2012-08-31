@@ -1,0 +1,177 @@
+@import "nib"
+
+@import "pygments"
+
+page-width = 960px
+
+body, body *
+  box-sizing border-box
+
+body
+  font 13px/150% "Open sans", sans-serif
+  padding 0 0 100px 0
+  margin 0
+  background #F2F2F2 url("../images/grain.png") repeat left top
+
+h1, h2, h3, h4
+  font-family "Helvetica neue", sans-serif
+  font-weight 100
+h1
+  font-size 40px
+  line-height 130%
+h2
+  font-size 35px
+  line-height 130%
+h3
+  font-size 24px
+  line-height 130%
+  color rgba(0, 0, 0, 0.6)
+h4
+  font-size 20px
+  line-height 130%
+
+
+p
+ul
+  a
+    color #00a
+    text-decoration none
+    transition color 0.2s ease-in-out
+    &:hover
+      color #00f
+
+hr
+  outside = 25px
+  position relative
+  height 1px
+  background black
+  background linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1) 5%, rgba(0, 0, 0, 0.1) 95%, rgba(0, 0, 0, 0))
+  border none
+  margin 60px 0
+  margin-left -(outside)
+  width page-width + (outside * 2)
+
+
+code
+  font-family menlo, monospace
+
+p > code
+li > code
+  border 1px dotted rgba(151, 199, 135, 0.4)
+  background rgba(181, 239, 175, 0.1)
+  padding 1px 2px
+  color rgba(51, 109, 35, 0.6)
+
+pre
+  margin 30px 0
+
+p
+  color #333
+
+#main, footer, header > div
+  width page-width
+  margin 0 auto
+  position relative
+
+header
+  position fixed
+  top 0
+  left 0
+  right 0
+  background #F2F2F2 url("../images/grain.png") repeat left top
+  display block
+  z-index 10000
+
+  #logo
+    display block
+    absolute top left -90px
+
+    background url("../images/logo.png") no-repeat left top
+    width 360px
+    height 162px
+    z-index 200
+    span
+      display none
+
+  hr
+    margin-bottom 0
+    margin-top 0
+
+  #header-shadow
+    width 800px
+    height 20px
+    absolute bottom left 50%
+    margin-left -(800px / 2)
+    border-radius 100%
+    box-shadow 0 0 30px rgba(0, 0, 0, 0.2)
+
+  nav
+    font-family "Helvetica neue", sans-serif
+    font-weight 100
+    font-size 18px
+    line-height 150%
+    display block
+    position relative
+    text-align right
+    height 130px
+    background #F2F2F2 url("../images/grain.png") repeat left top
+    z-index 100
+
+    ul
+      absolute top 50px right
+      margin 0
+      padding 0
+      list-style none
+      li
+        padding 0
+        list-style none
+        display inline-block
+        &.active
+          a
+            border-bottom 2px solid black
+            color rgba(0, 0, 0, 0.8)
+        a
+          color rgba(0, 0, 0, 0.4)
+          text-decoration none
+          display block
+          padding 0 0px
+          margin 0 5px
+          transition color 0.3s ease-in-out
+          &:hover
+            color rgba(0, 0, 0, 0.8)
+
+#main
+  padding-top 180px
+  #intro
+    font-size 36px
+    margin 20px 0
+    color rgba(0, 0, 0, 0.4)
+
+
+#demo-boxes
+  .box
+    background linear-gradient(top, #f1f7f0, #d3f0f6)
+    width 300px
+    height 180px
+    padding 25px 35px
+    border-radius 5px
+    box-shadow 1px 1px 12px rgba(0, 0, 0, 0.1)
+
+    float left
+    margin 10px
+
+    h2
+      margin 0 0 10px 0
+
+    p
+      color rgba(0, 0, 0, 0.6)
+  clearfix()
+
+
+
+footer
+  color rgba(0, 0, 0, 0.4)
+
+
+
+

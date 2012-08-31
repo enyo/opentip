@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf8" />
+
+    <meta name="author" content="Matias Meno" />
+    <meta name="description" content="Opentip is a free, powerful and opensource javascript tooltip class." />
+    <meta name="keywords" content="tooltip opentip prototip prototype jquery ender alternative free open source opensource library javascript npm" />
+
+    <title>Opentip | {{ page.title }}</title>
+
+    <!--
+    For facebook like button, commented out for xhtml validation.
+    Facebook still processes it.
+    <meta property="og:title" content="Opentip"/>
+    <meta property="og:site_name" content="www.opentip.org"/>
+    -->
+
+    <style type="text/css">
+      @import "css/opentip.css";
+      @import "css/general.css";
+    </style>
+
+
+    <script type="text/javascript">
+      Opentip.styles.codeSample = {
+        showOn: 'click',
+        hideOn: 'click',
+        targetJoint: [ 'right', 'middle' ],
+        tipJoint: [ 'left', 'middle' ],
+        stem: true
+      };
+      // Opentip.debugging = true;
+    </script>
+
+
+    <!-- Google analytics  -->
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-25510040-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </head>
+  <body>
+
+    <a href="https://github.com/enyo/opentip"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
+
+    <!--[if lte IE 6]>
+    <div style="border-bottom: 1px solid #c98F00;background: #FCE509; padding: 10px 15px; position: relative; color: #FF4900;">
+      You are viewing this page in Internet Explorer 6. I recommend using a <a style="color: #ee3800;" href="http://www.mozilla.com/en-US/firefox/firefox.html">better browser</a>.
+    </div>
+    <![endif]-->
+
+    <header><div>
+      <a href="./" id="logo"><span>Opentip</span></a>
+      <div id="header-shadow"></div>
+      <nav>
+        <ul>
+          <li class="active"><a href="/">overview</a></li>
+          <li><a href="/installation.html">installation</a></li>
+          <li><a href="/documentation.html">docs</a></li>
+          <li><a href="/contribute.html">contribute</a></li>
+          <li><a href="/other.html">other</a></li>
+        </ul>
+      </nav>
+      <hr />
+    </div></header>
+    <div id="main">
+      {{ content }}
+    </div>
+    <footer>
+      <hr />
+      Created by <strong>Matias Meno</strong><br />
+      Original graphics by <strong>Tjandra Mayerhold</strong><br /><br />
+      Thanks to:<br /><br />
+      &nbsp;&nbsp;<em>Florian Loitsch</em> for teaching me all I know about JavaScript.<br />
+      &nbsp;&nbsp;<em>Hannah Mayr</em> for understanding and encouraging my enthusiasm in open source projects.<br />
+      <br />
+      
+      <div id="license">
+        Licenced under the <strong>MIT</strong> Licence.<br /><br />
+        Copyright (c) 2009-2012, Matias Meno<br />
+        <br />
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:<br /><br />
+
+        The above copyright notice and this permission notice shall be included in
+        all copies or substantial portions of the Software.<br /><br />
+
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+        THE SOFTWARE.
+      </div>
+    </footer>
+
+  </body>
+</html>
