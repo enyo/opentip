@@ -40,7 +40,7 @@ body {
   font: 13px/150% "Open sans", sans-serif;
   padding: 0 0 100px 0;
   margin: 0;
-  background: #f2f2f2 url("../images/grain.png") repeat left top;
+  background: #f2f2f2 url("../images/grain.png") fixed repeat left top;
 }
 h1,
 h2,
@@ -123,9 +123,26 @@ header {
   top: 0;
   left: 0;
   right: 0;
-  background: #f2f2f2 url("../images/grain.png") repeat left top;
+  background: #f2f2f2 url("../images/grain.png") fixed repeat left top;
   display: block;
   z-index: 10000;
+}
+header #header-shadow,
+header #header-shadow-line {
+  opacity: 0;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  filter: alpha(opacity=0);
+  -webkit-transition: opacity 0.5s ease-in-out;
+  -moz-transition: opacity 0.5s ease-in-out;
+  -o-transition: opacity 0.5s ease-in-out;
+  -ms-transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
+}
+body.scroll header #header-shadow,
+body.scroll header #header-shadow-line {
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
 }
 header #logo {
   display: block;

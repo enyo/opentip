@@ -14,40 +14,40 @@ demo
 ====
 
 <div id="demo-boxes">
-  <div class="box">
+  <div class="styles box">
     <h2>styles</h2>
     <p>
       There are great styles built right into opentip and it's easy to create
       your own.
     </p>
   </div>
-  <div class="box">
+  <div class="effects box">
     <h2>effects</h2>
     <p>
       Out of the box, opentips have nice fade in and fade out effects, but it's
       very easy to adapt the effects to your needs.
     </p>
   </div>
-  <div class="box">
+  <div class="ajax box">
     <h2>ajax</h2>
     <p>
       Opentips can automatically download their contents via AJAX. It's
       extremely easy to configure them to do so.
     </p>
   </div>
-  <div class="box">
+  <div class="joints-and-targets box">
     <h2>joints &amp; targets</h2>
     <p>
       Joints and targets allow you to position the tooltip.
     </p>
   </div>
-  <div class="box">
+  <div class="stems box">
     <h2>stems</h2>
     <p>
       Stems are those little pointers.
     </p>
   </div>
-  <div class="box">
+  <div class="events box">
     <h2>events</h2>
     <p>
       You can trigger tooltips with any event you like: mouseovers, focus, etc...

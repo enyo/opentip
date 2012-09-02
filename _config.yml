@@ -3,3 +3,13 @@ auto: true
 server: true
 permalink: none
 pygments: true
+
+navigation:
+  - text: overview
+    url: /index.html
+  - text: installation
+    url: /installation.html
+  - text: docs
+    url: /documentation.html
+  - text: contribute
+    url: /contribute.html

@@ -11,7 +11,7 @@ body
   font 13px/150% "Open sans", sans-serif
   padding 0 0 100px 0
   margin 0
-  background #F2F2F2 url("../images/grain.png") repeat left top
+  background #F2F2F2 url("../images/grain.png") fixed repeat left top
 
 h1, h2, h3, h4
   font-family "Helvetica neue", sans-serif
@@ -78,9 +78,15 @@ header
   top 0
   left 0
   right 0
-  background #F2F2F2 url("../images/grain.png") repeat left top
+  background #F2F2F2 url("../images/grain.png") fixed repeat left top
   display block
   z-index 10000
+
+  #header-shadow, #header-shadow-line
+    opacity 0
+    transition opacity 0.5s ease-in-out
+    body.scroll &
+      opacity 1
 
   #logo
     display block
