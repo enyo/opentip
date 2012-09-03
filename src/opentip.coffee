@@ -254,7 +254,7 @@ class Opentip
             event: "mouseover"
 
     @bound = { }
-    @bound[methodToBind] = (do (methodToBind) => return => @[methodToBind].apply this, arguments) for methodToBind in [
+    @bound[methodToBind] = (do (methodToBind) => return => @[methodToBind](arguments...)) for methodToBind in [
       "prepareToShow"
       "prepareToHide"
       "show"
@@ -341,6 +341,8 @@ class Opentip
       left: "0px" # So it doesn't force wrapping
       top: "0px"
     @dimensions = @adapter.dimensions @container
+    # Firefox <=3.6 has a strange wrapping proplem when taking the exact width
+    @dimensions.width += 1
 
     @adapter.css @container,
       width: "#{@dimensions.width}px"
@@ -945,7 +947,9 @@ class Opentip
         angle2 = Math.acos(offset[0] / @options.closeButtonRadius)
 
         ctx.lineTo -innerWidth + hb, -hb
-        ctx.arc hb-offset[0], -hb+offset[1], @options.closeButtonRadius, -(Math.PI / 2 + angle1), angle2
+
+        # Firefox 3.6 requires the last boolean parameter (anticlockwise)
+        ctx.arc hb-offset[0], -hb+offset[1], @options.closeButtonRadius, -(Math.PI / 2 + angle1), angle2, no
       else
         ctx.lineTo -@options.borderRadius + hb, -hb
         ctx.quadraticCurveTo hb, -hb, hb, @options.borderRadius - hb
