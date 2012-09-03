@@ -46,12 +46,14 @@ head
 
       window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "top" }
       window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "top right" }
-      window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "right"  }
+      # window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "right"  }
+      window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "right" }
       window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "bottom right" }
       window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "bottom" }
-      window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "bottom left" }
-      window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "left" }
-      window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "top left" }
+      # window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "bottom left" }
+      window.x = new Opentip element, "Hallo test", { style: "dark", target: true, stem: true, showOn: "creation", hideTrigger: "closeButton", tipJoint: "left"  }
+      window.x = new Opentip element, "Hallo test", { style: "alert", target: true, stem: true, showOn: "creation", hideTrigger: "closeButton", tipJoint: "top left"  }
+      window.x = new Opentip element, "Hallo test", { style: "glass", target: true, stem: true, showOn: "creation", hideTrigger: "closeButton", tipJoint: "bottom left"  }
 
       window.x = new Opentip element, "Hallo test", { style: "dark", hideDelay: 0.5, tipJoint: "left", stem: true, borderWidth: 2}
 
@@ -93,4 +95,4 @@ body
     .test.opentip-test2(data-ot="test", data-ot-hide-trigger="closeButton", data-ot-target="true", data-ot-tip-joint="top") Hello
 
     .test
-      a(href="/ajax-test-delayed",data-ot="", data-ot-ajax="yes", data-ot-show-on="click", data-ot-hide-on="click") AJAX
+      a(href="/ajax-test-delayed",data-ot="", data-ot-style="glass", data-ot-ajax="yes", data-ot-show-on="click", data-ot-hide-on="click") AJAX

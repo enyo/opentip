@@ -1566,6 +1566,19 @@ Opentip.styles =
     stem: true
   glass:
     className: "glass"
+    background: [
+      [ 0, "rgba(252, 252, 252, 0.8)" ]
+      [ 0.5, "rgba(255, 255, 255, 0.8)" ]
+      [ 0.5, "rgba(250, 250, 250, 0.9)" ]
+      [ 1, "rgba(245, 245, 245, 0.9)" ]
+    ]
+    borderColor: "#eee"
+    closeButtonCrossColor: "rgba(0, 0, 0, 0.2)"
+    borderRadius: 15
+    closeButtonRadius: 10
+    closeButtonOffset: [ 8, 8 ]
+
+
   dark:
     className: "dark"
     borderRadius: 13
@@ -1580,6 +1593,22 @@ Opentip.styles =
       [ 0.5, "rgba(30, 30, 30, 0.8)" ]
       [ 0.5, "rgba(10, 10, 10, 0.8)" ]
       [ 1, "rgba(10, 10, 10, 0.9)" ]
+    ]
+
+  alert:
+    className: "alert"
+    borderRadius: 1
+    borderColor: "#AE0D11"
+
+    closeButtonCrossColor: "rgba(255, 255, 255, 1)"
+
+    shadowColor: "rgba(0, 0, 0, 0.3)"
+    shadowOffset: [ 2, 2 ]
+    background: [
+      [ 0, "rgba(203, 15, 19, 0.7)" ]
+      [ 0.5, "rgba(203, 15, 19, 0.8)" ]
+      [ 0.5, "rgba(189, 14, 18, 0.8)" ]
+      [ 1, "rgba(179, 14, 17, 0.9)" ]
     ]
 
 
