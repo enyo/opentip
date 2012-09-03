@@ -24,8 +24,8 @@
       box.opentip("Normal style", { target: true, tipJoint: "left", targetJoint: "bottom right" });
       box.opentip("Alert style", { style: "alert", target: true, tipJoint: "left", targetJoint: "right" });
       box.opentip("Dark style", { style: "dark", target: true, tipJoint: "left", targetJoint: "top right" });
-      box.opentip("Mellow style", { style: "alert", target: true, tipJoint: "top", targetJoint: "bottom" });
-      box.opentip("Funny style", { style: "alert", target: true, tipJoint: "bottom", targetJoint: "top" });
+      box.opentip("Glass style", { style: "glass", target: true, tipJoint: "top", targetJoint: "bottom" });
+      box.opentip("Funny style", { style: "standard", target: true, tipJoint: "bottom", targetJoint: "top" });
 
       // Stems
       var box = boxes.find(".stems.box");

@@ -35,7 +35,7 @@ describe "Ender adapter", ->
       it "should observe given event on ender element", (done) ->
         element = $ "<a>link</a>"
         adapter.observe element, "click", -> done()
-        element.get(0).click()
+        clickElement element.get(0)
 
 
 

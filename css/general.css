@@ -46,7 +46,7 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: "Helvetica neue", sans-serif;
+  font-family: "Raleway", "Helvetica neue", sans-serif;
   font-weight: 100;
 }
 h1 {
@@ -174,7 +174,7 @@ header #header-shadow {
   box-shadow: 0 0 30px rgba(0,0,0,0.2);
 }
 header nav {
-  font-family: "Helvetica neue", sans-serif;
+  font-family: "Raleway", "Helvetica neue", sans-serif;
   font-weight: 100;
   font-size: 18px;
   line-height: 150%;

@@ -106,6 +106,17 @@ describe "Opentip - Appearing", ->
       expect(opentip.visible).to.be.ok()
       expect(opentip.preparingToShow).to.not.be.ok()
 
+    it "should use _ensureViewportContaintment if options.containInViewport", ->
+      sinon.spy opentip, "_ensureViewportContainment"
+      opentip.show()
+      expect(opentip._ensureViewportContainment.callCount).to.be.above 1
+
+    it "should not use _ensureViewportContaintment if !options.containInViewport", ->
+      opentip.options.containInViewport = no
+      sinon.stub opentip, "_ensureViewportContainment"
+      opentip.show()
+      expect(opentip._ensureViewportContainment.callCount).to.be 0
+
   describe "events", ->
 
     element = ""

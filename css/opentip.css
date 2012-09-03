@@ -13,7 +13,6 @@
   -o-transition: none;
   -ms-transition: none;
   transition: none;
-  pointer-events: none;
 }
 .opentip-container.hidden {
   display: none;
@@ -31,6 +30,8 @@
   padding: 0;
 }
 .opentip-container .opentip .close {
+  pointer-events: auto;
+  display: block;
   position: absolute;
   top: -12px;
   left: 60px;
@@ -46,10 +47,16 @@
 .opentip-container.loading .loading-indicator {
   display: block;
 }
-.opentip-container.style-dark .opentip {
+.opentip-container.style-dark .opentip,
+.opentip-container.style-alert .opentip {
   color: #f8f8f8;
   color: rgba(255,255,255,0.9);
   text-shadow: 1px 1px 0px rgba(0,0,0,0.2);
+}
+.opentip-container.style-glass .opentip {
+  padding: 15px 25px;
+  color: rgba(0,94,183,0.8);
+  text-shadow: 1px 1px 8px rgba(0,94,153,0.3);
 }
 .opentip-container.hide-effect-fade {
   -webkit-transition: opacity 1s ease-in-out;

@@ -31,7 +31,10 @@ head
   != js('test')
 
   :coffeescript
-    jQuery -> mocha.run()
+    globals = [ "stats", "report" ]
+    for i in [0..500]
+      globals.push "opentip-#{i}"
+    jQuery -> mocha.globals(globals).run()
 
 body
 

@@ -250,11 +250,11 @@ Adapter = (function() {
   };
 
   Adapter.prototype.observe = function(element, eventName, observer) {
-    return this.unwrap(element).addEventListener(eventName, observer);
+    return this.unwrap(element).addEventListener(eventName, observer, false);
   };
 
   Adapter.prototype.stopObserving = function(element, eventName, observer) {
-    return this.unwrap(element).removeEventListener(eventName, observer);
+    return this.unwrap(element).removeEventListener(eventName, observer, false);
   };
 
   Adapter.prototype.ajax = function(options) {

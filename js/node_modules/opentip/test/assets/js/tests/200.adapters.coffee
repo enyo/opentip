@@ -7,6 +7,7 @@ adapters = [
   "jquery"
 ]
 
+
 describe "Generic adapter", ->
   for adapterName in adapters
     describe "#{adapterName} adapter", ->
@@ -270,33 +271,33 @@ describe "Generic adapter", ->
           it "should attach an event listener", (done) ->
             element = document.createElement "a"
             adapter.observe element, "click", -> done()
-            element.click()
+            clickElement element
           it "should attach an event listener to wrapped", (done) ->
             element = document.createElement "a"
             adapter.observe adapter.wrap(element), "click", -> done()
-            element.click()
+            clickElement element
 
         describe "stopObserving()", ->
           it "should remove event listener", ->
             element = document.createElement "a"
             listener = sinon.stub()
             adapter.observe element, "click", listener
-            element.click()
-            element.click()
+            clickElement element
+            clickElement element
             expect(listener.callCount).to.equal 2
             adapter.stopObserving element, "click", listener
-            element.click()
+            clickElement element
             expect(listener.callCount).to.equal 2 # Shouldn't have changed
 
           it "should remove event listener from wrapped", ->
             element = document.createElement "a"
             listener = sinon.stub()
             adapter.observe element, "click", listener
-            element.click()
-            element.click()
+            clickElement element
+            clickElement element
             expect(listener.callCount).to.equal 2
             adapter.stopObserving adapter.wrap(element), "click", listener
-            element.click()
+            clickElement element
             expect(listener.callCount).to.equal 2 # Shouldn't have changed
 
         describe "ajax()", ->
