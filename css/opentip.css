@@ -13,6 +13,7 @@
   -o-transition: none;
   -ms-transition: none;
   transition: none;
+  pointer-events: none;
 }
 .opentip-container.hidden {
   display: none;
