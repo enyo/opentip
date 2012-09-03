@@ -890,7 +890,7 @@ class Opentip
     ctx.clearRect 0, 0, backgroundCanvas.width, backgroundCanvas.height
     ctx.beginPath()
 
-    ctx.fillStyle = @_getColor ctx, @dimensions, @options.background, @options.backgroundGradientHorizontal
+    ctx.fillStyle = @_getColor ctx, @dimensions, @options.background, @options.backgroundGradientRotation
     ctx.lineJoin = "miter"
     ctx.miterLimit = 500
 
@@ -1094,12 +1094,16 @@ class Opentip
 
 
   # Turns a color string into a possible gradient
-  _getColor: (ctx, dimensions, color, horizontal = no) ->
+  _getColor: (ctx, dimensions, color, rotationDegs = 0) ->
+
+    # The default is top to bottom so the rotation is -(PI/2)
+    rotation = -(Math.Pi / 2) + Math.PI * rotationDegs / 180
 
     # There is no comma so just return
     return color if typeof color == "string"
 
     # Create gradient
+    center = [ dimensions.width / 2, dimensions.height / 2 ]
     if horizontal
       gradient = ctx.createLinearGradient 0, 0, dimensions.width, 0
     else
@@ -1514,8 +1518,11 @@ Opentip.styles =
     # The background color of the tip
     background: "#fff18f"
 
-    # Whether the gradient should be horizontal.
-    backgroundGradientHorizontal: no
+    # The rotation in degrees.
+    # - 0 means from top to bottom.
+    # - 90 means from right to left.
+    # - 180 bottom to top etc...
+    backgroundGradientRotation: 0
 
     # Positive values offset inside the tooltip
     closeButtonOffset: [ 5, 5 ]
