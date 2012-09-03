@@ -36,15 +36,16 @@ demo
     </p>
   </div>
   <div class="joints-and-targets box">
-    <h2>joints &amp; targets</h2>
+    <h2>joints&amp;targets</h2>
     <p>
-      Joints and targets allow you to position the tooltip.
+      Joints and targets allow you to position the tooltip exactly where you want it.
     </p>
   </div>
   <div class="stems box">
     <h2>stems</h2>
     <p>
-      Stems are those little pointers.
+      Stems are those little pointers. You can configure them to point in any
+      direction.
     </p>
   </div>
   <div class="events box">

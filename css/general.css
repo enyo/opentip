@@ -30,6 +30,22 @@ code .c,
 code .c1 {
   color: rgba(0,0,0,0.3);
 }
+.opentip-container.style-drop .opentip {
+  padding: 15px 5px;
+  width: 45px;
+  height: 45px;
+  text-align: center;
+  color: rgba(0,0,0,0.5);
+}
+.opentip-container.style-logo {
+  z-index: 20000 !important;
+}
+.opentip-container.style-logo .opentip {
+  color: #f8f8f8;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 1px 1px 0px rgba(0,0,0,0.2);
+  font-size: 15px;
+}
 body,
 body * {
   -webkit-box-sizing: border-box;
@@ -125,7 +141,7 @@ header {
   right: 0;
   background: #f2f2f2 url("../images/grain.png") fixed repeat left top;
   display: block;
-  z-index: 10000;
+  z-index: 1000;
 }
 header #header-shadow,
 header #header-shadow-line {
@@ -213,6 +229,7 @@ header nav ul li a {
   -o-transition: color 0.3s ease-in-out;
   -ms-transition: color 0.3s ease-in-out;
   transition: color 0.3s ease-in-out;
+  -webkit-font-smoothing: subpixel-antialiased;
 }
 header nav ul li a:hover {
   color: rgba(0,0,0,0.8);

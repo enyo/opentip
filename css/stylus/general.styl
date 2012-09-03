@@ -2,6 +2,23 @@
 
 @import "pygments"
 
+.opentip-container.style-drop
+  .opentip
+    padding 15px 5px
+    width 45px
+    height 45px
+    text-align center
+    color rgba(0, 0, 0, 0.5)
+
+.opentip-container.style-logo
+  z-index 20000 !important
+  .opentip
+    color #f8f8f8
+    color rgba(255, 255, 255, 0.9)
+    text-shadow 1px 1px 0px rgba(0, 0, 0, 0.2)
+    font-size 15px
+
+
 page-width = 960px
 
 body, body *
@@ -80,7 +97,7 @@ header
   right 0
   background #F2F2F2 url("../images/grain.png") fixed repeat left top
   display block
-  z-index 10000
+  z-index 1000
 
   #header-shadow, #header-shadow-line
     opacity 0
@@ -143,6 +160,7 @@ header
           padding 0 0px
           margin 0 5px
           transition color 0.3s ease-in-out
+          -webkit-font-smoothing subpixel-antialiased
           &:hover
             color rgba(0, 0, 0, 0.8)
 
