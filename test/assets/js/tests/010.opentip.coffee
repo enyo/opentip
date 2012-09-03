@@ -8,7 +8,12 @@ describe "Opentip", ->
     Opentip.adapter = adapter
 
   afterEach ->
-    $(".opentip-container").remove()
+    elements = $(".opentip-container")
+    elements.remove()
+    for i in [0...elements.length]
+      el = elements[i]
+      console.log el.id, window[el.id]
+
 
   describe "constructor()", ->
     before ->
@@ -175,13 +180,14 @@ describe "Opentip", ->
 
 
   describe "_updateElementContent()", ->
+
     it "should escape the content if @options.escapeContent", ->
       element = document.createElement "div"
       opentip = new Opentip element, "<div><span></span></div>", escapeContent: yes
       sinon.stub opentip, "_triggerElementExists", -> yes
       opentip.show()
       expect($(opentip.container).find(".content").html()).to.be """&lt;div&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;"""
-
+      
     it "should not escape the content if not @options.escapeContent", ->
       element = document.createElement "div"
       opentip = new Opentip element, "<div><span></span></div>", escapeContent: no
