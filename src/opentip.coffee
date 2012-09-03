@@ -128,9 +128,6 @@ class Opentip
 
     options.style = Opentip.defaultStyle unless options.style
 
-    # All options are based on the standard style
-    styleOptions = @adapter.extend { }, Opentip.styles.standard
-
     optionSources = [ ]
     # All options are based on the standard style
     optionSources.push Opentip.styles.standard
