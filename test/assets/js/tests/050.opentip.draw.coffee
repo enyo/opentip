@@ -44,25 +44,34 @@ describe "Opentip - Drawing", ->
 
   describe "with close button", ->
     options = { }
-
+    element = null
     beforeEach ->
+      element = $("<div />")
+      $(document.body).append(element)
+      sinon.stub Opentip.adapter, "dimensions", -> { width: 199, height: 100 } # -1 because of the firefox bug
       options = 
         delay: 0
         stem: no
         hideTrigger: "closeButton"
+        closeButtonRadius: 20
         closeButtonOffset: [ 0, 10 ]
         closeButtonCrossSize: 10
         closeButtonLinkOverscan: 5
         borderWidth: 0
+        containInViewport: no
+
+    afterEach ->
+      element.remove()
+      Opentip.adapter.dimensions.restore()
 
     createAndShowTooltip = ->
-      opentip = new Opentip adapter.create("<div></div>"), "Test", options
-      opentip._storeAndLockDimensions = -> @dimensions = { width: 200, height: 100 }
-      opentip._ensureViewportContainment = (e, position) ->
-        {
-          position: position
-          stem: @options.stem
-        }
+      opentip = new Opentip element.get(0), "Test", options
+      # opentip._storeAndLockDimensions = -> @dimensions = { width: 200, height: 100 }
+      # opentip._ensureViewportContainment = (e, position) ->
+      #   {
+      #     position: position
+      #     stem: @options.stem
+      #   }
       sinon.stub opentip, "_triggerElementExists", -> yes
       opentip.show()
       expect(opentip._dimensionsEqual opentip.dimensions, { width: 200, height: 100 }).to.be.ok()
@@ -72,7 +81,6 @@ describe "Opentip - Drawing", ->
     it "should position the close link when no border", ->
       options.borderWidth = 0
       options.closeButtonOffset = [ 0, 10 ]
-      options.closeButtonCrossSize = 10
 
       createAndShowTooltip()
 
@@ -84,9 +92,7 @@ describe "Opentip - Drawing", ->
       expect(enderElement.css "height").to.be "20px"
 
     it "should position the close link when border and different overscan", ->
-      options.borderWidth = 20
-      options.closeButtonOffset = [ 0, 10 ]
-      options.closeButtonCrossSize = 10
+      options.borderWidth = 1
       options.closeButtonLinkOverscan = 10
 
       createAndShowTooltip()
@@ -99,7 +105,7 @@ describe "Opentip - Drawing", ->
       expect(enderElement.css "height").to.be "30px"
 
     it "should position the close link with different offsets and overscans", ->
-      options.closeButtonOffset = [ 100, 5 ]
+      options.closeButtonOffset = [ 10, 5 ]
       options.closeButtonCrossSize = 10
       options.closeButtonLinkOverscan = 0
 
@@ -107,7 +113,7 @@ describe "Opentip - Drawing", ->
 
       enderElement = $(adapter.unwrap opentip.closeButtonElement)
 
-      expect(enderElement.css "left").to.be "95px"
+      expect(enderElement.css "left").to.be "185px"
       expect(enderElement.css "top").to.be "0px"
       expect(enderElement.css "width").to.be "10px" # cross size + overscan*2
       expect(enderElement.css "height").to.be "10px"

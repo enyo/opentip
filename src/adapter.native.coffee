@@ -220,10 +220,14 @@ class Adapter
     offset
 
   # Observe given eventName
-  observe: (element, eventName, observer) -> @unwrap(element).addEventListener eventName, observer
+  observe: (element, eventName, observer) ->
+    # Firefox <= 3.6 needs the last optional parameter `useCapture`
+    @unwrap(element).addEventListener eventName, observer, false
 
   # Stop observing event
-  stopObserving: (element, eventName, observer) -> @unwrap(element).removeEventListener eventName, observer
+  stopObserving: (element, eventName, observer) ->
+    # Firefox <= 3.6 needs the last optional parameter `useCapture`
+    @unwrap(element).removeEventListener eventName, observer, false
 
 
   # Perform an AJAX request and call the appropriate callbacks.

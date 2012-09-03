@@ -10,9 +10,6 @@ describe "Opentip", ->
   afterEach ->
     elements = $(".opentip-container")
     elements.remove()
-    for i in [0...elements.length]
-      el = elements[i]
-      console.log el.id, window[el.id]
 
 
   describe "constructor()", ->

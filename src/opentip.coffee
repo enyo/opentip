@@ -557,7 +557,9 @@ class Opentip
     position = @getPosition e
     return unless position?
 
-    {position, stem} = @_ensureViewportContainment e, position
+    stem = @options.stem
+
+    {position, stem} = @_ensureViewportContainment e, position if @options.containInViewport
 
     # If the position didn't change, no need to do anything    
     return if @_positionsEqual position, @currentPosition
@@ -901,6 +903,8 @@ class Opentip
     #
     # (hb = half border)
     hb = @options.borderWidth / 2
+
+    stemBase = 0
 
     if @options.borderWidth
       ctx.strokeStyle = @options.borderColor
