@@ -21,8 +21,11 @@
     if (boxes.length) {
       // Styles
       var box = boxes.find(".styles.box");
-      box.opentip("Normal style", { target: true, tipJoint: "bottom right", targetJoint: "bottom right" });
-      box.opentip("Dark style", { style: "dark", target: true, tipJoint: "top right", targetJoint: "top right" });
+      box.opentip("Normal style", { target: true, tipJoint: "left", targetJoint: "bottom right" });
+      box.opentip("Alert style", { style: "alert", target: true, tipJoint: "left", targetJoint: "right" });
+      box.opentip("Dark style", { style: "dark", target: true, tipJoint: "left", targetJoint: "top right" });
+      box.opentip("Mellow style", { style: "alert", target: true, tipJoint: "top", targetJoint: "bottom" });
+      box.opentip("Funny style", { style: "alert", target: true, tipJoint: "bottom", targetJoint: "top" });
 
       // Stems
       var box = boxes.find(".stems.box");
@@ -30,10 +33,10 @@
         stem: true,
         containInViewport: false,
       };
-      box.opentip("Stems", { style: "stemsDemo", tipJoint: "bottom right", stem: "right" });
-      box.opentip("are", { style: "stemsDemo", tipJoint: "bottom", stem: "right" });
-      box.opentip("very", { style: "stemsDemo", tipJoint: "bottom left", stem: "bottom", stemLength: 20, stemBase: 20 });
-      box.opentip("cool", { style: "stemsDemo", tipJoint: "left", stem: "left", stemLength: 20, stemBase: 20 });
+      box.opentip("Stems...", { style: "stemsDemo", tipJoint: "bottom", stem: "bottom right", stemLength: 10, stemBase: 30 });
+      box.opentip("...are...", { style: "stemsDemo", tipJoint: "left", stem: "left", stemLength: 20, stemBase: 10 });
+      box.opentip("...very...", { style: "stemsDemo", tipJoint: "right", stem: "bottom" });
+      box.opentip("...cool", { style: "stemsDemo", tipJoint: "top right", stem: "top right", stemLength: 30, stemBase: 20 });
     }
 
   });
