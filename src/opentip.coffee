@@ -1563,12 +1563,6 @@ Opentip.styles =
     # Shadow color...
     shadowColor: "rgba(0, 0, 0, 0.1)"
 
-  slick:
-    className: "slick"
-    stem: true
-  rounded:
-    className: "rounded"
-    stem: true
   glass:
     className: "glass"
     background: [
