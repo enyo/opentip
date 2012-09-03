@@ -12,7 +12,7 @@ To programmatically instantiate an Opentip you use this syntax:
 new Opentip("#my-element", "Optional content", "Optional title", { ...options... })
 {% endhighlight %}
 
-The `content` and `title` are optional but it doesn't make much sense to ommit
+The `content` and `title` are optional but it doesn't make much sense to omit
 the `content` unless the content gets downloaded with **AJAX**.
 
 * * *
@@ -42,7 +42,7 @@ options
   Defines a position inside an Opentip. This is a case insensitive
   string with a horizontal position (`left`, `center`, `right`) and a vertical
   position (`top`, `middle`, `bottom`) in any order where `center` and `middle`
-  can be ommited.
+  can be omited.
 
   ![Joints examples](images/joints.png)
 
