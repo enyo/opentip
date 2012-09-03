@@ -904,8 +904,6 @@ class Opentip
     # (hb = half border)
     hb = @options.borderWidth / 2
 
-    stemBase = 0
-
     if @options.borderWidth
       ctx.strokeStyle = @options.borderColor
       ctx.lineWidth = @options.borderWidth
@@ -913,6 +911,8 @@ class Opentip
       stemLength = @options.stemLength
       stemBase = @options.stemBase
 
+
+    stemBase ?= 0
 
 
     # Draws a line with stem if necessary
