@@ -108,6 +108,7 @@ header
   #logo
     display block
     absolute top left -90px
+    transition top 0.5s ease-in-out
 
     background url("../images/logo.png") no-repeat left top
     width 360px
@@ -115,6 +116,11 @@ header
     z-index 200
     span
       display none
+
+    body.scroll &
+      top -30px
+
+
 
   hr
     margin-bottom 0
@@ -136,7 +142,7 @@ header
     display block
     position relative
     text-align right
-    height 130px
+    height 75px
     background #F2F2F2 url("../images/grain.png") repeat left top
     z-index 100
 
@@ -145,6 +151,11 @@ header
       margin 0
       padding 0
       list-style none
+      transition top 0.5s ease-in-out
+
+      body.scroll &
+        top 23px
+
       li
         padding 0
         list-style none

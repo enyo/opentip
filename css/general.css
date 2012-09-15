@@ -165,6 +165,11 @@ header #logo {
   position: absolute;
   top: 0;
   left: -90px;
+  -webkit-transition: top 0.5s ease-in-out;
+  -moz-transition: top 0.5s ease-in-out;
+  -o-transition: top 0.5s ease-in-out;
+  -ms-transition: top 0.5s ease-in-out;
+  transition: top 0.5s ease-in-out;
   background: url("../images/logo.png") no-repeat left top;
   width: 360px;
   height: 162px;
@@ -172,6 +177,9 @@ header #logo {
 }
 header #logo span {
   display: none;
+}
+body.scroll header #logo {
+  top: -30px;
 }
 header hr {
   margin-bottom: 0;
@@ -197,7 +205,7 @@ header nav {
   display: block;
   position: relative;
   text-align: right;
-  height: 130px;
+  height: 75px;
   background: #f2f2f2 url("../images/grain.png") repeat left top;
   z-index: 100;
 }
@@ -208,6 +216,14 @@ header nav ul {
   margin: 0;
   padding: 0;
   list-style: none;
+  -webkit-transition: top 0.5s ease-in-out;
+  -moz-transition: top 0.5s ease-in-out;
+  -o-transition: top 0.5s ease-in-out;
+  -ms-transition: top 0.5s ease-in-out;
+  transition: top 0.5s ease-in-out;
+}
+body.scroll header nav ul {
+  top: 23px;
 }
 header nav ul li {
   padding: 0;
