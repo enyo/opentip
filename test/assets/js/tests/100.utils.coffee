@@ -49,7 +49,6 @@ describe "utils", ->
       expect(eq null, null).to.not.be.ok()
 
   describe "setCss3Style()", ->
-    Opentip.adapter = adapter = Opentip.adapters.native
     opentip = new Opentip adapter.create("<div></div>"), "Test"
     it "should set the style for all vendors", ->
       element = document.createElement "div"

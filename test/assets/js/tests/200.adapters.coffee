@@ -1,11 +1,14 @@
 
-$ = ender
+$ = jQuery
 
-adapters = [
-  "native"
-  "ender"
-  "jquery"
-]
+if Opentip.adapters.component
+  adapters = [ "component" ]
+else
+  adapters = [
+    "native"
+    "ender"
+    "jquery"
+  ]
 
 
 describe "Generic adapter", ->
@@ -107,7 +110,7 @@ describe "Generic adapter", ->
 
           it "should return existing data", ->
             nodeElement = $ """<div data-ot="hello" data-my-test="some string"></div>"""
-            element = nodeElement.get 0
+            element = nodeElement[0]
 
             expect(adapter.data element, "ot").to.equal "hello"
             expect(adapter.data element, "myTest").to.equal "some string"
@@ -139,7 +142,7 @@ describe "Generic adapter", ->
 
         describe "dimensions()", ->
           it "should return an object with the correct dimensions", ->
-            element = $("""<div style="display:block; position: absolute; width: 100px; height: 200px;"></div>""").get 0
+            element = $("""<div style="display:block; position: absolute; width: 100px; height: 200px;"></div>""")[0]
             $("body").append element
             dim = adapter.dimensions element
             dim2 = adapter.dimensions adapter.wrap element # Testing with wrapped as well
@@ -147,13 +150,13 @@ describe "Generic adapter", ->
             expect(dim).to.eql width: 100, height: 200
             $(element).remove()
           it "should return an object with the correct dimensions including border and padding", ->
-            element = $("""<div style="display:block; position: absolute; width: 100px; height: 200px; padding: 20px; border: 2px solid black;"></div>""").get 0
+            element = $("""<div style="display:block; position: absolute; width: 100px; height: 200px; padding: 20px; border: 2px solid black;"></div>""")[0]
             $("body").append element
             dim = adapter.dimensions element
             expect(dim).to.eql width: 144, height: 244
             $(element).remove()
           it "should return an object with the correct dimensions even if display none", ->
-            element = $("""<div style="display:none; position: absolute; width: 100px; height: 200px;"></div>""").get 0
+            element = $("""<div style="display:none; position: absolute; width: 100px; height: 200px;"></div>""")[0]
             $("body").append element
             dim = adapter.dimensions element
             expect(dim).to.eql width: 100, height: 200
@@ -161,8 +164,11 @@ describe "Generic adapter", ->
 
         describe "viewportDimensions()", ->
           it "should return the viewportDimensions", ->
-            # I know it's not pretty, but I trus my adapter
-            origDimensions = Opentip.adapters.native.viewportDimensions()
+            
+            origDimensions = 
+              width: document.documentElement.clientWidth
+              height: document.documentElement.clientHeight
+
             dims = adapter.viewportDimensions()
             expect(dims).to.eql origDimensions
             expect(dims.width).to.be.above 0
@@ -171,7 +177,10 @@ describe "Generic adapter", ->
         describe "scrollOffset()", ->
           it "should return the correct scroll offset", ->
             # I know it's not pretty, but I trus my adapter
-            origScrollOffset = Opentip.adapters.native.scrollOffset()
+            origScrollOffset = [
+              window.pageXOffset or document.documentElement.scrollLeft or document.body.scrollLeft
+              window.pageYOffset or document.documentElement.scrollTop or document.body.scrollTop
+            ]
             scrollOffset = adapter.scrollOffset()
             expect(scrollOffset).to.eql origScrollOffset
             expect(scrollOffset).to.be.an Array
@@ -181,25 +190,25 @@ describe "Generic adapter", ->
 
         describe "find()", ->
           it "should properly retrieve child elements", ->
-            element = $("""<div><span id="a-span" class="a"></span><div id="b-span" class="b"></div></div>""").get(0)
+            element = $("""<div><span id="a-span" class="a"></span><div id="b-span" class="b"></div></div>""")[0]
             a = adapter.unwrap adapter.find element, ".a"
             b = adapter.unwrap adapter.find adapter.wrap(element), ".b" # Testing with wrapped as well
             expect(a.id).to.equal "a-span"
             expect(b.id).to.equal "b-span"
           it "should return null if no element", ->
-            element = $("""<div></div>""").get(0)
+            element = $("""<div></div>""")[0]
             a = adapter.unwrap adapter.find element, ".a"
             expect(a).to.not.be.ok()
 
         describe "findAll()", ->
           it "should properly retrieve child elements", ->
-            element = $("""<div><span id="a-span" class="a"></span><span id="b-span" class="b"></span></div>""").get(0)
+            element = $("""<div><span id="a-span" class="a"></span><span id="b-span" class="b"></span></div>""")[0]
             a = adapter.findAll element, "span"
             b = adapter.findAll adapter.wrap(element), "span" # Testing with wrapped as well
             expect(a.length).to.equal 2
             expect(b.length).to.equal 2
           it "should return empty array if no element", ->
-            element = $("""<div></div>""").get(0)
+            element = $("""<div></div>""")[0]
             a = adapter.findAll element, "span"
             b = adapter.findAll adapter.wrap(element), "span" # Testing with wrapped as well
             expect(a.length).to.be 0
@@ -251,7 +260,7 @@ describe "Generic adapter", ->
 
         describe "offset()", ->
           it "should only return left and top", ->
-            element = $("""<div style="display:block; position: absolute; left: 100px; top: 200px;"></div>""").get 0
+            element = $("""<div style="display:block; position: absolute; left: 100px; top: 200px;"></div>""")[0]
             $("body").append element
             offset = adapter.offset element
             for own key of offset
@@ -259,7 +268,7 @@ describe "Generic adapter", ->
                 throw new Error "Other keys returned"
             $(element).remove()
           it "should properly return the offset position", ->
-            element = $("""<div style="display:block; position: absolute; left: 100px; top: 200px;"></div>""").get 0
+            element = $("""<div style="display:block; position: absolute; left: 100px; top: 200px;"></div>""")[0]
             $("body").append element
             offset = adapter.offset element
             offset2 = adapter.offset adapter.wrap element # Testing with wrapped as well
@@ -271,33 +280,33 @@ describe "Generic adapter", ->
           it "should attach an event listener", (done) ->
             element = document.createElement "a"
             adapter.observe element, "click", -> done()
-            clickElement element
+            Test.clickElement element
           it "should attach an event listener to wrapped", (done) ->
             element = document.createElement "a"
             adapter.observe adapter.wrap(element), "click", -> done()
-            clickElement element
+            Test.clickElement element
 
         describe "stopObserving()", ->
           it "should remove event listener", ->
             element = document.createElement "a"
             listener = sinon.stub()
             adapter.observe element, "click", listener
-            clickElement element
-            clickElement element
+            Test.clickElement element
+            Test.clickElement element
             expect(listener.callCount).to.equal 2
             adapter.stopObserving element, "click", listener
-            clickElement element
+            Test.clickElement element
             expect(listener.callCount).to.equal 2 # Shouldn't have changed
 
           it "should remove event listener from wrapped", ->
             element = document.createElement "a"
             listener = sinon.stub()
             adapter.observe element, "click", listener
-            clickElement element
-            clickElement element
+            Test.clickElement element
+            Test.clickElement element
             expect(listener.callCount).to.equal 2
             adapter.stopObserving adapter.wrap(element), "click", listener
-            clickElement element
+            Test.clickElement element
             expect(listener.callCount).to.equal 2 # Shouldn't have changed
 
         describe "ajax()", ->

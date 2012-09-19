@@ -1,13 +1,12 @@
 
-$ = ender
+$ = jQuery
 
 describe "Opentip - Appearing", ->
-  adapter = Opentip.adapters.native
+  adapter = Opentip.adapter
   opentip = null
   triggerElementExists = yes
 
   beforeEach ->
-    Opentip.adapter = adapter
     triggerElementExists = yes
 
   afterEach ->
@@ -108,6 +107,7 @@ describe "Opentip - Appearing", ->
 
     it "should use _ensureViewportContaintment if options.containInViewport", ->
       sinon.spy opentip, "_ensureViewportContainment"
+      sinon.stub opentip, "getPosition", -> x: 0, y: 0
       opentip.show()
       expect(opentip._ensureViewportContainment.callCount).to.be.above 1
 
@@ -126,7 +126,9 @@ describe "Opentip - Appearing", ->
 
     testEvent = (opentip, event, done) ->
       expect(opentip.visible).to.not.be.ok()
-      $(element).trigger event
+
+      Test.triggerEvent element, event
+
       expect(opentip.preparingToShow).to.be.ok()
       expect(opentip.visible).to.not.be.ok()
       setTimeout ->
@@ -144,13 +146,13 @@ describe "Opentip - Appearing", ->
         testEvent opentip, event, done
 
   describe "visible", ->
-    enderElement = null
+    $element = null
     element = null
     span = null
     beforeEach ->
-      enderElement = $ "<div><div><span></span></div></div>"
-      span = enderElement.find "span"
-      element = enderElement.get(0)
+      $element = $ "<div><div><span></span></div></div>"
+      span = $element.find "span"
+      element = $element[0]
 
 
     # it "should not hide when hovering child elements and hideOn == mouseout", (done) ->
@@ -207,7 +209,7 @@ describe "Opentip - Appearing", ->
           done e
           return
 
-        closeButtons.first().trigger "click"
+        Test.triggerEvent closeButtons[0], "click"
 
         setTimeout ->
           try

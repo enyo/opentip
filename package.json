@@ -2,7 +2,7 @@
   "name": "opentip",
   "version": "2.0.0-dev",
   "description": "Free opensource tooltip class.",
-  "keywords": [ "tooltip", "ender" ],
+  "keywords": [ "tooltip" ],
   "homepage": "http://www.opentip.org",
   "main": [
     "./lib/opentip.js",

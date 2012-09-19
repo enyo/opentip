@@ -1,4 +1,11 @@
 
+
+extend = (target, sources...) ->
+  for source in sources
+    for own key, val of source
+      target[key] = val
+  target
+
 describe "Opentip.Joint", ->
 
   describe "constructor()", ->
@@ -48,7 +55,7 @@ describe "Opentip.Joint", ->
 
       testCount = sinon.stub()
       testPointers = (position, thisPositions) ->
-        thisPositions = Opentip.adapters.native.extend { }, positions, thisPositions
+        thisPositions = extend { }, positions, thisPositions
         for positionName, shouldBeTrue of thisPositions
           testCount()
           if shouldBeTrue then expect(position[positionName]).to.be.ok()

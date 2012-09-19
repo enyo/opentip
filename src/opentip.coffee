@@ -1616,6 +1616,9 @@ Opentip.defaultStyle = "standard"
 
 
 
-window.Opentip = Opentip
+if module?
+  module.exports = Opentip
+else
+  window.Opentip = Opentip
 
 

@@ -1,13 +1,12 @@
 
-$ = ender
+$ = jQuery
 
 describe "Opentip - AJAX", ->
-  adapter = Opentip.adapters.native
+  adapter = Opentip.adapter
   opentip = null
   triggerElementExists = yes
 
   beforeEach ->
-    Opentip.adapter = adapter
     triggerElementExists = yes
 
   afterEach ->

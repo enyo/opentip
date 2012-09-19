@@ -1,12 +1,10 @@
 
-$ = ender
+$ = jQuery
 
 describe "Opentip - Drawing", ->
-  adapter = Opentip.adapters.native
+  adapter = Opentip.adapter
   opentip = null
 
-  beforeEach ->
-    Opentip.adapter = adapter
 
   afterEach ->
     opentip[prop]?.restore?() for own prop of opentip
@@ -84,12 +82,12 @@ describe "Opentip - Drawing", ->
 
       createAndShowTooltip()
 
-      enderElement = $(adapter.unwrap opentip.closeButtonElement)
+      el = adapter.unwrap opentip.closeButtonElement
 
-      expect(enderElement.css "left").to.be "190px"
-      expect(enderElement.css "top").to.be "0px"
-      expect(enderElement.css "width").to.be "20px" # cross size + overscan*2
-      expect(enderElement.css "height").to.be "20px"
+      expect(el.style.left).to.be "190px"
+      expect(el.style.top).to.be "0px"
+      expect(el.style.width).to.be "20px" # cross size + overscan*2
+      expect(el.style.height).to.be "20px"
 
     it "should position the close link when border and different overscan", ->
       options.borderWidth = 1
@@ -97,12 +95,12 @@ describe "Opentip - Drawing", ->
 
       createAndShowTooltip()
 
-      enderElement = $(adapter.unwrap opentip.closeButtonElement)
+      el = adapter.unwrap opentip.closeButtonElement
 
-      expect(enderElement.css "left").to.be "185px"
-      expect(enderElement.css "top").to.be "-5px"
-      expect(enderElement.css "width").to.be "30px" # cross size + overscan*2
-      expect(enderElement.css "height").to.be "30px"
+      expect(el.style.left).to.be "185px"
+      expect(el.style.top).to.be "-5px"
+      expect(el.style.width).to.be "30px" # cross size + overscan*2
+      expect(el.style.height).to.be "30px"
 
     it "should position the close link with different offsets and overscans", ->
       options.closeButtonOffset = [ 10, 5 ]
@@ -111,12 +109,12 @@ describe "Opentip - Drawing", ->
 
       createAndShowTooltip()
 
-      enderElement = $(adapter.unwrap opentip.closeButtonElement)
+      el = adapter.unwrap opentip.closeButtonElement
 
-      expect(enderElement.css "left").to.be "185px"
-      expect(enderElement.css "top").to.be "0px"
-      expect(enderElement.css "width").to.be "10px" # cross size + overscan*2
-      expect(enderElement.css "height").to.be "10px"
+      expect(el.style.left).to.be "185px"
+      expect(el.style.top).to.be "0px"
+      expect(el.style.width).to.be "10px" # cross size + overscan*2
+      expect(el.style.height).to.be "10px"
 
     it "should correctly position the close link on the left when stem on top right", ->
       options.closeButtonOffset = [ 20, 17 ]
@@ -126,14 +124,14 @@ describe "Opentip - Drawing", ->
 
       opentip = createAndShowTooltip()
 
-      enderElement = $(adapter.unwrap opentip.closeButtonElement)
+      el = adapter.unwrap opentip.closeButtonElement
 
       expect(opentip.options.stem.toString()).to.be "top right"
 
-      expect(enderElement.css "left").to.be "9px"
-      expect(enderElement.css "top").to.be "6px"
-      expect(enderElement.css "width").to.be "22px" # cross size + overscan*2
-      expect(enderElement.css "height").to.be "22px"
+      expect(el.style.left).to.be "9px"
+      expect(el.style.top).to.be "6px"
+      expect(el.style.width).to.be "22px" # cross size + overscan*2
+      expect(el.style.height).to.be "22px"
 
 
   describe "_getPathStemMeasures()", ->

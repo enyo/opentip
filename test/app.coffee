@@ -25,6 +25,7 @@ app.configure "development", ->
 
 
 app.get "/", (req, res) -> res.render "index"
+app.get "/component", (req, res) -> res.render "index", component: yes
 app.get "/playground", (req, res) -> res.render "playground"
 app.get "/ajax-test", (req, res) -> res.send "success get"
 app.post "/ajax-test", (req, res) -> res.send "success post"

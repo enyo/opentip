@@ -1,11 +1,10 @@
 
-$ = ender
+$ = jQuery
 
 describe "Opentip", ->
   adapter = null
   beforeEach ->
-    adapter = Opentip.adapters.native
-    Opentip.adapter = adapter
+    adapter = Opentip.adapter
 
   afterEach ->
     elements = $(".opentip-container")
@@ -25,12 +24,12 @@ describe "Opentip", ->
 
       opentip = new Opentip element, "content", "title", { hideOn: "click" }
       expect(opentip.content).to.equal "content"
-      expect(opentip.triggerElement).to.equal element
+      expect(adapter.unwrap opentip.triggerElement).to.equal adapter.unwrap element
       expect(opentip.options.hideOn).to.equal "click"
       expect(opentip.options.title).to.equal "title"
 
       opentip = new Opentip element, { hideOn: "click" }
-      expect(opentip.triggerElement).to.equal element
+      expect(adapter.unwrap opentip.triggerElement).to.equal adapter.unwrap element
       expect(opentip.options.hideOn).to.equal "click"
       expect(opentip.content).to.equal ""
       expect(opentip.options.title).to.equal undefined
@@ -46,18 +45,18 @@ describe "Opentip", ->
       expect(opentip3.id).to.be 3
 
     it "should use the href attribute if AJAX and an A element", ->
-      element = $("""<a href="http://testlink">link</a>""").get(0)
+      element = $("""<a href="http://testlink">link</a>""")[0]
       opentip = new Opentip element, ajax: on
       expect(opentip.options.ajax).to.equal "http://testlink"
 
     it "should disable AJAX if neither URL or a link HREF is provided", ->
-      element = $("""<div>text</div>""").get(0)
+      element = $("""<div>text</div>""")[0]
       opentip = new Opentip element, ajax: on
       expect(opentip.options.ajax).to.be false
 
     it "should disable a link if the event is onClick", ->
       sinon.spy adapter, "observe"
-      element = $("""<a href="http://testlink">link</a>""").get(0)
+      element = $("""<a href="http://testlink">link</a>""")[0]
       opentip = new Opentip element, showOn: "click"
 
       expect(adapter.observe.calledOnce).to.be.ok()
@@ -95,12 +94,12 @@ describe "Opentip", ->
       element = adapter.create "<div></div>"
       element2 = adapter.create "<div></div>"
       opentip = new Opentip element, target: element2
-      expect(opentip.options.target).to.equal element2
+      expect(adapter.unwrap opentip.options.target).to.equal adapter.unwrap element2
 
     it "should take the triggerElement as target if target is just true", ->
       element = adapter.create "<div></div>"
       opentip = new Opentip element, target: yes
-      expect(opentip.options.target).to.equal element
+      expect(adapter.unwrap opentip.options.target).to.equal adapter.unwrap element
 
     it "currentStemPosition should be set to inital stemPosition", ->
       element = adapter.create "<div></div>"
@@ -127,7 +126,8 @@ describe "Opentip", ->
     it "should setup all trigger elements", ->
       element = adapter.create "<div></div>"
       opentip = new Opentip element, showOn: "click"
-      expect(opentip.showTriggersWhenHidden).to.eql [ { event: "click", element: element } ]
+      expect(opentip.showTriggersWhenHidden[0].event).to.eql "click"
+      expect(adapter.unwrap opentip.showTriggersWhenHidden[0].element).to.equal adapter.unwrap element
       expect(opentip.showTriggersWhenVisible).to.eql [ ]
       expect(opentip.hideTriggers).to.eql [ ]
       opentip = new Opentip element, showOn: "creation"
@@ -141,7 +141,7 @@ describe "Opentip", ->
       expect(opentip.options.hideTriggers).to.eql [ "trigger", "closeButton"]
 
     it "should attach itself to the elements `data-opentips` property", ->
-      element = $("<div></div>").get(0)
+      element = $("<div></div>")[0]
       expect(adapter.data element, "opentips").to.not.be.ok()
       opentip = new Opentip element
       expect(adapter.data element, "opentips").to.eql [ opentip ]
@@ -269,7 +269,7 @@ describe "Opentip", ->
       sinon.stub opentip, "_triggerElementExists", -> yes
       opentip.show()
 
-      input = $("input", opentip.container).get(0)
+      input = $("input", opentip.container)[0]
       expect(document.activeElement).to.not.be input
       opentip._activateFirstInput()
       input.focus()

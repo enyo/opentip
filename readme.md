@@ -35,20 +35,31 @@ Supported frameworks are:
 Installation
 ------------
 
-The easiest and recommended way to install *opentip* is with [ender]:
+### Component
+
+The easiest and recommended way to install *opentip* is with [component]. Just
+add `enyo/opentip` as dependency in your `component.json` and rebuild it.
+
+Simply requiring opentip then activates the tooltips: `require "opentip";`
+
+
+### Ender
+
+If you prefer [ender] as package manager just install it like this:
 
 ```bash
 $ ender build opentip
 ```
 
-### Without ender
+### Other
 
-If you don't use ender, just download `lib/opentip.js` and `lib/adapter.FRAMEWORK.js`
-and include them in this order.
+If you don't use component or ender, just download `lib/opentip.js` and
+`lib/adapter.FRAMEWORK.js` and include them in this order.
 
 * * *
 
-You should include opentip's CSS as well. It's in `css/opentip.css`.
+You should include opentip's CSS as well. It's in `css/opentip.css`. (Except
+for [component] of course which automatically bundles the css.)
 
 Usage
 -----
@@ -243,3 +254,4 @@ SOFTWARE.
 [ajax]: http://en.wikipedia.org/wiki/Ajax_(programming)
 [excanvas]: http://code.google.com/p/explorercanvas/
 [ender]: http://ender.no.de
+[component]: https://github.com/component
