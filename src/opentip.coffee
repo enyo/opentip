@@ -285,6 +285,8 @@ class Opentip
 
     @backgroundCanvas = @adapter.create """<canvas style="position: absolute;"></canvas>"""
 
+    G_vmlCanvasManager?.initElement @adapter.unwrap @backgroundCanvas
+
     headerElement = @adapter.find @tooltipElement, "header"
 
     if @options.title

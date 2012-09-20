@@ -4,7 +4,14 @@ head
 
   title Opentip | Tests
 
+  meta(http-equiv="X-UA-Compatible", content="IE=edge")
+
   != css('mocha.css')
+
+  | <!--[if IE]>
+  != js('excanvas')
+  | <![endif]-->
+
 
   != js('lib/jquery-1.8.0')
   :coffeescript

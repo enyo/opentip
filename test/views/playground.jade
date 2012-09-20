@@ -5,6 +5,12 @@ head
 
   title Opentip | Playground
 
+  meta(http-equiv="X-UA-Compatible", content="IE=edge")
+
+  | <!--[if IE]>
+  != js('excanvas')
+  | <![endif]-->
+  
   != css("stylus/opentip")
 
 
