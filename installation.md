@@ -10,6 +10,22 @@ Opentip uses adapters to make the framework available for all major frameworks
 and provides a *native adapter* that works without framework.  
 Use any of the following methods depending on the framework you use:
 
+
+### Component
+
+To install Opentip as [component](https://github.com/component) just specify
+it as dependency in your `component.json` file:
+
+```json
+"dependencies": { "enyo/opentip": "*" }
+```
+
+To activate it you still have to include it once in your app:
+
+```js
+require("opentip");
+```
+
 ### Ender
 
 To install Opentip with [ender](http://ender.no.de) simply type one of these:
