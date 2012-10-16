@@ -61,6 +61,11 @@ If you don't use component or ender, just download `lib/opentip.js` and
 You should include opentip's CSS as well. It's in `css/opentip.css`. (Except
 for [component] of course which automatically bundles the css.)
 
+* * *
+
+If you want to work it with <=IE8, you have to include excanvas as well. Please
+refer to the [installation guide](http://www.opentip.org/installation.html).
+
 Usage
 -----
 
