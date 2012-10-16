@@ -252,6 +252,6 @@ SOFTWARE.
 [prototype]: http://www.prototypejs.org/
 [jquery]: http://jquery.com/
 [ajax]: http://en.wikipedia.org/wiki/Ajax_(programming)
-[excanvas]: http://code.google.com/p/explorercanvas/
+[excanvas]: https://github.com/enyo/excanvas
 [ender]: http://ender.no.de
 [component]: https://github.com/component
