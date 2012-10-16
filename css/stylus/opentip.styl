@@ -28,11 +28,11 @@
     .close
       pointer-events auto
       display block
-      position absolute
-      top: -12px;
-      left: 60px;
-      color: rgba(0, 0, 0, 0.5);
-      text-decoration: none;
+      absolute top -12px left 60px
+      color rgba(0, 0, 0, 0.5)
+      background rgba(0, 0, 0, 0) // So IE9 renders this as clickable
+      text-decoration none
+
       span
         display none
 
