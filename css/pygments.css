@@ -1,32 +1,7 @@
-code {
-  color: rgba(0,0,0,0.6);
-}
-code .nt,
-code .k,
-code .nv {
-  color: rgba(0,50,0,0.6);
-  font-weight: bold;
-}
-code .na,
-code .p,
-code .nx {
-  color: rgba(0,0,100,0.6);
-}
-code .s,
-code .s2 {
-  color: rgba(150,0,0,0.7);
-  background: rgba(255,0,0,0.04);
-  font-weight: bold;
-}
-code .mi {
-  color: rgba(0,0,150,0.7);
-  background: rgba(0,0,255,0.04);
-  font-weight: bold;
-}
-code .nx {
-  font-weight: bold;
-}
-code .c,
-code .c1 {
-  color: rgba(0,0,0,0.3);
-}
+code{color:rgba(0,0,0,0.6);}
+code .nt,code .k,code .nv{color:rgba(0,50,0,0.6);font-weight:bold}
+code .na,code .p,code .nx{color:rgba(0,0,100,0.6)}
+code .s,code .s2{color:rgba(150,0,0,0.7);background:rgba(255,0,0,0.04);font-weight:bold}
+code .mi{color:rgba(0,0,150,0.7);background:rgba(0,0,255,0.04);font-weight:bold}
+code .nx{font-weight:bold}
+code .c,code .c1{color:rgba(0,0,0,0.3)}

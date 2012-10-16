@@ -70,3 +70,14 @@ You have to embed the **Javascript** files and the **CSS** in your page.
 That's it. Opentip now automatically scans the document to find any elements
 with a `data-ot` attribute. To programmatically create Opentips please refer
 to the [documentation](/documentation.html).
+
+
+internet explorer
+-----------------
+
+If you want Opentip to correctly work in <= IE8, you have to include excanvas
+as well. Get my [version of excanvas](https://raw.github.com/enyo/excanvas/master/index.js) (which supports IE8).
+
+If you're using component, you can simply add `enyo/excanvas` as dependency, but
+**don't forget** to require it before opentip: `require("excanvas");`.
+

@@ -1,5 +1,9 @@
 @import "nib"
 
+global-reset()
+
+reset-html5()
+
 @import "pygments"
 
 .opentip-container.style-drop
@@ -36,16 +40,20 @@ h1, h2, h3, h4
 h1
   font-size 40px
   line-height 130%
+  margin 26px 0
 h2
   font-size 35px
   line-height 130%
+  margin 25px 0
 h3
   font-size 24px
   line-height 130%
   color rgba(0, 0, 0, 0.6)
+  margin 24px 0
 h4
   font-size 20px
   line-height 130%
+  margin 23px 0
 
 
 p
@@ -61,7 +69,7 @@ hr
   outside = 25px
   position relative
   height 1px
-  background #DADADA
+  background #dadada
   background linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1) 5%, rgba(0, 0, 0, 0.1) 95%, rgba(0, 0, 0, 0))
   border none
   margin 60px 0
@@ -85,12 +93,12 @@ pre
 p
   color #333
 
-#main, footer, header > div
+#main, #footer, #header > div
   width page-width
   margin 0 auto
   position relative
 
-header
+#header
   position fixed
   top 0
   left 0
@@ -163,9 +171,9 @@ header
         &.active
           a
             border-bottom 2px solid black
-            color rgba(0, 0, 0, 0.8)
+            color #333
         a
-          color rgba(0, 0, 0, 0.4)
+          color #bbb
           text-decoration none
           display block
           padding 0 0px
@@ -205,8 +213,8 @@ header
 
 
 
-footer
-  color rgba(0, 0, 0, 0.4)
+#footer
+  color #aaa
 
 
 

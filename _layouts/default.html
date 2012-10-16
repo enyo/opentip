@@ -7,6 +7,7 @@
     <meta name="description" content="Opentip is a free, powerful and opensource javascript tooltip class." />
     <meta name="keywords" content="tooltip opentip prototip prototype jquery ender alternative free open source opensource library javascript npm" />
 
+
     <title>Opentip | {{ page.title }}</title>
 
     <!--
@@ -19,13 +20,20 @@
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Raleway:100" rel="stylesheet" type="text/css" />
 
     <style type="text/css">
-      @import "css/opentip.css";
+      @import "js/build/build.css";
       @import "css/general.css";
     </style>
 
 
-    <script type="text/javascript" src="js/ender.min.js"></script>
-    <script type="text/javascript" src="js/app.js"></script>
+    <!--[if lte IE 8]>
+      <script type="text/javascript" src="js/last_index_of.js"></script>
+    <![endif]-->
+
+
+    <script type="text/javascript" src="js/build/build.js"></script>
+    <script type="text/javascript">
+      require("boot");
+    </script>
 
 
     <!-- Google analytics  -->
@@ -51,7 +59,7 @@
     </div>
     <![endif]-->
 
-    <header><div>
+    <div id="header"><div>
       <a href="./" id="logo"><span>Opentip</span></a>
       <div id="header-shadow"></div>
       <nav>
@@ -59,19 +67,14 @@
           {% for site in site.navigation %}
             <li {% if page.url == site.url %} class="active"{% endif %}><a href="{{site.url}}">{{site.text}}</a></li>
           {% endfor %}
-<!--           <li {% if page.url == "/index.html" %} class="active"{% endif %}><a href="/">overview</a></li>
-          <li {% if page.url == "/index.html" %} class="active"{% endif %}><a href="/installation.html">installation</a></li>
-          <li {% if page.url == "/index.html" %} class="active"{% endif %}><a href="/documentation.html">docs</a></li>
-          <li {% if page.url == "/index.html" %} class="active"{% endif %}><a href="/contribute.html">contribute</a></li>
-          <li {% if page.url == "/index.html" %} class="active"{% endif %}><a href="/other.html">other</a></li>
- -->        </ul>
+        </ul>
       </nav>
       <hr id="header-shadow-line" />
-    </div></header>
+    </div></div>
     <div id="main">
       {{ content }}
     </div>
-    <footer>
+    <div id="footer">
       <hr />
       Created by <strong>Matias Meno</strong><br />
       Original graphics by <strong>Tjandra Mayerhold</strong><br /><br />
@@ -102,7 +105,7 @@
         OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
         THE SOFTWARE.
       </div>
-    </footer>
+    </div>
 
   </body>
 </html>

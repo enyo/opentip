@@ -1,0 +1,15 @@
+{
+  "name": "excanvas",
+  "repo": "enyo/excanvas",
+  "version": "0.1.0",
+  "description": "Google's excanvas.",
+  "keywords": [
+    "excanvas",
+    "canvas"
+  ],
+  "dependencies": {},
+  "styles": [],
+  "scripts": [
+    "index.js"
+  ]
+}

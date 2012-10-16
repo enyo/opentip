@@ -1,0 +1,13 @@
+{
+  "name": "boot",
+  "description": "Opentip website",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "formwatcher/domready": "*",
+    "component/jquery": "*",
+    "enyo/excanvas": "*",
+    "enyo/opentip": "develop"
+  },
+  "scripts": [ "index.js" ]
+}

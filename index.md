@@ -21,6 +21,8 @@ demo
       your own.
     </p>
   </div>
+
+  <!--
   <div class="effects box">
     <h2>effects</h2>
     <p>
@@ -28,6 +30,7 @@ demo
       very easy to adapt the effects to your needs.
     </p>
   </div>
+  -->
   <div class="ajax box">
     <h2>ajax</h2>
     <p>
@@ -49,9 +52,9 @@ demo
     </p>
   </div>
   <div class="events box">
-    <h2>events</h2>
+    <h2>many more...</h2>
     <p>
-      You can trigger tooltips with any event you like: mouseovers, focus, etc...
+      There are many more features! Dive into the documentation to get more information.
     </p>
   </div>
 </div>
@@ -59,8 +62,8 @@ demo
 * * *
 
 
-implementation
-==============
+usage
+=====
 
 Creating a tooltip is really easy.  
 The easiest way to define a tooltip is with element tags:
@@ -70,14 +73,15 @@ The easiest way to define a tooltip is with element tags:
 {% endhighlight %}
 
 All tooltip options can be passed like this. Just prefix them with `data-ot-`
-and use dashes (eg.: `data-ot-show-effect="blindDown"`).
+and use dashes (eg.: `data-ot-hide-trigger="closeButton"`).
+
 
 To create a tooltip with Javascript you can instantiate the `Opentip`
 class like this:
 
 {% highlight javascript %}
 new Opentip("#my-element", "Shown after 2 seconds", { delay: 2 });
-// Or within your framework, eg.: ender
+// Or within your framework, eg.: ender, jQuery, prototype
 $("#my-element").opentip("Shown after 2 seconds", { delay: 2 });
 {% endhighlight %}
 
