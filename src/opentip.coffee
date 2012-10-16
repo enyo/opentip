@@ -795,8 +795,10 @@ class Opentip
 
     sticksOut
 
-  # This is by far the most complex and difficult function to understand.
-  # I tried to comment everything as good as possible
+  # This is by far the most complex and difficult function to understand. It
+  # actually draws the canvas.
+  # 
+  # I tried to comment everything as good as possible.
   _draw: ->
     # This function could be called before _buildElements()
     return unless @backgroundCanvas and @redraw
@@ -889,6 +891,8 @@ class Opentip
 
 
     ctx = backgroundCanvas.getContext "2d"
+
+    ctx.setTransform 1, 0, 0, 1, 0, 0
 
     ctx.clearRect 0, 0, backgroundCanvas.width, backgroundCanvas.height
     ctx.beginPath()

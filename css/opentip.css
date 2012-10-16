@@ -23,7 +23,7 @@
   font-size: 13px;
   line-height: 120%;
   padding: 9px 14px;
-  color: rgba(0,0,0,0.7);
+  color: #4f4b47;
   text-shadow: -1px -1px 0px rgba(255,255,255,0.2);
 }
 .opentip-container .opentip header {
@@ -52,12 +52,11 @@
 .opentip-container.style-dark .opentip,
 .opentip-container.style-alert .opentip {
   color: #f8f8f8;
-  color: rgba(255,255,255,0.9);
   text-shadow: 1px 1px 0px rgba(0,0,0,0.2);
 }
 .opentip-container.style-glass .opentip {
   padding: 15px 25px;
-  color: rgba(0,94,183,0.8);
+  color: #317cc5;
   text-shadow: 1px 1px 8px rgba(0,94,153,0.3);
 }
 .opentip-container.hide-effect-fade {

@@ -5,7 +5,7 @@ head
 
   title Opentip | Playground
 
-  meta(http-equiv="X-UA-Compatible", content="IE=edge")
+  meta(http-equiv="X-UA-Compatible", content="IE=7")
 
   | <!--[if IE]>
   != js('excanvas')
@@ -47,7 +47,7 @@ head
 
       # window.x=$(".opentip-test2").opentip("Hallo test", { target: true, tipJoint: "right", borderWidth: 0  })
 
-      element = document.querySelector ".opentip-test"
+      element = $(".opentip-test")[0]
 
 
       window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "top" }
@@ -63,7 +63,7 @@ head
 
       window.x = new Opentip element, "Hallo test", { style: "dark", hideDelay: 0.5, tipJoint: "left", stem: true, borderWidth: 2}
 
-      element = document.querySelector(".opentip-test2")
+      element = $(".opentip-test2")[0]
       window.x = new Opentip(element, "Hallo test", { style: "dark", stem: true, target: true, delay: 0, showEffect: false, hideDelay: 0, hideEffectDuration: 3 })
 
       window.x = new Opentip(element, "Hallo test bla test bl<br />kjsdlfksjdlf", { style: "dark", hideTrigger: "closeButton", stem: true, tipJoint: "top right", target: true, delay: 0, hideDelay: 0, showOn: "creation", borderRadius: 15 })
