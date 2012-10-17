@@ -8,6 +8,7 @@ else
     "native"
     "ender"
     "jquery"
+    "prototype"
   ]
 
 

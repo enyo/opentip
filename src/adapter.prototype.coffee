@@ -1,41 +1,149 @@
+# Prototype Opentip Adapter
+# ======================
+#
+# Uses the prototype framework
 
-$ = ender
+# Because $ is my favorite character
+(($) ->
 
+  Element.addMethods
+    addTip: (element, content, title, options) ->
+      new Opentip element, content, title, options
 
-class Adapter
+  # And now the class
+  class Adapter
 
-  name: "prototype"
+    name: "prototype"
 
-  # Simply using $.domReady
-  domReady: (callback) -> Event.observe window, "dom:loaded", callback
-
-  # Using bonzo to create html
-  create: (html) -> $ html
-
-  # Mimics scriptaculous Builder.node behaviour
-  # element: (tagName, attributes, children) ->
-  #   if Object.isArray(attributes) or Object.isString(attributes) or Object.isElement(attributes)
-  #     children = attributes
-  #     attributes = null
-  #   element = new Element(tagName, attributes or {})
-    
-  #   # This is a prototype 1.6 bug, that doesn't apply the className to IE8 elements.
-  #   # Thanks to Alexander Shakhnovsky for finding the bug, and pinpointing the problem.
-  #   if attributes and attributes["className"]
-  #     attributes["className"].split(" ").each (class_name) ->
-  #       element.addClassName class_name
-
-  #   if children
-  #     if Object.isArray(children)
-  #       children.each (child) ->
-  #         element.insert bottom: child
-
-  #     else
-  #       element.insert bottom: children
-  #   element
+    domReady: (callback) ->
+      if document.loaded
+        callback()
+      else
+        $(document).observe "dom:loaded", callback
 
 
+    # DOM
+    # ===
 
-adapter = new Adapter
+    # Using bonzo to create html
+    create: (html) -> new Element('div').update(html).childElements()
 
-Opentip.addAdapter adapter
+
+    # Element handling
+    # ----------------
+
+    # Wraps the element
+    wrap: (element) ->
+      $(element)
+      throw new Error "Multiple elements provided." if element?.length? and element.length > 1
+      element
+
+    # Returns the unwrapped element
+    unwrap: (element) ->
+      if element?.length? and element.length > 1
+        element[0]
+      else
+        element
+
+    # Returns the tag name of the element
+    tagName: (element) -> @unwrap(element).tagName
+
+    # Returns or sets the given attribute of element
+    #
+    # It's important not to simply forward name and value because the value
+    # is set whether or not the value argument is present
+    attr: (element, args...) ->
+      if args.length == 1
+        @wrap(element).readAttribute args[0]
+      else
+        @wrap(element).writeAttribute args...
+
+    # Returns or sets the given data of element
+    # It's important not to simply forward name and value because the value
+    # is set whether or not the value argument is present
+    data: (element, name, value) ->
+      @wrap(element)
+      if arguments.length > 2
+        element.store name, value
+      else
+        arg = element.readAttribute "data-#{name.underscore().dasherize()}"
+        return arg if arg?
+        element.retrieve name
+
+    # Finds elements by selector
+    find: (element, selector) -> @wrap(element).select(selector)[0]
+
+    # Finds all elements by selector
+    findAll: (element, selector) -> @wrap(element).select selector
+
+    # Updates the content of the element
+    update: (element, content, escape) ->
+      @wrap(element).update if escape then content.escapeHTML() else content
+
+    # Appends given child to element
+    append: (element, child) -> @wrap(element).insert child
+
+    # Add a class
+    addClass: (element, className) -> @wrap(element).addClassName className
+
+    # Remove a class
+    removeClass: (element, className) -> @wrap(element).removeClassName className
+
+    # Set given css properties
+    css: (element, properties) -> @wrap(element).setStyle properties
+
+    # Returns an object with given dimensions
+    dimensions: (element) -> @wrap(element).getDimensions()
+
+    # Returns the scroll offsets of current document
+    scrollOffset: ->
+      offsets = document.viewport.getScrollOffsets()
+      [ offsets.left, offsets.top ]
+
+    # Returns the dimensions of the viewport (currently visible browser area)
+    viewportDimensions: -> document.viewport.getDimensions()
+
+    # Returns an object with x and y 
+    mousePosition: (e) ->
+      return null unless e?
+      x: Event.pointerX(e), y: Event.pointerY(e)
+
+
+    # Returns the offset of the element
+    offset: (element) -> 
+      offset = @wrap(element).cumulativeOffset()
+      left: offset.left, top: offset.top
+
+    # Observe given eventName
+    observe: (element, eventName, observer) -> @wrap(element).observe eventName, observer
+
+    # Stop observing event
+    stopObserving: (element, eventName, observer) -> @wrap(element).stopObserving eventName, observer
+
+    # Perform an AJAX request and call the appropriate callbacks.
+    ajax: (options) ->
+      throw new Error "No url provided" unless options.url?
+
+      new Ajax.Request options.url, {
+        method: options.method?.toUpperCase() ? "GET"
+        onSuccess: (response) -> options.onSuccess? response.responseText
+        onFailure: (response) -> options.onError? "Server responded with status #{response.status}"
+        onComplete: -> options.onComplete?()
+      }
+
+
+    # Utility functions
+    # =================
+
+    # Creates a shallow copy of the object
+    clone: (object) -> Object.clone(object)
+
+    # Copies all properties from sources to target
+    extend: (target, sources...) ->
+      for source in sources
+        Object.extend target, source
+
+  # Add the adapter to the list
+  Opentip.addAdapter new Adapter
+
+)(jQuery)
