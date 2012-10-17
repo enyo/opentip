@@ -53,8 +53,8 @@ demo
   </div>
   <div class="events box">
     <h2>many more...</h2>
-    <p>
-      There are many more features! Dive into the documentation to get more information.
+    <p markdown="1">
+      There are many more features! Dive into the [documentation] to get more information.
     </p>
   </div>
 </div>
@@ -88,5 +88,8 @@ $("#my-element").opentip("Shown after 2 seconds", { delay: 2 });
 
 
 For a list of valid options and the complete documentation please visit the
-[documentation](/documentation) page.
+[documentation] page.
+
+
+[documentation]: /documentation.html
 

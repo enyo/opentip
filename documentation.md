@@ -15,7 +15,8 @@ new Opentip("#my-element", "Optional content", "Optional title", { ...options...
 The `content` and `title` are optional but it doesn't make much sense to omit
 the `content` unless the content gets downloaded with **AJAX**.
 
-* * *
+
+Alternatively you can use html attributes to create opentips:
 
 ### html attributes
 
