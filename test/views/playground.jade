@@ -1,0 +1,104 @@
+!!!
+head
+  meta(charset="utf-8")
+
+
+  title Opentip | Playground
+
+
+  
+  | <!--[if IE]>
+  != js('excanvas')
+  | <![endif]-->
+  
+  != css("stylus/opentip")
+
+
+
+  //- != js('lib/ender')
+  //- != js('src/opentip')
+  //- != js('src/adapter.ender')
+
+
+  != js('lib/jquery-1.8.0')
+  != js('src/opentip')
+  != js('src/adapter.jquery')
+
+  //- != js('src/opentip')
+  //- != js('src/adapter.native')
+
+
+
+  :coffeescript
+    Opentip.debug = yes
+    Opentip.adapter.domReady ->
+      Opentip.styles.test =
+        target: true
+        stem: true
+        # stemLength: 6
+        # borderWidth: 1
+        showOn: "creation"
+        # hideOn: "click"
+        hideTrigger: "closeButton"
+        # closeButtonRadius: 7
+        # closeButtonOffset: [ -5, 0 ]
+        # closeButtonCrossLineWidth: 2.4
+        # closeButtonCrossSize: 5
+
+      # window.x=$(".opentip-test2").opentip("Hallo test", { target: true, tipJoint: "right", borderWidth: 0  })
+
+      element = $(".opentip-test")[0]
+
+
+      window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "top" }
+      window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "top right" }
+      # window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "right"  }
+      window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "right" }
+      window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "bottom right" }
+      window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "bottom" }
+      # window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "bottom left" }
+      window.x = new Opentip element, "Hallo test", { style: "dark", target: true, stem: true, showOn: "creation", hideTrigger: "closeButton", tipJoint: "left"  }
+      window.x = new Opentip element, "Hallo test", { style: "alert", target: true, stem: true, showOn: "creation", hideTrigger: "closeButton", tipJoint: "top left"  }
+      window.x = new Opentip element, "Hallo test", { style: "glass", target: true, stem: true, showOn: "creation", hideTrigger: "closeButton", tipJoint: "bottom left"  }
+
+      window.x = new Opentip element, "Hallo test", { style: "dark", hideDelay: 0.5, tipJoint: "left", stem: true, borderWidth: 2}
+
+      element = $(".opentip-test2")[0]
+      window.x = new Opentip(element, "Hallo test", { style: "dark", stem: true, target: true, delay: 0, showEffect: false, hideDelay: 0, hideEffectDuration: 3 })
+
+      window.x = new Opentip(element, "Hallo test bla test bl<br />kjsdlfksjdlf", { style: "dark", hideTrigger: "closeButton", stem: true, tipJoint: "top right", target: true, delay: 0, hideDelay: 0, showOn: "creation", borderRadius: 15 })
+
+  :stylus
+    body
+      font: 20px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      padding: 60px 50px;
+
+    .test
+      width 150px
+      background #f4f4f4
+      padding 10px
+      text-align center
+      position relative
+      margin 40px auto
+
+    .opentip-container .opentip
+      padding 10px 15px
+
+    //- canvas {
+    //-   background: rgba(255, 0, 0, 0.1);
+    //- }
+
+    //- a.close {
+    //-   background: rgba(255, 0,0,0.2);
+    //- }
+
+
+body
+
+  #main
+
+    .test.opentip-test(data-ot="test",data-ot-hide-on="click",data-ot-tip-joint="bottom left") Hello
+    .test.opentip-test2(data-ot="test", data-ot-hide-trigger="closeButton", data-ot-target="true", data-ot-tip-joint="top") Hello
+
+    .test
+      a(href="/ajax-test-delayed",data-ot="", data-ot-style="glass", data-ot-ajax="yes", data-ot-show-on="click", data-ot-hide-on="click") AJAX

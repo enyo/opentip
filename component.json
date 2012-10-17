@@ -1,0 +1,12 @@
+{
+  "name": "opentip",
+  "repo": "enyo/opentip",
+  "version": "2.0.0",
+  "description": "Free opensource tooltip class.",
+  "keywords": [ "tooltip" ],
+  "dependencies": {
+    "component/jquery": "*"
+  },
+  "styles": [ "css/opentip.css" ],
+  "scripts": [ "index.js", "lib/opentip.js", "lib/adapter.component.js" ]
+}

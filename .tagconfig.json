@@ -1,15 +1,33 @@
 {
   "files": [
     {
-      "name": "opentip.js",
+      "name": "readme.md",
       "regexs": [
-        "Version: '###'"
+        "Version ###"
       ]
     },
     {
-      "name": "README.md",
+      "name": "src/opentip.coffee",
       "regexs": [
-        "Opentip Version ###"
+        "Opentip\\.version = \"###\""
+      ]
+    },
+    {
+      "name": "lib/opentip.js",
+      "regexs": [
+        "Opentip\\.version = \"###\""
+      ]
+    },
+    {
+      "name": "component.json",
+      "regexs": [
+        "\"version\": \"###\""
+      ]
+    },
+    {
+      "name": "package.json",
+      "regexs": [
+        "\"version\": \"###\""
       ]
     }
   ]

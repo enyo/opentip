@@ -1,0 +1,48 @@
+{
+  "name": "opentip",
+  "version": "2.0.0",
+  "description": "Free opensource tooltip class.",
+  "keywords": [ "tooltip" ],
+  "homepage": "http://www.opentip.org",
+  "main": [
+    "./lib/opentip.js",
+    "./lib/adapter.ender.js"
+  ],
+  "maintainers": [
+    {
+      "name": "Matias Meno",
+      "email": "m@tias.me",
+      "web": "http://www.matiasmeno.com"
+    } 
+  ],
+  "contributors": [
+    {
+      "name": "Matias Meno",
+      "email": "m@tias.me",
+      "web": "http://www.matiasmeno.com"
+    } 
+  ],
+  "bugs": {
+    "mail": "m@tias.me"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT" 
+    } 
+  ],
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/enyo/opentip.git" 
+    } 
+  ],
+  "dependencies": {
+    "qwery": "3.x",
+    "domready": "0.x",
+    "bean": "0.x",
+    "bonzo": "1.x",
+    "reqwest": "0.x"
+  },
+  "ender": "noop"
+}
