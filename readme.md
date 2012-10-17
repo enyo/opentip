@@ -69,7 +69,7 @@ refer to the [installation guide](http://www.opentip.org/installation.html).
 Usage
 -----
 
-*Version 2.0.0*
+*Version 2.0.1-dev*
 
 With HTML data attributes:
 
