@@ -1367,7 +1367,7 @@ Opentip.findElements = ->
 # Publicly available
 # ------------------
 
-Opentip.version = "2.0.0-dev"
+Opentip.version = "2.0.0"
 
 Opentip.debug = off
 
