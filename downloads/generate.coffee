@@ -40,11 +40,13 @@ request "https://raw.github.com/enyo/excanvas/master/index.js", (error, response
     return
 
   saveFile = (downloadName, contents, withExcanvas) ->
-    targetFile = "#{__dirname}/opentip-#{downloadName}.js"
     console.log "Minfiying and saving#{if withExcanvas then " with excanvas" else ""}..."
 
     if withExcanvas
       contents += "\n\n" + excanvas
+      downloadName += "-excanvas"
+
+    targetFile = "#{__dirname}/opentip-#{downloadName}.js"
 
     fs.writeFileSync targetFile, contents, "utf-8"
 
