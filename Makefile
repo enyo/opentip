@@ -11,9 +11,17 @@ components:
 clean:
 	rm -fr build components
 
+downloads:
+	./downloads/generate.coffee
+
+release:
+	cake build
+	cake css
+	make downloads
+
 all:
 	clear
 	make clean
 	make build
 
-.PHONY: clean
+.PHONY: clean, downloads

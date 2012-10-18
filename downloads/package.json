@@ -1,0 +1,13 @@
+{
+  "name": "opentip-downloads",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "generage": "coffee generate"
+  },
+  "dependencies": {
+    "request": "*",
+    "uglify-js": "*",
+    "uglify-js2": "*"
+  }
+}
