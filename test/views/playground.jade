@@ -21,7 +21,11 @@ head
 
 
   != js('lib/jquery-1.8.0')
+  //- script
+  //-   jQuery.noConflict()
+  //- != js('lib/prototype-1.7.1')
   != js('src/opentip')
+  //- != js('src/adapter.prototype')
   != js('src/adapter.jquery')
 
   //- != js('src/opentip')
@@ -47,7 +51,7 @@ head
 
       # window.x=$(".opentip-test2").opentip("Hallo test", { target: true, tipJoint: "right", borderWidth: 0  })
 
-      element = $(".opentip-test")[0]
+      element = jQuery(".opentip-test")[0]
 
 
       window.x = new Opentip element, "Hallo test", { style: "test", tipJoint: "top" }
@@ -63,7 +67,7 @@ head
 
       window.x = new Opentip element, "Hallo test", { style: "dark", hideDelay: 0.5, tipJoint: "left", stem: true, borderWidth: 2}
 
-      element = $(".opentip-test2")[0]
+      element = jQuery(".opentip-test2")[0]
       window.x = new Opentip(element, "Hallo test", { style: "dark", stem: true, target: true, delay: 0, showEffect: false, hideDelay: 0, hideEffectDuration: 3 })
 
       window.x = new Opentip(element, "Hallo test bla test bl<br />kjsdlfksjdlf", { style: "dark", hideTrigger: "closeButton", stem: true, tipJoint: "top right", target: true, delay: 0, hideDelay: 0, showOn: "creation", borderRadius: 15 })

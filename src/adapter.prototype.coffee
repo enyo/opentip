@@ -33,13 +33,15 @@ do ->
 
     # Wraps the element
     wrap: (element) ->
+      if (element instanceof NodeList or element instanceof Array)
+        throw new Error "Multiple elements provided." if element.length > 1
+        element = @unwrap element
       $(element)
-      throw new Error "Multiple elements provided." if element?.length? and element.length > 1
       element
 
     # Returns the unwrapped element
     unwrap: (element) ->
-      if element?.length? and element.length > 1
+      if element instanceof NodeList or element instanceof Array
         element[0]
       else
         element
@@ -80,7 +82,7 @@ do ->
       @wrap(element).update if escape then content.escapeHTML() else content
 
     # Appends given child to element
-    append: (element, child) -> @wrap(element).insert child
+    append: (element, child) -> @wrap(element).insert @wrap child
 
     # Add a class
     addClass: (element, className) -> @wrap(element).addClassName className
@@ -114,10 +116,10 @@ do ->
       left: offset.left, top: offset.top
 
     # Observe given eventName
-    observe: (element, eventName, observer) -> @wrap(element).observe eventName, observer
+    observe: (element, eventName, observer) -> Event.observe @wrap(element), eventName, observer
 
     # Stop observing event
-    stopObserving: (element, eventName, observer) -> @wrap(element).stopObserving eventName, observer
+    stopObserving: (element, eventName, observer) -> Event.stopObserving @wrap(element), eventName, observer
 
     # Perform an AJAX request and call the appropriate callbacks.
     ajax: (options) ->
@@ -141,6 +143,7 @@ do ->
     extend: (target, sources...) ->
       for source in sources
         Object.extend target, source
+      target
 
   # Add the adapter to the list
   Opentip.addAdapter new Adapter
