@@ -141,6 +141,7 @@ do ->
     extend: (target, sources...) ->
       for source in sources
         Object.extend target, source
+      target
 
   # Add the adapter to the list
   Opentip.addAdapter new Adapter

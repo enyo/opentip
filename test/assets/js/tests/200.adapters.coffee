@@ -44,7 +44,7 @@ describe "Generic adapter", ->
           expect(obj.c.d).to.equal 30 # Shallow copy
 
       describe "extend()", ->
-        it "should copy all attributes from sources to target", ->
+        it "should copy all attributes from sources to target and return the extended object as well", ->
           target =
             a: 1
             b: 2
@@ -55,7 +55,10 @@ describe "Generic adapter", ->
           source2 =
             a: 100
 
-          adapter.extend target, source1, source2
+          returned = adapter.extend target, source1, source2
+
+          expect(returned).to.equal target
+
           expect(target).to.eql
             a: 100
             b: 20
