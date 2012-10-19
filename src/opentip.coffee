@@ -1246,7 +1246,7 @@ Opentip::ucfirst = (string) ->
 
 # Converts a camelized string into a dasherized one
 Opentip::dasherize = (string) ->
-  string.replace /([A-Z])/g, (_, char) -> "-#{char.toLowerCase()}"
+  string.replace /([A-Z])/g, (_, character) -> "-#{character.toLowerCase()}"
 
 
 
