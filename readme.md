@@ -35,6 +35,12 @@ Supported frameworks are:
 Installation
 ------------
 
+### jQuery, Prototype, Native
+
+Just download `lib/opentip.js` and `lib/adapter.FRAMEWORK.js` and include them
+in this order. You can also take the already minified and combined files in the
+`downloads/` folder.
+
 ### Component
 
 The easiest and recommended way to install *opentip* is with [component]. Just
@@ -50,12 +56,6 @@ If you prefer [ender] as package manager just install it like this:
 ```bash
 $ ender build opentip
 ```
-
-### Other
-
-If you don't use component or ender, just download `lib/opentip.js` and
-`lib/adapter.FRAMEWORK.js` and include them in this order. You can also take
-the already minified and combined files in the `downloads/` folder.
 
 * * *
 
