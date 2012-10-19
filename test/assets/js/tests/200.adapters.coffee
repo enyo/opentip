@@ -262,6 +262,19 @@ describe "Generic adapter", ->
             adapter.append adapter.wrap(element), adapter.wrap(child)
             expect(element.innerHTML).to.eql "<span></span>"
 
+          it "should properly append child to element when created with adapter", ->
+            element = adapter.create "<div></div>"
+            child = adapter.create "<span></span>"
+            adapter.append element, child
+            element = adapter.unwrap element
+            child = adapter.unwrap child
+            expect(element.innerHTML).to.eql "<span></span>"
+            # Testing with wrapped as well
+            element = document.createElement "div"
+            child = document.createElement "span"
+            adapter.append adapter.wrap(element), adapter.wrap(child)
+            expect(element.innerHTML).to.eql "<span></span>"
+
         describe "offset()", ->
           it "should only return left and top", ->
             element = $("""<div style="display:block; position: absolute; left: 100px; top: 200px;"></div>""")[0]
@@ -285,6 +298,9 @@ describe "Generic adapter", ->
             element = document.createElement "a"
             adapter.observe element, "click", -> done()
             Test.clickElement element
+          it "should allow to attach an event to window", ->
+            adapter.observe window, "resize", ->
+
           it "should attach an event listener to wrapped", (done) ->
             element = document.createElement "a"
             adapter.observe adapter.wrap(element), "click", -> done()
@@ -301,6 +317,11 @@ describe "Generic adapter", ->
             adapter.stopObserving element, "click", listener
             Test.clickElement element
             expect(listener.callCount).to.equal 2 # Shouldn't have changed
+
+          it "should allow to remove event listener on window", ->
+            listener = sinon.stub()
+            adapter.observe window, "resize", listener
+            adapter.stopObserving window, "resize", listener
 
           it "should remove event listener from wrapped", ->
             element = document.createElement "a"
