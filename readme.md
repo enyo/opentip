@@ -24,6 +24,7 @@ Supported frameworks are:
 
 - Native. You can use this one if you don't use any framework.
 - [Ender]
+- [Component]
 - [jQuery]
 - [Prototype]
 
