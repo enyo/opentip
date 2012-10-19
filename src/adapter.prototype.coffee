@@ -3,8 +3,7 @@
 #
 # Uses the prototype framework
 
-# Because $ is my favorite character
-(($) ->
+do ->
 
   Element.addMethods
     addTip: (element, content, title, options) ->
@@ -146,4 +145,3 @@
   # Add the adapter to the list
   Opentip.addAdapter new Adapter
 
-)(jQuery)
