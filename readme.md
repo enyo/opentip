@@ -54,7 +54,8 @@ $ ender build opentip
 ### Other
 
 If you don't use component or ender, just download `lib/opentip.js` and
-`lib/adapter.FRAMEWORK.js` and include them in this order.
+`lib/adapter.FRAMEWORK.js` and include them in this order. You can also take
+the already minified and combined files in the `downloads/` folder.
 
 * * *
 
@@ -69,7 +70,7 @@ refer to the [installation guide](http://www.opentip.org/installation.html).
 Usage
 -----
 
-*Version 2.0.0*
+*Version 2.0.1*
 
 With HTML data attributes:
 
