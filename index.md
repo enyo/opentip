@@ -41,7 +41,8 @@ demo
   <div class="joints-and-targets box">
     <h2>joints&amp;targets</h2>
     <p>
-      Joints and targets allow you to position the tooltip exactly where you want it.
+      Joints and targets allow you to position the tooltip exactly where you
+      want it.
     </p>
   </div>
   <div class="stems box">
@@ -51,7 +52,14 @@ demo
       direction.
     </p>
   </div>
-  <div class="events box">
+  <div class="canvas box">
+    <h2>canvas</h2>
+    <p>
+      Opentips are drawn on canvas which creates beautifully rendered tooltips
+      in all browsers.
+    </p>
+  </div>
+  <div class="more box">
     <h2>many more...</h2>
     <p markdown="1">
       There are many more features! Dive into the [documentation] to get more information.

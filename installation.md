@@ -14,19 +14,23 @@ and provides a *native adapter* that works without framework.
 jQuery, Prototype, Native
 -------------------------
 
-First download the actual `opentip.js` and then the adapter file you want from
-[github](https://github.com/enyo/opentip/tree/master/lib).
+
+First download the the appropriate [opentip bundle from github](https://github.com/enyo/opentip/tree/master/downloads)
+for your framework. (Example: if you're using jQuery, download either `opentip-jquery.js` or if
+you also want to support <=IE8 `opentip-jquery-excanvas.js`).
 
 You also need to download and include the [Opentip CSS] file.
 
+> If you bundle your scripts yourself, or want to be able to debug opentip,
+> use the files from the [lib folder](https://github.com/enyo/opentip/tree/master/lib)
+> and include `opentips.js` and `adapter.jquery.js` **in that order**.
 
 ### embedding
 
-Now embed the **Javascript** files and the **CSS** in your page.
+Now embed the **Javascript** and the **CSS** file in your page.
 
 {% highlight html %}
-<script src="path/to/opentip.js"></script>
-<script src="path/to/adapter.jquery.js"></script><!-- Change to the adapter you actually use -->
+<script src="path/to/adapter-jquery.js"></script><!-- Change to the adapter you actually use -->
 <link href="path/to/opentip.css" rel="stylesheet" type="text/css" />
 {% endhighlight %}
 

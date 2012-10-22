@@ -67,7 +67,7 @@ require.resolve = function(path){
     || require.modules[index] && index
     || require.modules[indexJSON] && indexJSON
     || require.modules[orig] && orig
-    || null;
+    || require.aliases[index];
 };
 
 /**
@@ -82,7 +82,6 @@ require.resolve = function(path){
 require.normalize = function(curr, path) {
   var segs = [];
 
-  // foo
   if ('.' != path.charAt(0)) return path;
 
   curr = curr.split('/');
@@ -155,8 +154,6 @@ require.relative = function(parent) {
   function fn(path){
     var orig = path;
     path = fn.resolve(path);
-    var alias = require.aliases[path + '/index.js'];
-    if (alias) path = alias;
     return require(path, parent, orig);
   }
 
@@ -12318,6 +12315,15 @@ $(function() {
     new Opentip(box, ".are...", { style: "stemsDemo", tipJoint: "left", stem: "left", stemLength: 20, stemBase: 10 });
     new Opentip(box, ".very...", { style: "stemsDemo", tipJoint: "right", stem: "bottom" });
     new Opentip(box, ".cool", { style: "stemsDemo", tipJoint: "top right", stem: "top right", stemLength: 30, stemBase: 20 });
+
+    // Canvas
+    box = boxes.find(".canvas.box");
+    new Opentip(box, "The borders and stems are drawn perfectly, and the shadows do not rely on CSS3.", { borderWidth: 5, stemLength: 18, stemBase: 20, style: "glass", target: true, tipJoint: "top", borderColor: "#317CC5" });
+
+    // AJAX
+    box = boxes.find(".more.box");
+    new Opentip(box, "Opentip supports all major frameworks: jQuery, prototype, component and ender.", { target: true, tipJoint: "top" });
+
   }
 
 });
@@ -12330,6 +12336,6 @@ require.alias("component-jquery/index.js", "boot/deps/jquery/index.js");
 require.alias("enyo-excanvas/index.js", "boot/deps/excanvas/index.js");
 
 require.alias("enyo-opentip/index.js", "boot/deps/opentip/index.js");
-require.alias("enyo-opentip/index.js", "boot/deps/opentip/lib/opentip.js");
-require.alias("enyo-opentip/index.js", "boot/deps/opentip/lib/adapter.component.js");
+require.alias("enyo-opentip/lib/opentip.js", "boot/deps/opentip/lib/opentip.js");
+require.alias("enyo-opentip/lib/adapter.component.js", "boot/deps/opentip/lib/adapter.component.js");
 require.alias("component-jquery/index.js", "enyo-opentip/deps/jquery/index.js");

@@ -85,6 +85,15 @@ $(function() {
     new Opentip(box, ".are...", { style: "stemsDemo", tipJoint: "left", stem: "left", stemLength: 20, stemBase: 10 });
     new Opentip(box, ".very...", { style: "stemsDemo", tipJoint: "right", stem: "bottom" });
     new Opentip(box, ".cool", { style: "stemsDemo", tipJoint: "top right", stem: "top right", stemLength: 30, stemBase: 20 });
+
+    // Canvas
+    box = boxes.find(".canvas.box");
+    new Opentip(box, "The borders and stems are drawn perfectly, and the shadows do not rely on CSS3.", { borderWidth: 5, stemLength: 18, stemBase: 20, style: "glass", target: true, tipJoint: "top", borderColor: "#317CC5" });
+
+    // AJAX
+    box = boxes.find(".more.box");
+    new Opentip(box, "Opentip supports all major frameworks: jQuery, prototype, component and ender.", { target: true, tipJoint: "top" });
+
   }
 
 });
