@@ -67,6 +67,14 @@ demo
   </div>
 </div>
 
+browser support
+---------------
+
+Opentip has been developed for and tested in all major browser, including IE7+.
+
+![Browser support](images/browser_logos.png)
+
+
 * * *
 
 
