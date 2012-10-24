@@ -34,10 +34,10 @@ pre{margin:30px 0}
 p{color:#333}
 strong{font-weight:bold}
 em{font-style:italic}
-blockquote{border-left:2px solid #c0c0c0;background:rgba(0,0,0,0.02);}
-blockquote p{padding:8px 15px}
+blockquote{border:1px solid #e8e8e8;background:rgba(0,0,0,0.01);-webkit-box-shadow:2px 2px 15px #e5e5e5;box-shadow:2px 2px 15px #e5e5e5;}
+blockquote p{padding:8px 25px}
 .columns{zoom:1}
-.columns .left{width:50%;float:left;padding-right:40px;border-right:1px solid #e3e3e3}
+.columns .left{width:50%;float:left;padding-right:40px}
 .columns .right{width:50%;float:right;padding-left:40px}
 .columns:before,.columns:after{content:"";display:table}
 .columns:after{clear:both}
@@ -65,8 +65,7 @@ body.scroll #header nav ul{top:23px}
 #demo-boxes .box p{color:#5b6262}
 #demo-boxes:before,#demo-boxes:after{content:"";display:table}
 #demo-boxes:after{clear:both}
-.columns{margin-top:140px}
-#show-your-work{margin-top:30px;min-height:200px;}
-#show-your-work img{float:left;margin-right:20px}
-#show-your-work p{padding-top:50px}
+.columns{margin-top:140px;margin-bottom:140px}
+#show-your-work{margin-top:10px;min-height:200px;}
+#show-your-work img{float:left;position:relative;top:-20px;margin-right:20px}
 #footer{color:#aaa}

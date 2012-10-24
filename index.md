@@ -74,7 +74,9 @@ demo
     <div id="show-your-work">
       <img src="/images/show_your_work.png" alt="Show your work" />
 
-      <p>If you built a website using Opentip, <a href="https://github.com/enyo">tell me about it</a>!
+      <h2>showcase</h2>
+      
+      <p>If you built a website using Opentip, <a href="mailto:m@tias.me">tell me about it</a>!
       I'm building a showcase and would be happy to include your work.</p>
       
 
@@ -95,8 +97,6 @@ demo
 </div>
 
 
-
-* * *
 
 
 usage
