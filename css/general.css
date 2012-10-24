@@ -36,6 +36,11 @@ strong{font-weight:bold}
 em{font-style:italic}
 blockquote{border-left:2px solid #c0c0c0;background:rgba(0,0,0,0.02);}
 blockquote p{padding:8px 15px}
+.columns{zoom:1}
+.columns .left{width:50%;float:left;padding-right:40px;border-right:1px solid #e3e3e3}
+.columns .right{width:50%;float:right;padding-left:40px}
+.columns:before,.columns:after{content:"";display:table}
+.columns:after{clear:both}
 #main,#footer,#header > div{width:960px;margin:0 auto;position:relative}
 #header{position:fixed;top:0;left:0;right:0;background:#f2f2f2 url("../images/grain.png") fixed repeat left top;display:block;z-index:1000;}
 #header #header-shadow,#header #header-shadow-line{opacity:0;-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);filter:alpha(opacity=0);-webkit-transition:opacity .5s ease-in-out;-moz-transition:opacity .5s ease-in-out;-o-transition:opacity .5s ease-in-out;-ms-transition:opacity .5s ease-in-out;transition:opacity .5s ease-in-out;}
@@ -45,7 +50,7 @@ body.scroll #header #header-shadow,body.scroll #header #header-shadow-line{opaci
 body.scroll #header #logo{top:-30px}
 #header hr{margin-bottom:0;margin-top:0}
 #header #header-shadow{width:800px;height:20px;position:absolute;bottom:0;left:50%;margin-left:-400px;-webkit-border-radius:100%;border-radius:100%;-webkit-box-shadow:0 0 30px rgba(0,0,0,0.2);box-shadow:0 0 30px rgba(0,0,0,0.2)}
-#header nav{font-family:"Raleway","Helvetica neue",sans-serif;font-weight:100;font-size:18px;line-height:150%;display:block;position:relative;text-align:right;height:75px;background:#f2f2f2 url("../images/grain.png") repeat left top;z-index:100;}
+#header nav{font-family:"Raleway","Helvetica neue",sans-serif;font-weight:100;font-size:20px;line-height:150%;display:block;position:relative;text-align:right;height:75px;background:#f2f2f2 url("../images/grain.png") repeat left top;z-index:100;}
 #header nav ul{position:absolute;top:50px;right:0;margin:0;padding:0;list-style:none;-webkit-transition:top .5s ease-in-out;-moz-transition:top .5s ease-in-out;-o-transition:top .5s ease-in-out;-ms-transition:top .5s ease-in-out;transition:top .5s ease-in-out;}
 body.scroll #header nav ul{top:23px}
 #header nav ul li{padding:0;list-style:none;display:inline-block;}
@@ -60,4 +65,8 @@ body.scroll #header nav ul{top:23px}
 #demo-boxes .box p{color:#5b6262}
 #demo-boxes:before,#demo-boxes:after{content:"";display:table}
 #demo-boxes:after{clear:both}
+.columns{margin-top:140px}
+#show-your-work{margin-top:30px;min-height:200px;}
+#show-your-work img{float:left;margin-right:20px}
+#show-your-work p{padding-top:50px}
 #footer{color:#aaa}

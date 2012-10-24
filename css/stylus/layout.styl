@@ -1,0 +1,136 @@
+
+
+
+#main, #footer, #header > div
+  width page-width
+  margin 0 auto
+  position relative
+
+#header
+  position fixed
+  top 0
+  left 0
+  right 0
+  background #F2F2F2 url("../images/grain.png") fixed repeat left top
+  display block
+  z-index 1000
+
+  #header-shadow, #header-shadow-line
+    opacity 0
+    transition opacity 0.5s ease-in-out
+    body.scroll &
+      opacity 1
+
+  #logo
+    display block
+    absolute top left -90px
+    transition top 0.5s ease-in-out
+
+    background url("../images/logo.png") no-repeat left top
+    width 360px
+    height 162px
+    z-index 200
+    span
+      display none
+
+    body.scroll &
+      top -30px
+
+
+
+  hr
+    margin-bottom 0
+    margin-top 0
+
+  #header-shadow
+    width 800px
+    height 20px
+    absolute bottom left 50%
+    margin-left -(800px / 2)
+    border-radius 100%
+    box-shadow 0 0 30px rgba(0, 0, 0, 0.2)
+
+  nav
+    font-family "Raleway", "Helvetica neue", sans-serif
+    font-weight 100
+    font-size 20px
+    line-height 150%
+    display block
+    position relative
+    text-align right
+    height 75px
+    background #F2F2F2 url("../images/grain.png") repeat left top
+    z-index 100
+
+    ul
+      absolute top 50px right
+      margin 0
+      padding 0
+      list-style none
+      transition top 0.5s ease-in-out
+
+      body.scroll &
+        top 23px
+
+      li
+        padding 0
+        list-style none
+        display inline-block
+        &.active
+          a
+            border-bottom 2px solid black
+            color #333
+        a
+          color #bbb
+          text-decoration none
+          display block
+          padding 0 0px
+          margin 0 5px
+          transition color 0.3s ease-in-out
+          -webkit-font-smoothing subpixel-antialiased
+          &:hover
+            color rgba(0, 0, 0, 0.8)
+
+#main
+  padding-top 180px
+  #intro
+    font-size 36px
+    margin 20px 0
+    color rgba(0, 0, 0, 0.4)
+
+
+#demo-boxes
+  .box
+    background #E1F3F3
+    background linear-gradient(top, #f1f7f0, #d3f0f6)
+    width 300px
+    height 180px
+    padding 25px 35px
+    border-radius 5px
+    box-shadow 1px 1px 12px rgba(0, 0, 0, 0.1)
+
+    float left
+    margin 10px
+
+    h2
+      margin 0 0 10px 0
+
+    p
+      color #5B6262
+  clearfix()
+
+
+.columns
+  margin-top 140px
+#show-your-work
+  margin-top 30px
+  min-height 200px
+  img
+    float left
+    margin-right 20px
+  p
+    padding-top 50px
+
+#footer
+  color #aaa
+

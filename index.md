@@ -67,12 +67,33 @@ demo
   </div>
 </div>
 
-browser support
----------------
 
-Opentip has been developed for and tested in all major browser, including IE7+.
+<div class="columns">
+  <div class="left">
 
-![Browser support](images/browser_logos.png)
+    <div id="show-your-work">
+      <img src="/images/show_your_work.png" alt="Show your work" />
+
+      <p>If you built a website using Opentip, <a href="https://github.com/enyo">tell me about it</a>!
+      I'm building a showcase and would be happy to include your work.</p>
+      
+
+    </div>
+  </div>
+
+  <div class="right">
+
+    <h2>browser support</h2>
+
+    <p>
+      Opentip has been developed for and tested in all major browser, including IE7+.
+    </p>
+
+    <img src="/images/browser_logos.png" alt="Browser support" />
+
+  </div>
+</div>
+
 
 
 * * *
