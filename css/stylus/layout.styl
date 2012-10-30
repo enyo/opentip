@@ -1,7 +1,7 @@
 
 
 
-#main, #footer, #header > div
+#main, #social, #footer, #header > div
   width page-width
   margin 0 auto
   position relative
@@ -21,20 +21,22 @@
     body.scroll &
       opacity 1
 
-  #logo
+  #name
+    margin 0
+    padding 0
     display block
     absolute top left -90px
-    transition top 0.5s ease-in-out
-
-    background url("../images/logo.png") no-repeat left top
-    width 360px
-    height 162px
     z-index 200
-    span
-      display none
-
+    transition top 0.5s ease-in-out
     body.scroll &
       top -30px
+    width 360px
+    height 162px
+    a
+      display block
+      span
+        display none
+
 
 
 
@@ -132,6 +134,10 @@
     position relative
     top -20px
     margin-right 20px
+
+
+#social
+  margin-top 80px
 
 #footer
   color #aaa

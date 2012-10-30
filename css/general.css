@@ -7,6 +7,7 @@ a img{border:none}
 article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary{margin:0;padding:0;border:0;outline:0;display:block}
 audio,canvas,video{display:inline-block;*display:inline;*zoom:1}
 audio:not([controls]),[hidden]{display:none}
+del{text-decoration:line-through}
 code{color:rgba(0,0,0,0.6);}
 code .nt,code .k,code .nv{color:rgba(0,50,0,0.6);font-weight:bold}
 code .na,code .p,code .nx{color:rgba(0,0,100,0.6)}
@@ -41,13 +42,14 @@ blockquote p{padding:8px 25px}
 .columns .right{width:50%;float:right;padding-left:40px}
 .columns:before,.columns:after{content:"";display:table}
 .columns:after{clear:both}
-#main,#footer,#header > div{width:960px;margin:0 auto;position:relative}
+#main,#social,#footer,#header > div{width:960px;margin:0 auto;position:relative}
 #header{position:fixed;top:0;left:0;right:0;background:#f2f2f2 url("../images/grain.png") fixed repeat left top;display:block;z-index:1000;}
 #header #header-shadow,#header #header-shadow-line{opacity:0;-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);filter:alpha(opacity=0);-webkit-transition:opacity .5s ease-in-out;-moz-transition:opacity .5s ease-in-out;-o-transition:opacity .5s ease-in-out;-ms-transition:opacity .5s ease-in-out;transition:opacity .5s ease-in-out;}
 body.scroll #header #header-shadow,body.scroll #header #header-shadow-line{opacity:1;-ms-filter:none;filter:none}
-#header #logo{display:block;position:absolute;top:0;left:-90px;-webkit-transition:top .5s ease-in-out;-moz-transition:top .5s ease-in-out;-o-transition:top .5s ease-in-out;-ms-transition:top .5s ease-in-out;transition:top .5s ease-in-out;background:url("../images/logo.png") no-repeat left top;width:360px;height:162px;z-index:200;}
-#header #logo span{display:none}
-body.scroll #header #logo{top:-30px}
+#header #name{margin:0;padding:0;display:block;position:absolute;top:0;left:-90px;z-index:200;-webkit-transition:top .5s ease-in-out;-moz-transition:top .5s ease-in-out;-o-transition:top .5s ease-in-out;-ms-transition:top .5s ease-in-out;transition:top .5s ease-in-out;width:360px;height:162px;}
+body.scroll #header #name{top:-30px}
+#header #name a{display:block;}
+#header #name a span{display:none}
 #header hr{margin-bottom:0;margin-top:0}
 #header #header-shadow{width:800px;height:20px;position:absolute;bottom:0;left:50%;margin-left:-400px;-webkit-border-radius:100%;border-radius:100%;-webkit-box-shadow:0 0 30px rgba(0,0,0,0.2);box-shadow:0 0 30px rgba(0,0,0,0.2)}
 #header nav{font-family:"Raleway","Helvetica neue",sans-serif;font-weight:100;font-size:20px;line-height:150%;display:block;position:relative;text-align:right;height:75px;background:#f2f2f2 url("../images/grain.png") repeat left top;z-index:100;}
@@ -68,4 +70,5 @@ body.scroll #header nav ul{top:23px}
 .columns{margin-top:140px;margin-bottom:140px}
 #show-your-work{margin-top:10px;min-height:200px;}
 #show-your-work img{float:left;position:relative;top:-20px;margin-right:20px}
+#social{margin-top:80px}
 #footer{color:#aaa}

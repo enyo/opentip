@@ -22,7 +22,7 @@ $(function() {
     offset: [ -40, -50 ]
   };
 
-  var logoOpentip = new Opentip("#logo", "2.0", { style: "logo" });
+  var logoOpentip = new Opentip("#header #name", "2.0", { style: "logo" });
 
   $(window).scroll(function() {
     var scrollTop = bod.scrollTop() || $("html").scrollTop(), showTimeout;

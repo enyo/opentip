@@ -20,7 +20,6 @@ body.scroll #header nav ul{top:23px}
 #demo-boxes .box h2{margin:0 0 10px 0}
 #demo-boxes .box p{color:#5b6262}
 .columns{margin-top:140px;margin-bottom:140px}
-#show-your-work{margin-top:30px;min-height:200px;}
-#show-your-work img{float:left;margin-right:20px}
-#show-your-work p{padding-top:50px}
+#show-your-work{margin-top:10px;min-height:200px;}
+#show-your-work img{float:left;position:relative;top:-20px;margin-right:20px}
 #footer{color:#aaa}

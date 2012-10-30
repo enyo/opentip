@@ -15,6 +15,7 @@
     Facebook still processes it.
     <meta property="og:title" content="Opentip"/>
     <meta property="og:site_name" content="www.opentip.org"/>
+    <meta property="og:image" content="http://www.opentip.org/images/logo.png"/>
     -->
 
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Raleway:100" rel="stylesheet" type="text/css" />
@@ -48,7 +49,7 @@
       })();
     </script>
   </head>
-  <body>
+  <body itemscope itemtype="http://schema.org/SoftwareApplication">
 
     <a href="https://github.com/enyo/opentip"><img style="z-index: 50000; position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
 
@@ -59,7 +60,7 @@
     <![endif]-->
 
     <div id="header"><div>
-      <a href="./" id="logo"><span>Opentip</span></a>
+      <h1 id="name"><a href="./"><span itemprop="name">Opentip</span><img itemprop="image" src="/images/logo.png" alt="logo" /></a></h1>
       <div id="header-shadow"></div>
       <nav>
         <ul>
@@ -73,13 +74,29 @@
     <div id="main">
       {{ content }}
     </div>
+    <div id="social">
+      <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.opentip.org%2F&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=35" style="border:none; overflow:hidden; width:750px; height:35px;"></iframe>
+
+
+      <!-- Place this tag where you want the +1 button to render. -->
+      <div class="g-plusone" data-annotation="inline" data-width="300" data-href="http://www.opentip.org"></div>
+
+      <!-- Place this tag after the last +1 button tag. -->
+      <script type="text/javascript">
+        (function() {
+          var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+          po.src = 'https://apis.google.com/js/plusone.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+        })();
+      </script>
+    </div>
     <div id="footer">
       <hr />
       Created by <strong>Matias Meno</strong><br />
       Original graphics by <strong>Tjandra Mayerhold</strong><br /><br />
       Thanks to:<br /><br />
-      &nbsp;&nbsp;<em>Florian Loitsch</em> for teaching me all I know about JavaScript.<br />
-      &nbsp;&nbsp;<em>Hannah Mayr</em> for constantly advising me. <strike>understanding and encouraging my enthusiasm in open source projects</strike>.<br />
+      &nbsp;&nbsp;<em>Florian Loitsch</em> for teaching me most of what I know about JavaScript.<br />
+      &nbsp;&nbsp;<em>Hannah Mayr</em> for constantly advising me. <del>understanding and encouraging my enthusiasm in open source projects</del>.<br />
       <br />
       
       <div id="license">
