@@ -1357,7 +1357,8 @@ Opentip.findElements = ->
     content = content || ""
 
     for optionName of Opentip.styles.standard
-      if optionValue = adapter.data element, "ot#{Opentip::ucfirst optionName}"
+      optionValue = adapter.data element, "ot#{Opentip::ucfirst optionName}"
+      if optionValue?
         if optionValue in [ "yes", "true", "on" ] then optionValue = true 
         else if optionValue in [ "no", "false", "off" ] then optionValue = false
         options[optionName] = optionValue
