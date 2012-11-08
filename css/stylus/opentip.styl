@@ -10,6 +10,11 @@
   transition none
   pointer-events none
 
+  &.fixed
+    // When it's fixed, the close button, and links inside the tooltip should
+    // be clickable
+    pointer-events auto
+
   &.hidden
     display none
 

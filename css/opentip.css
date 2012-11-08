@@ -15,6 +15,9 @@
   transition: none;
   pointer-events: none;
 }
+.opentip-container.fixed {
+  pointer-events: auto;
+}
 .opentip-container.hidden {
   display: none;
 }
