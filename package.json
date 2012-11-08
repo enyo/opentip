@@ -44,5 +44,10 @@
     "bonzo": "1.x",
     "reqwest": "0.x"
   },
+  "devDependencies": {
+    "coffee-script": "*",
+    "uglify-js2": "*",
+    "request": "*"
+  },
   "ender": "noop"
 }
