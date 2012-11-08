@@ -29,10 +29,11 @@ describe "Opentip - Startup", ->
     expect(opentip.options.showOn).to.eql "click"
 
   it "should properly parse boolean data- attributes", ->
-    trigger = $("""<div data-ot="Content text" data-ot-shadow="yes" data-ot-auto-offset="no"></div>""")[0]
+    trigger = $("""<div data-ot="Content text" data-ot-shadow="yes" data-ot-auto-offset="no" data-ot-contain-in-viewport="false"></div>""")[0]
     $(document.body).append trigger
     Opentip.findElements()
     opentip = adapter.data(trigger, "opentips")[0]
     expect(opentip.options.shadow).to.be yes
     expect(opentip.options.autoOffset).to.be no
+    expect(opentip.options.containInViewport).to.be no
 

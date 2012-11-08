@@ -2,3 +2,4 @@ components
 build
 .*
 !.gitignore
+node_modules
