@@ -29,6 +29,55 @@
       "regexs": [
         "\"version\": \"###\""
       ]
+    },
+    {
+      "name": "downloads/generate.coffee",
+      "regexs": [
+        "Opentip v###"
+      ]
+    },
+    {
+      "name": "downloads/opentip-jquery-excanvas.js",
+      "regexs": [
+        "Opentip\\.version=\"###\"",
+        "Opentip v###"
+      ]
+    },
+    {
+      "name": "downloads/opentip-jquery.js",
+      "regexs": [
+        "Opentip\\.version=\"###\"",
+        "Opentip v###"
+      ]
+    },
+    {
+      "name": "downloads/opentip-native-excanvas.js",
+      "regexs": [
+        "Opentip\\.version=\"###\"",
+        "Opentip v###"
+      ]
+    },
+    {
+      "name": "downloads/opentip-native.js",
+      "regexs": [
+        "Opentip\\.version=\"###\"",
+        "Opentip v###"
+      ]
+    },
+    {
+      "name": "downloads/opentip-prototype-excanvas.js",
+      "regexs": [
+        "Opentip\\.version=\"###\"",
+        "Opentip v###"
+      ]
+    },
+    {
+      "name": "downloads/opentip-prototype.js",
+      "regexs": [
+        "Opentip\\.version=\"###\"",
+        "Opentip v###"
+      ]
     }
+
   ]
 }
