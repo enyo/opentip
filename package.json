@@ -1,6 +1,6 @@
 {
   "name": "opentip",
-  "version": "2.1.0",
+  "version": "2.1.1-dev",
   "description": "Free opensource tooltip class.",
   "keywords": [ "tooltip" ],
   "homepage": "http://www.opentip.org",
