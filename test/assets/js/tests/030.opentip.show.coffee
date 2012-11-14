@@ -117,6 +117,64 @@ describe "Opentip - Appearing", ->
       opentip.show()
       expect(opentip._ensureViewportContainment.callCount).to.be 0
 
+  describe "grouped Opentips", ->
+    it "should hide all other opentips", ->
+      Opentip.tips = [ ]
+      opentip = new Opentip adapter.create("<div></div>"), "Test", { delay: 0, group: "test" }
+      opentip2 = new Opentip adapter.create("<div></div>"), "Test", { delay: 0, group: "test" }
+      opentip3 = new Opentip adapter.create("<div></div>"), "Test", { delay: 0, group: "test" }
+      sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
+      sinon.stub opentip2, "_triggerElementExists", -> triggerElementExists
+      sinon.stub opentip3, "_triggerElementExists", -> triggerElementExists
+
+      opentip.show()
+      expect(opentip.visible).to.be.ok()
+      expect(opentip2.visible).to.not.be.ok()
+      expect(opentip3.visible).to.not.be.ok()
+      opentip2.show()
+      expect(opentip.visible).to.not.be.ok()
+      expect(opentip2.visible).to.be.ok()
+      expect(opentip3.visible).to.not.be.ok()
+      opentip3.show()
+      expect(opentip.visible).to.not.be.ok()
+      expect(opentip2.visible).to.not.be.ok()
+      expect(opentip3.visible).to.be.ok()
+
+      opentip.deactivate()
+      opentip2.deactivate()
+      opentip3.deactivate()
+
+    it "should abort showing other opentips", ->
+      Opentip.tips = [ ]
+      opentip = new Opentip adapter.create("<div></div>"), "Test", { delay: 1000, group: "test" }
+      opentip2 = new Opentip adapter.create("<div></div>"), "Test", { delay: 1000, group: "test" }
+      opentip3 = new Opentip adapter.create("<div></div>"), "Test", { delay: 1000, group: "test" }
+      sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
+      sinon.stub opentip2, "_triggerElementExists", -> triggerElementExists
+      sinon.stub opentip3, "_triggerElementExists", -> triggerElementExists
+
+      opentip.prepareToShow()
+      expect(opentip.visible).to.not.be.ok()
+      expect(opentip.preparingToShow).to.be.ok()
+      expect(opentip2.visible).to.not.be.ok()
+      expect(opentip2.preparingToShow).to.not.be.ok()
+
+      opentip2.prepareToShow()
+      expect(opentip.visible).to.not.be.ok()
+      expect(opentip.preparingToShow).to.not.be.ok()
+      expect(opentip2.visible).to.not.be.ok()
+      expect(opentip2.preparingToShow).to.be.ok()
+
+      opentip3.show()
+      expect(opentip.visible).to.not.be.ok()
+      expect(opentip.preparingToShow).to.not.be.ok()
+      expect(opentip2.visible).to.not.be.ok()
+      expect(opentip2.preparingToShow).to.not.be.ok()
+
+      opentip.deactivate()
+      opentip2.deactivate()
+      opentip3.deactivate()
+
   describe "events", ->
 
     element = ""

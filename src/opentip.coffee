@@ -76,6 +76,8 @@ class Opentip
 
     @debug "Creating Opentip."
 
+    Opentip.tips.push this
+
     @adapter = Opentip.adapter
 
     # Add the ID to the element
@@ -414,7 +416,7 @@ class Opentip
 
     @debug "Showing in #{@options.delay}s."
 
-    Opentip._abortShowingGroup @options.group if @options.group
+    Opentip._abortShowingGroup @options.group, this if @options.group
 
     @preparingToShow = true
 
@@ -429,6 +431,7 @@ class Opentip
     @_showTimeoutId = @setTimeout @bound.show, @options.delay || 0
 
   show: ->
+    @_abortHiding()
     @_clearTimeouts()
     return if @visible
 
@@ -436,7 +439,7 @@ class Opentip
 
     @debug "Showing now."
 
-    Opentip._hideGroup @options.group if @options.group
+    Opentip._hideGroup @options.group, this if @options.group
 
     @visible = yes
     @preparingToShow = no
@@ -483,7 +486,7 @@ class Opentip
     # doesn't change after it will never call @_draw() again.
     @_draw()
 
-  _abortShowing: ->
+  abortShowing: ->
     if @preparingToShow
       @debug "Aborting showing."
       @_clearTimeouts()
@@ -492,7 +495,7 @@ class Opentip
       @_setupObservers "-showing", "-visible", "hiding", "hidden"
 
   prepareToHide: ->
-    @_abortShowing()
+    @abortShowing()
 
     return unless @visible
 
@@ -507,6 +510,7 @@ class Opentip
     @_hideTimeoutId = @setTimeout @bound.hide, @options.hideDelay
 
   hide: ->
+    @abortShowing()
     @_clearTimeouts()
 
     return unless @visible
@@ -1368,7 +1372,7 @@ Opentip.findElements = ->
 # Publicly available
 # ------------------
 
-Opentip.version = "2.0.4"
+Opentip.version = "2.1.0"
 
 Opentip.debug = off
 
@@ -1379,11 +1383,13 @@ Opentip.lastZIndex = 100
 
 Opentip.tips = [ ]
 
-Opentip._abortShowingGroup = ->
-  # TODO
+Opentip._abortShowingGroup = (group, originatingOpentip) ->
+  for opentip in Opentip.tips
+    opentip.abortShowing() if opentip != originatingOpentip and opentip.options.group == group
 
-Opentip._hideGroup = ->
-  # TODO
+Opentip._hideGroup = (group, originatingOpentip) ->
+  for opentip in Opentip.tips
+    opentip.hide() if opentip != originatingOpentip and opentip.options.group == group
 
 # A list of possible adapters. Used for testing
 Opentip.adapters = { }

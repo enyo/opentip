@@ -22,7 +22,7 @@ downloads =
 
 
 header =  """
-          // Opentip
+          // Opentip v2.1.0
           // Copyright (c) 2009-2012
           // www.opentip.org
           // MIT Licensed

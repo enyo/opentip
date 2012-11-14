@@ -149,6 +149,14 @@ describe "Opentip", ->
       opentip3 = new Opentip element
       expect(adapter.data element, "opentips").to.eql [ opentip, opentip2, opentip3 ]
 
+    it "should add itself to the Opentip.tips list", ->
+      element = $("<div></div>")[0]
+      Opentip.tips = [ ]
+      opentip1 = new Opentip element
+      opentip2 = new Opentip element
+      expect(Opentip.tips.length).to.equal 2
+      expect(Opentip.tips[0]).to.equal opentip1
+      expect(Opentip.tips[1]).to.equal opentip2
 
   describe "init()", ->
     describe "showOn == creation", ->
