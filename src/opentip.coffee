@@ -438,7 +438,7 @@ class Opentip
 
     @debug "Showing now."
 
-    Opentip._hideGroup @options.group if @options.group
+    Opentip._hideGroup @options.group, this if @options.group
 
     @visible = yes
     @preparingToShow = no
@@ -1384,8 +1384,9 @@ Opentip.tips = [ ]
 Opentip._abortShowingGroup = ->
   # TODO
 
-Opentip._hideGroup = ->
-  # TODO
+Opentip._hideGroup = (group, originatingOpentip) ->
+  for opentip in Opentip.tips
+    opentip.hide() if opentip != originatingOpentip and opentip.options.group == group
 
 # A list of possible adapters. Used for testing
 Opentip.adapters = { }
