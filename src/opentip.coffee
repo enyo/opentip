@@ -76,6 +76,8 @@ class Opentip
 
     @debug "Creating Opentip."
 
+    Opentip.tips.push this
+
     @adapter = Opentip.adapter
 
     # Add the ID to the element
