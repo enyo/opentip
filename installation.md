@@ -15,9 +15,12 @@ jQuery, Prototype, Native
 -------------------------
 
 
-First download the the appropriate [opentip bundle from github](https://github.com/enyo/opentip/tree/master/downloads)
-for your framework. (Example: if you're using jQuery, download either `opentip-jquery.js` or if
-you also want to support <=IE8 `opentip-jquery-excanvas.js`).
+First download the appropriate [opentip bundle from github][downloads]
+for your framework.
+
+Example: if you're using jQuery, you need one of those files:
+`opentip-jquery.js` if you don't intend to support IE<=8,
+**or** `opentip-jquery-excanvas.js` if you also want to support <=IE8.
 
 You also need to download and include the [Opentip CSS] file.
 
@@ -83,7 +86,14 @@ internet explorer
 -----------------
 
 If you want Opentip to correctly work in <= IE8, you have to include excanvas
-as well. Get my [version of excanvas](https://raw.github.com/enyo/excanvas/master/index.js) (which supports IE8).
+as well.
+
+If you're downloading a [bundle](downloads) then just make sure you choose a file
+with `-excanvas` at the end.
+
+If you use the separate `lib/` files, get my
+[version of excanvas](https://raw.github.com/enyo/excanvas/master/index.js) as
+well (which supports IE8).
 
 If you're using component, you can simply add `enyo/excanvas` as dependency, but
 **don't forget** to require it before opentip: `require("excanvas");`.
@@ -91,3 +101,4 @@ If you're using component, you can simply add `enyo/excanvas` as dependency, but
 
 
 [opentip css]: https://raw.github.com/enyo/opentip/master/css/opentip.css
+[downloads]: https://github.com/enyo/opentip/tree/master/downloads
