@@ -71,7 +71,7 @@ refer to the [installation guide](http://www.opentip.org/installation.html).
 Usage
 -----
 
-*Version 2.1.0*
+*Version 2.1.1*
 
 With HTML data attributes:
 
@@ -108,7 +108,7 @@ If you have ideas, please contact me!
 Contribute
 ----------
 
-Please refer to the [CONTRIBUTE](CONTRIBUTE) readme.
+Please refer to the [CONTRIBUTING](https://github.com/enyo/opentip/blob/develop/CONTRIBUTING.md) readme.
 
 
 

@@ -239,7 +239,7 @@ describe "Opentip", ->
 
     it "should add a h1 if title is provided", ->
       enderElement = $ adapter.unwrap opentip.container
-      headerElement = enderElement.find "> .opentip > header > h1"
+      headerElement = enderElement.find "> .opentip > .header > h1"
       expect(headerElement.length).to.be.ok()
       expect(headerElement.html()).to.be "the title"
 
@@ -251,7 +251,7 @@ describe "Opentip", ->
 
     it "should add a close button if hideTrigger = close", ->
       enderElement = $ adapter.unwrap opentip.container
-      closeButton = enderElement.find "> .opentip > header > a.close > span"
+      closeButton = enderElement.find "> .opentip > .header > a.close > span"
       expect(closeButton.length).to.be.ok()
       expect(closeButton.html()).to.be "Close"
 

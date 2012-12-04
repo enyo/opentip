@@ -1,7 +1,7 @@
 {
   "files": [
     {
-      "name": "readme.md",
+      "name": "README.md",
       "regexs": [
         "Version ###"
       ]
