@@ -19,7 +19,7 @@ code .c,code .c1{color:rgba(0,0,0,0.3)}
 .opentip-container.style-logo{z-index:20000 !important;}
 .opentip-container.style-logo .opentip{color:#f8f8f8;color:rgba(255,255,255,0.9);text-shadow:1px 1px 0 rgba(0,0,0,0.2);font-size:15px}
 body,body *{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
-body{font:13px/150% "Open sans",sans-serif;padding:0 0 100px 0;margin:0;background:#f2f2f2 url("../images/grain.png") fixed repeat left top}
+body{font:14px/150% "Open sans",sans-serif;padding:0 0 100px 0;margin:0;background:#f2f2f2 url("../images/grain.png") fixed repeat left top}
 h1,h2,h3,h4{font-family:"Raleway","Helvetica neue",sans-serif;font-weight:100}
 h1{font-size:40px;line-height:130%;margin:26px 0}
 h2{font-size:35px;line-height:130%;margin:25px 0}
