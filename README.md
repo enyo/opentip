@@ -108,7 +108,7 @@ If you have ideas, please contact me!
 Contribute
 ----------
 
-Please refer to the [CONTRIBUTE](CONTRIBUTE) readme.
+Please refer to the [CONTRIBUTING](https://github.com/enyo/opentip/blob/develop/CONTRIBUTING.md) readme.
 
 
 
