@@ -154,7 +154,7 @@ css = (watch, callback) ->
     callback = watch
     watch = false
 
-  options = [ "-o", "#{__dirname}/css/", "--include", "/usr/local/lib/node_modules/nib/lib" ]
+  options = [ "-o", "#{__dirname}/css/", "--include", "./node_modules/nib/lib" ]
   options.push "-w" if watch
   options.push "#{__dirname}/css/stylus"
 

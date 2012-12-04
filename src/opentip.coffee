@@ -283,13 +283,14 @@ class Opentip
   _buildElements: ->
 
     # The actual content will be set by `_updateElementContent()`
-    @tooltipElement = @adapter.create """<div class="#{@class.opentip}"><header></header><div class="#{@class.content}"></div></div>"""
+    @tooltipElement = @adapter.create """<div class="#{@class.opentip}"><div class="header"></div><div class="#{@class.content}"></div></div>"""
 
-    @backgroundCanvas = @adapter.create """<canvas style="position: absolute;"></canvas>"""
+    @backgroundCanvas = @adapter.wrap document.createElement "canvas"
+    @adapter.css @backgroundCanvas, position: "absolute"
 
     G_vmlCanvasManager?.initElement @adapter.unwrap @backgroundCanvas
 
-    headerElement = @adapter.find @tooltipElement, "header"
+    headerElement = @adapter.find @tooltipElement, ".header"
 
     if @options.title
       # Create the title element and append it to the header

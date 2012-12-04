@@ -9,6 +9,13 @@ do ->
     addTip: (element, content, title, options) ->
       new Opentip element, content, title, options
 
+
+  # Needsd this function because of IE8
+  isArrayOrNodeList = (element) ->
+    if (element instanceof Array) or (element? and typeof element.length == 'number' and typeof element.item == 'function' and typeof element.nextNode == 'function' and typeof element.reset == 'function')
+      return yes
+    return no
+
   # And now the class
   class Adapter
 
@@ -33,7 +40,7 @@ do ->
 
     # Wraps the element
     wrap: (element) ->
-      if (element instanceof NodeList or element instanceof Array)
+      if isArrayOrNodeList element
         throw new Error "Multiple elements provided." if element.length > 1
         element = @unwrap element
       $(element)
@@ -41,7 +48,7 @@ do ->
 
     # Returns the unwrapped element
     unwrap: (element) ->
-      if element instanceof NodeList or element instanceof Array
+      if isArrayOrNodeList element
         element[0]
       else
         element

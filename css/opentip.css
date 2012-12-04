@@ -29,7 +29,7 @@
   color: #4f4b47;
   text-shadow: -1px -1px 0px rgba(255,255,255,0.2);
 }
-.opentip-container .opentip header {
+.opentip-container .opentip .header {
   margin: 0;
   padding: 0;
 }

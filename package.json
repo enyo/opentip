@@ -47,7 +47,8 @@
   "devDependencies": {
     "coffee-script": "*",
     "uglify-js2": "*",
-    "request": "*"
+    "request": "*",
+    "nib": "*"
   },
   "ender": "noop"
 }
