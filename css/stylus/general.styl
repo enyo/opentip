@@ -88,6 +88,7 @@ code
 
 p > code
 li > code
+td > code
   border 1px dotted #CBE3C5
   background #EFF5EE
   padding 1px 2px
@@ -122,6 +123,25 @@ blockquote
     float right
     padding-left 40px
   clearfix()
+
+
+table
+  border 1px solid #ddd
+  box-shadow 1px 1px 20px #eee
+  thead
+    th
+      border-bottom 1px solid #ddd
+      background #Fafafa
+      font-weight bold
+      color #555
+      padding 8px 10px
+  td
+    padding 5px 10px
+    border-bottom 1px solid #eee
+
+  tr:nth-child(odd)
+    td
+      background #F8F8F8
 
 @import "layout"
 
