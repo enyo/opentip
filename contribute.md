@@ -12,5 +12,5 @@ Opentip is written in [coffeescript](http://coffeescript.org) and well tested
 
 The source is at [https://github/enyo/opentip](https://github.com/enyo/opentip).
 
-Please refer to the [contribute section of the readme](https://github.com/enyo/opentip/tree/develop#contribute)
+Please refer to the [contributing guidelines](https://github.com/enyo/opentip/blob/develop/CONTRIBUTING.md)
 for more information on how to contribute.

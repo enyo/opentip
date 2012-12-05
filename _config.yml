@@ -13,3 +13,5 @@ navigation:
     url: /documentation.html
   - text: contribute
     url: /contribute.html
+  - text: contact
+    url: /contact.html
