@@ -9,8 +9,6 @@ installation
 Opentip uses adapters to make the framework available for all major frameworks
 and provides a *native adapter* that works without framework.  
 
-> **You have to first include opentip, and then the adapter of the framework you use:**
-
 jQuery, Prototype, Native
 -------------------------
 
