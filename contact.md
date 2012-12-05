@@ -18,4 +18,4 @@ email
 
 If you don't have a github account or want to contact me privately (to ask me
 on a date or congratulate me on my good looks) you can send me an email to:
-[contact@opentip.org](contact@opentip.org)
+[contact@opentip.org](mailto:contact@opentip.org)
