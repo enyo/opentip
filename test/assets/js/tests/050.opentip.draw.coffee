@@ -37,6 +37,27 @@ describe "Opentip - Drawing", ->
       expect(opentip.debug.callCount).to.be.above 0
       expect(opentip.debug.args[0][0]).to.be "Drawing background."
 
+    it "should add the stem classes", ->
+      sinon.stub opentip, "debug"
+      opentip.backgroundCanvas = document.createElement "canvas"
+
+      opentip.currentStem = new Opentip.Joint "bottom left"
+      opentip.redraw = on
+      opentip._draw()
+
+      unwrappedContainer = Opentip.adapter.unwrap(opentip.container)
+      expect(unwrappedContainer.classList.contains("stem-bottom")).to.be.ok()
+      expect(unwrappedContainer.classList.contains("stem-left")).to.be.ok()
+
+      opentip.currentStem = new Opentip.Joint "right middle"
+      opentip.redraw = on
+      opentip._draw()
+
+      expect(unwrappedContainer.classList.contains("stem-bottom")).not.to.be.ok()
+      expect(unwrappedContainer.classList.contains("stem-left")).not.to.be.ok()
+      expect(unwrappedContainer.classList.contains("stem-middle")).to.be.ok()
+      expect(unwrappedContainer.classList.contains("stem-right")).to.be.ok()
+
     it "should set the correct width of the canvas"
     it "should set the correct offset of the canvas"
 

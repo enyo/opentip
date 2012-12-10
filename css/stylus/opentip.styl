@@ -7,8 +7,32 @@
   position absolute
   max-width 300px
   z-index 100
-  transition none
+  transition transform 1s ease-in-out
   pointer-events none
+  transform translateX(0) translateY(0)
+
+
+
+  &.fixed
+    &.hidden
+    &.going-to-show
+    &.hiding
+      &.stem-top.stem-center
+        transform translateY(-5px) 
+      &.stem-top.stem-right
+        transform translateY(-5px) translateX(5px)
+      &.stem-middle.stem-right
+        transform translateX(5px)
+      &.stem-bottom.stem-right
+        transform translateY(5px) translateX(5px)
+      &.stem-bottom.stem-center
+        transform translateY(5px)
+      &.stem-bottom.stem-left
+        transform translateY(5px) translateX(-5px)
+      &.stem-middle.stem-left
+        transform translateX(-5px)
+      &.stem-top.stem-left
+        transform translateY(-5px) translateX(-5px)
 
   &.fixed
     // When it's fixed, the close button, and links inside the tooltip should
@@ -67,7 +91,7 @@
   // Effects
   // =======
   &.hide-effect-fade
-    transition opacity 1s ease-in-out
+    transition transform 0.5s ease-in-out, opacity 1s ease-in-out
     opacity 1
     &.hiding
       opacity 0
@@ -75,7 +99,7 @@
   &.show-effect-appear
     &.going-to-show
     &.showing
-      transition opacity 1s ease-in-out
+      transition transform 0.5s ease-in-out, opacity 1s ease-in-out
     &.going-to-show
       opacity 0
     &.showing
