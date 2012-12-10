@@ -75,6 +75,35 @@ describe "Opentip", ->
       # Should have been set by the standard theme
       expect(opentip.options.stemLength).to.equal 5
 
+    it "the property 'style' should be handled the same as 'extends'", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, extends: "glass", showOn: "click"
+
+      # Should have been set by the options
+      expect(opentip.options.showOn).to.equal "click"
+      # Should have been set by the glass theme
+      expect(opentip.options.className).to.equal "glass"
+      # Should have been set by the standard theme
+      expect(opentip.options.stemLength).to.equal 5
+
+    it "chaining incorrect styles should throw an exception", ->
+      element = document.createElement "div"
+      expect(-> new Opentip element, { extends: "invalidstyle" }).to.throwException /Invalid style\: invalidstyle/
+
+    it "chaining styles should work", ->
+      element = document.createElement "div"
+
+      Opentip.styles.test1 = stemLength: 40
+      Opentip.styles.test2 = extends: "test1", title: "overwritten title"
+      Opentip.styles.test3 = extends: "test2", className: "test5", title: "some title"
+
+      opentip = new Opentip element, { extends: "test3", stemBase: 20 }
+
+      expect(opentip.options.className).to.equal "test5"
+      expect(opentip.options.title).to.equal "some title"
+      expect(opentip.options.stemLength).to.equal 40
+      expect(opentip.options.stemBase).to.equal 20
+
     it "should set the options to fixed if a target is provided", ->
       element = document.createElement "div"
       opentip = new Opentip element, target: yes, fixed: no

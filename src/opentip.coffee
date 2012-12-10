@@ -128,13 +128,25 @@ class Opentip
     options.title = title if title?
     @setContent content if content?
 
-    options.style = Opentip.defaultStyle unless options.style
+    unless options.extends?
+      if options.style?
+        options.extends = options.style
+      else
+        options.extends = Opentip.defaultStyle
 
-    optionSources = [ ]
-    # All options are based on the standard style
-    optionSources.push Opentip.styles.standard
-    optionSources.push Opentip.styles[options.style] unless options.style == "standard"
-    optionSources.push options
+    optionSources = [ options ]
+
+    # Now add go through the theme hierarchy and apply the options
+    _tmpStyle = options
+    while _tmpStyle.extends
+      styleName = _tmpStyle.extends
+      _tmpStyle = Opentip.styles[styleName]
+      throw new Error "Invalid style: #{styleName}" unless _tmpStyle?
+      optionSources.unshift _tmpStyle
+
+      # Now making sure that all styles result in the standard style, even when not
+      # specified
+      _tmpStyle.extends = "standard" unless _tmpStyle.extends? or styleName == "standard"
 
     options = @adapter.extend { }, optionSources...
 
@@ -1424,6 +1436,9 @@ for position, i in Opentip.positions
 # The standard style.
 Opentip.styles =
   standard:    
+    # This config is not based on anything
+    extends: null
+
     # This style also contains all default values for other styles.
     #
     # Following abbreviations are used:
@@ -1578,6 +1593,7 @@ Opentip.styles =
     shadowColor: "rgba(0, 0, 0, 0.1)"
 
   glass:
+    extends: "standard"
     className: "glass"
     background: [
       [ 0, "rgba(252, 252, 252, 0.8)" ]
@@ -1593,6 +1609,7 @@ Opentip.styles =
 
 
   dark:
+    extends: "standard"
     className: "dark"
     borderRadius: 13
     borderColor: "#444"
@@ -1609,6 +1626,7 @@ Opentip.styles =
     ]
 
   alert:
+    extends: "standard"
     className: "alert"
     borderRadius: 1
     borderColor: "#AE0D11"
