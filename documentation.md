@@ -88,6 +88,25 @@ myTip = new Opentip("Content", { style: "myErrorStyle" });
 > although I feel that `style` is better suited in that case.
 
 
+grouping opentips
+-----------------
+
+Sometimes you want to hide other Opentips when showing one.
+
+For example: you could have a list of tags and when the user clicks one you show
+some additional tag information. But you also want to hide all other tag informations
+so to make sure that only one Tag-Opentip is visible at all times.
+
+This is done through grouping:
+
+{% highlight html %}
+<a href="/tag-info/tag/1" data-ot="Tag info 1" data-ot-group="tags" data-ot-ajax="true">Tag 1</a>
+<a href="/tag-info/tag/2" data-ot="Tag info 2" data-ot-group="tags" data-ot-ajax="true">Tag 2</a>
+<a href="/tag-info/tag/3" data-ot="Tag info 3" data-ot-group="tags" data-ot-ajax="true">Tag 3</a>
+{% endhighlight %}
+
+> **Note**: This example is not the best way to solve such problems. Look at the
+> "Best practices" section below for a better way to handle it.
 
 programmatically managing opentips
 ----------------------------------
@@ -149,6 +168,52 @@ So, to hide all tips, just do:
 
 {% highlight js %}
   for(var i = 0; i < Opentip.tips; i ++) { Opentip.tips[i].hide(); }
+{% endhighlight %}
+
+
+
+best practices
+--------------
+
+You should avoid abusing the HTML configuration. If you mainly have a static
+HTML site and you want to add Opentips here and there, it's fine (but even then,
+try not to put to much configuration in the HTML attributes, but rather create
+a new style that you can use – especially if you notice that your configuration
+is repeated a lot).
+
+As soon as you need interaction with your Opentips, it's probably a good idea
+to create them programmatically. The same goes for many Opentips that need to
+be created and would result in lots of repeating HTML code.
+
+Let's say you have a list of tags, and you want to show iformation about them
+when clicked. The best way to approach that would be to create the HTML elements
+without a notion about Opentips like this:
+
+{% highlight html %}
+<div id="tags">
+  <a href="/tag-info/1" class="tag">Tag 1</a>
+  <a href="/tag-info/2" class="tag">Tag 2</a>
+  <a href="/tag-info/3" class="tag">Tag 3</a>
+  etc...
+</div>
+{% endhighlight %}
+
+To attach the Opentips then, you would do so like that in JS (with jQuery):
+
+{% highlight js %}
+// Create a style for all tag Opentips
+Opentip.syles.tag = {
+  ajax: true, // The URL to download will be taken from the href attribute
+  showOn: 'click', // this will disable the default <a /> link behaviour.
+  target: true, // Takes the <a /> element as target
+  tipJoint: "bottom", // So the tooltip floats above the link
+  group: "tags" // Ensures that only one tag Opentip is visible
+};
+
+// Now create an Opentip for each tag element
+$("#tags a.tag").each(function(tagElement) {
+  new Opentip(tagElement, { style: "tag" });
+});
 {% endhighlight %}
 
 

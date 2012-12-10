@@ -92,7 +92,7 @@ $(function() {
 
     // AJAX
     box = boxes.find(".more.box");
-    new Opentip(box, "Opentip supports all major frameworks: jQuery, prototype, component and ender.", { target: true, tipJoint: "top" });
+    new Opentip(box, "Opentip supports all major frameworks: jQuery, prototype, component and ender.<br /><br />Opentips stay inside the browser viewport automatically.<br /><br />Opentips can be grouped so only one in a group is visble at all time.<br /><br />etc...", { style: "dark", target: true, tipJoint: "top" });
 
   }
 
