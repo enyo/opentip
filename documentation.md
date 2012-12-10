@@ -87,7 +87,8 @@ Option                      | Type                                              
 `ajaxMethod`                | `"GET"`, `"POST"`                                          | `"GET"`                | &nbsp; 
 `ajaxCache`                 | Boolean                                                    | `yes`                  | If `false`, the content will be downloaded every time the tooltip is shown.
 `group`                     | String, `null`                                             | `null`                 | You can group opentips together. So when a tooltip shows, it looks if there are others in the same group, and hides them.
-`style`                     | String, `null`                                             | `null`                 | Will be set automatically in constructor
+`style`                     | String, `null`                                             | `null`                 | If `null`, `Opentip.defaultStyle` is used (which is `standard` if you don't change it)
+`extends`                   | String, `null`                                             | `null`                 | Exactly the same as `style` but used when creating styles because the name fits better.
 `background`                | String, Array                                              | `"#fff18f"`            | The background color of the tip. This can be an array of gradient points.<br />Eg.: `[ [ 0, "white" ], [ 1, "black" ] ]` Defines a gradient from white to black. Right now only gradients from top to bottom are supported.
 `closeButtonOffset`         | Offset                                                     | `[ 5, 5 ]`             | Positive values offset inside the tooltip
 `closeButtonRadius`         | Float                                                      | `7`                    | The little circle that stick out of a tip
