@@ -31,6 +31,127 @@ and the *dashed* option name. Example:
 {% endhighlight %}
 
 
+
+opentip object api
+------------------
+
+You can manage Opentips with a few methods after you created them.
+
+
+{% highlight js %}
+var myOpentip = new Opentip($("#element"));
+
+myOpentip.show(); // Shows the tooltip immediately
+myOpentip.hide(); // Hides the tooltip immediately
+myOpentip.prepareToShow(); // Shows the tooltip after the given delays. This could get interrupted
+myOpentip.prepareToHide(); // ...
+
+myOpentip.deactivate();
+myOpentip.activate();
+
+myOpentip.setContent("New content"); // Updates Opentips content
+{% endhighlight %}
+
+
+
+creating styles
+---------------
+
+Styles are a way to store predefined settings. So instead of setting the color,
+and stemsize, etc... on every Opentip you create, you can just create **one**
+style and reuse it in all of your Opentips.
+
+You can define everything in a style that you could define in the opions object.
+So if, for example, all your error tooltips should look like the built in `alert`
+theme, should be fixed, have a stem and should be shown on creation you could
+create the style like this:
+
+{% highlight js %}
+Opentip.styles.myErrorStyle = {
+  // Make it look like the alert style. If you omit this, it will default to "standard"
+  extends: "alert",
+  // Tells the tooltip to be fixed and be attached to the trigger, which is the default target
+  target: true,
+  stem: true,
+  showOn: "creation"
+};
+
+// Then use it like this:
+myTip = new Opentip("Content", { style: "myErrorStyle" });
+{% endhighlight %}
+
+
+> **Side note:** The `options` object you pass when creating an Opentip is actually just
+> an ad hoc style created only for this one specific tooltip. The options `style`
+> and `extends` are actually exactly the same. So you could theoratically create an
+> Opentip like this: `new Opentip("Content", { extends: "myErrorStyle" });`
+> although I feel that `style` is better suited in that case.
+
+
+
+programmatically managing opentips
+----------------------------------
+
+One of the most common questions asked is how to hide Opentips or disable them.
+
+Most problems arise because often Opentips are created with HTML `data-` attributes
+although it makes more sense to create them programmatically.
+
+Here's an example of how you would manage an Opentip in your application with
+jQuery:
+
+{% highlight js %}
+$(function() {
+  // Start when document loaded
+  var myInput = $("#my-input");
+  var inputOpentip = new Opentip(myInput, { showOn: null, style: 'alert' });
+
+  // Hide the tooltip on focus so we don't bother the user while editing.
+  myInput.focus(function() { inputOpentip.hide(); });
+  myInput.change(function() {
+    if (myInput.val()) {
+      // Everything fine
+      inputOpentip.hide();
+    }
+    else {
+      // Oh oh
+      inputOpentip.setContent("Please fill out this field.");
+      inputOpentip.show();
+    }
+  });
+
+});
+{% endhighlight %}
+
+If for some reason you can't or don't want to create Opentips programmatically
+but still want to access them, there's good news! You can.
+
+Every Opentip created is stored on the element itself in an `opentips` array.
+To access it, you can use the functions provided by your framework to access
+arbitrary data of HTML elements.
+
+{% highlight js %}
+  // jQuery
+  $("#my-element").data("opentips"); // Returns a list of Opentips associated with this element
+  // Prototype
+  $("my-element").retrieve("opentips");
+  // Ender
+  $("#my-element").data("opentips");
+{% endhighlight %}
+
+
+### show / hide all opentips
+
+Sometimes you just want to show or hide all Opentips on the page. To do so,
+Opentip keeps a list for you: `Opentip.tips`.
+
+So, to hide all tips, just do:
+
+{% highlight js %}
+  for(var i = 0; i < Opentip.tips; i ++) { Opentip.tips[i].hide(); }
+{% endhighlight %}
+
+
 * * *
 
 

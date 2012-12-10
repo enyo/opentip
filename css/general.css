@@ -31,7 +31,7 @@ p a:hover,ul a:hover{color:#00f}
 hr{position:relative;height:1px;background:#dadada;background:-webkit-gradient(linear, left top, right top, color-stop(0, rgba(0,0,0,0)), color-stop(0.05, rgba(0,0,0,0.1)), color-stop(0.95, rgba(0,0,0,0.1)), color-stop(1, rgba(0,0,0,0)));background:-webkit-linear-gradient(left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 5%, rgba(0,0,0,0.1) 95%, rgba(0,0,0,0) 100%);background:-moz-linear-gradient(left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 5%, rgba(0,0,0,0.1) 95%, rgba(0,0,0,0) 100%);background:-o-linear-gradient(left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 5%, rgba(0,0,0,0.1) 95%, rgba(0,0,0,0) 100%);background:-ms-linear-gradient(left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 5%, rgba(0,0,0,0.1) 95%, rgba(0,0,0,0) 100%);background:linear-gradient(left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 5%, rgba(0,0,0,0.1) 95%, rgba(0,0,0,0) 100%);border:none;margin:60px 0;margin-left:-25px;width:1010px}
 code{font-family:menlo,monospace}
 p > code,li > code,td > code{border:1px dotted #cbe3c5;background:#eff5ee;padding:1px 2px;color:#7fa475}
-pre{margin:30px 0}
+pre{margin:30px 0;margin:30px 0;border:1px solid #ddd;padding:8px 12px;background:#fff;-webkit-border-radius:2px;border-radius:2px;-webkit-box-shadow:1px 1px 9px #eaeaea;box-shadow:1px 1px 9px #eaeaea}
 p{color:#333}
 strong{font-weight:bold}
 em{font-style:italic}
