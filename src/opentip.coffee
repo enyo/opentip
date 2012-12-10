@@ -824,6 +824,13 @@ class Opentip
 
     @redraw = off
 
+    # Take care of the classes
+    if @currentStem
+      @adapter.removeClass @container, "stem-#{position}" for position in [ "top", "right", "bottom", "left" ]
+      @adapter.addClass @container, "stem-#{@currentStem.horizontal}"
+      @adapter.addClass @container, "stem-#{@currentStem.vertical}"
+
+
 
     # Prepare for the close button
     closeButtonInner = [ 0, 0 ]
@@ -1385,7 +1392,7 @@ Opentip.findElements = ->
 # Publicly available
 # ------------------
 
-Opentip.version = "2.2.0"
+Opentip.version = "2.2.1"
 
 Opentip.debug = off
 
