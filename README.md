@@ -150,7 +150,7 @@ Authors
 -------
 
 Opentip is written by Matias Meno.<br>
-Website design by Tjandra Mayerhold.
+Original graphics by Tjandra Mayerhold.
 
 ### Contributors
 
