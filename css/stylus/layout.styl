@@ -101,7 +101,7 @@
     color rgba(0, 0, 0, 0.4)
 
 
-#demo-boxes
+.demo-boxes
   .box
     background #E1F3F3
     background linear-gradient(top, #f1f7f0, #d3f0f6)
@@ -119,6 +119,16 @@
 
     p
       color #5B6262
+
+    &.flexible
+      min-width @width
+      min-height @height
+      width auto
+      height auto
+
+  button
+    margin 10px 10px 10px 0
+
   clearfix()
 
 

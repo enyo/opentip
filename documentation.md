@@ -9,7 +9,7 @@ documentation
 To programmatically instantiate an Opentip you use this syntax:
 
 {% highlight javascript %}
-new Opentip("#my-element", "Optional content", "Optional title", { ...options... })
+new Opentip("#my-trigger-element", "Optional content", "Optional title", { ...options... })
 {% endhighlight %}
 
 The `content` and `title` are optional but it doesn't make much sense to omit
@@ -54,6 +54,45 @@ myOpentip.setContent("New content"); // Updates Opentips content
 
 
 
+targeting
+----------
+
+By default Opentips «target» the mouse cursor, which means they follow the mouse.
+If you want the Opentip to be fixed, you could do so by setting the `fixed: true`
+option, but that would still make the Opentip appear at the cursor position.
+
+To tell an Opentip that you want it to point to an element, you can set the target:
+
+{% highlight js %}
+// This will create an Opentip pointing to the top center of #target-element
+new Opentip("#trigger-element", { target: "#target-element", tipJoint: "bottom" });
+{% endhighlight %}
+
+(This automatically sets the `fixed` option to `true`)
+
+<div class="demo-boxes">
+  <div id="t-trigger-element" class="box">
+    <h2>Trigger</h2>
+    <p>
+      This it the trigger element, ie: the element that will show or hide the
+      Opentip.
+    </p>
+  </div>
+  <div id="t-target-element" class="box">
+    <h2>Target</h2>
+    <p>
+      This it the target element, ie: the element that the Opentip will point to.
+    </p>
+  </div>
+</div>
+
+<script>
+new Opentip("#t-trigger-element", "Targeted Opentip", { target: "#t-target-element", tipJoint: "bottom" });
+</script>
+
+Since most of the time your target element will be the trigger element, you can
+just set: `target: true`.
+
 creating styles
 ---------------
 
@@ -77,7 +116,7 @@ Opentip.styles.myErrorStyle = {
 };
 
 // Then use it like this:
-myTip = new Opentip("Content", { style: "myErrorStyle" });
+myTip = new Opentip(triggerElement, "Content", { style: "myErrorStyle" });
 {% endhighlight %}
 
 
@@ -86,6 +125,7 @@ myTip = new Opentip("Content", { style: "myErrorStyle" });
 > and `extends` are actually exactly the same. So you could theoratically create an
 > Opentip like this: `new Opentip("Content", { extends: "myErrorStyle" });`
 > although I feel that `style` is better suited in that case.
+
 
 
 grouping opentips
@@ -107,6 +147,26 @@ This is done through grouping:
 
 > **Note**: This example is not the best way to solve such problems. Look at the
 > "Best practices" section below for a better way to handle it.
+
+<div class="demo-boxes">
+  <div id="grouped-box" class="flexible box">
+    <h2>Grouped</h2>
+    <p>
+      Clicking a button toggles an Opentip, and<br /> hides all Opentips in the same
+      group.
+    </p>
+    <button>Click me to toggle</button><br />
+    <button>Click me to toggle</button><br />
+    <button>Click me to toggle</button><br />
+  </div>
+</div>
+
+<script>
+$("#grouped-box button").each(function() {
+  new Opentip(this, "I am grouped!", { target: true, tipJoint: "left", group: "group-example", showOn: "click", hideOn: "click" });
+});
+</script>
+
 
 programmatically managing opentips
 ----------------------------------

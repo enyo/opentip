@@ -13,7 +13,7 @@ title: The free tooltip
 demo
 ====
 
-<div id="demo-boxes">
+<div class="demo-boxes">
   <div class="styles box">
     <h2>styles</h2>
     <p>
