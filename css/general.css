@@ -60,7 +60,8 @@ body.scroll #header #name{top:-30px}
 #header #header-shadow{width:800px;height:20px;position:absolute;bottom:0;left:50%;margin-left:-400px;-webkit-border-radius:100%;border-radius:100%;-webkit-box-shadow:0 0 30px rgba(0,0,0,0.2);box-shadow:0 0 30px rgba(0,0,0,0.2)}
 #header nav{font-family:"Raleway","Helvetica neue",sans-serif;font-weight:100;font-size:20px;line-height:150%;display:block;position:relative;text-align:right;height:75px;background:#f2f2f2 url("../images/grain.png") repeat left top;z-index:100;}
 #header nav ul{position:absolute;top:50px;right:0;margin:0;padding:0;list-style:none;-webkit-transition:top .5s ease-in-out;-moz-transition:top .5s ease-in-out;-o-transition:top .5s ease-in-out;-ms-transition:top .5s ease-in-out;transition:top .5s ease-in-out;}
-body.scroll #header nav ul{top:23px}
+@media all and (max-width: 1200px){#header nav ul{position:absolute;top:50px;right:120px}
+}body.scroll #header nav ul{top:23px}
 #header nav ul li{padding:0;list-style:none;display:inline-block;}
 #header nav ul li.active a{border-bottom:2px solid #000;color:#333}
 #header nav ul li a{color:#bbb;text-decoration:none;display:block;padding:0 0;margin:0 5px;-webkit-transition:color .3s ease-in-out;-moz-transition:color .3s ease-in-out;-o-transition:color .3s ease-in-out;-ms-transition:color .3s ease-in-out;transition:color .3s ease-in-out;-webkit-font-smoothing:subpixel-antialiased;}
