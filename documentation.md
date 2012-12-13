@@ -127,6 +127,12 @@ myTip = new Opentip(triggerElement, "Content", { style: "myErrorStyle" });
 > although I feel that `style` is better suited in that case.
 
 
+You can also set a default style that all Opentips that don't specify a specific `style` option will use like this:
+
+{% highlight js %}
+Opentip.defaultStyle = "myAwesomeStyle"; // The default is "standard"
+{% endhighlight %}
+
 
 grouping opentips
 -----------------
