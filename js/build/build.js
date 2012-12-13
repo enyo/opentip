@@ -12372,9 +12372,9 @@ $(function() {
       background: "#EFF7F0"
     };
     new Opentip(box, "Stems...", { style: "stemsDemo", tipJoint: "bottom", stem: "bottom right", stemLength: 10, stemBase: 30 });
-    new Opentip(box, ".are...", { style: "stemsDemo", tipJoint: "left", stem: "left", stemLength: 20, stemBase: 10 });
-    new Opentip(box, ".very...", { style: "stemsDemo", tipJoint: "right", stem: "bottom" });
-    new Opentip(box, ".cool", { style: "stemsDemo", tipJoint: "top right", stem: "top right", stemLength: 30, stemBase: 20 });
+    new Opentip(box, "are...", { style: "stemsDemo", tipJoint: "left", stem: "left", stemLength: 20, stemBase: 10 });
+    new Opentip(box, "very...", { style: "stemsDemo", tipJoint: "right", stem: "bottom" });
+    new Opentip(box, "cool", { style: "stemsDemo", tipJoint: "top right", stem: "top right", stemLength: 30, stemBase: 20 });
 
     // Canvas
     box = boxes.find(".canvas.box");
