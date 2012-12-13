@@ -79,7 +79,10 @@ $(function() {
     box = boxes.find(".stems.box");
     Opentip.styles.stemsDemo = {
       stem: true,
-      containInViewport: false
+      containInViewport: false,
+      borderWidth: 2,
+      borderColor: "#a7c1c5",
+      background: "#EFF7F0"
     };
     new Opentip(box, "Stems...", { style: "stemsDemo", tipJoint: "bottom", stem: "bottom right", stemLength: 10, stemBase: 30 });
     new Opentip(box, ".are...", { style: "stemsDemo", tipJoint: "left", stem: "left", stemLength: 20, stemBase: 10 });
