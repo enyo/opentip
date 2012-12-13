@@ -47,7 +47,7 @@ $(function() {
   });
 
 
-  var boxes = $("#demo-boxes");
+  var boxes = $(".demo-boxes");
   if (boxes.length) {
     // Styles
     Opentip.styles.drop = {
