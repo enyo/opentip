@@ -251,7 +251,7 @@ As soon as you need interaction with your Opentips, it's probably a good idea
 to create them programmatically. The same goes for many Opentips that need to
 be created and would result in lots of repeating HTML code.
 
-Let's say you have a list of tags, and you want to show iformation about them
+Let's say you have a list of tags, and you want to show information about them
 when clicked. The best way to approach that would be to create the HTML elements
 without a notion about Opentips like this:
 
