@@ -1498,6 +1498,7 @@ Opentip.styles =
     # - `"tip"`
     # - `"target"`
     # - `"closeButton"`
+    # - `"outside"` Somewhere outside the trigger or tip (Makes really only sense with the click event)
     # - `ELEMENT`
     #
     # This is just a shortcut, and will be added to hideTriggers if hideTrigger
