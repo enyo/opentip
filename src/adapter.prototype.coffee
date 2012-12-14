@@ -10,7 +10,7 @@ do ->
       new Opentip element, content, title, options
 
 
-  # Needsd this function because of IE8
+  # Needs this function because of IE8
   isArrayOrNodeList = (element) ->
     if (element instanceof Array) or (element? and typeof element.length == 'number' and typeof element.item == 'function' and typeof element.nextNode == 'function' and typeof element.reset == 'function')
       return yes

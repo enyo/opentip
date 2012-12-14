@@ -155,19 +155,24 @@ describe "Opentip", ->
     it "should setup all trigger elements", ->
       element = adapter.create "<div></div>"
       opentip = new Opentip element, showOn: "click"
-      expect(opentip.showTriggersWhenHidden[0].event).to.eql "click"
-      expect(adapter.unwrap opentip.showTriggersWhenHidden[0].element).to.equal adapter.unwrap element
+      expect(opentip.showTriggers[0].event).to.eql "click"
+      expect(adapter.unwrap opentip.showTriggers[0].element).to.equal adapter.unwrap element
       expect(opentip.showTriggersWhenVisible).to.eql [ ]
       expect(opentip.hideTriggers).to.eql [ ]
       opentip = new Opentip element, showOn: "creation"
-      expect(opentip.showTriggersWhenHidden).to.eql [ ]
+      expect(opentip.showTriggers).to.eql [ ]
       expect(opentip.showTriggersWhenVisible).to.eql [ ]
       expect(opentip.hideTriggers).to.eql [ ]
 
     it "should copy options.hideTrigger onto options.hideTriggers", ->
       element = adapter.create "<div></div>"
-      opentip = new Opentip element, hideTrigger: "closeButton", hideTriggers: [ "trigger" ]
-      expect(opentip.options.hideTriggers).to.eql [ "trigger", "closeButton"]
+      opentip = new Opentip element, hideTrigger: "closeButton", hideTriggers: [ ]
+      expect(opentip.options.hideTriggers).to.eql [ "closeButton"]
+
+    it "should NOT copy options.hideTrigger onto options.hideTriggers when hideTriggers are set", ->
+      element = adapter.create "<div></div>"
+      opentip = new Opentip element, hideTrigger: "closeButton", hideTriggers: [ "tip", "trigger" ]
+      expect(opentip.options.hideTriggers).to.eql [ "tip", "trigger" ]
 
     it "should attach itself to the elements `data-opentips` property", ->
       element = $("<div></div>")[0]

@@ -153,7 +153,7 @@ class Opentip
     # Deep copying the hideTriggers array
     options.hideTriggers = (hideTrigger for hideTrigger in options.hideTriggers)
 
-    options.hideTriggers.push options.hideTrigger if options.hideTrigger
+    options.hideTriggers.push options.hideTrigger if options.hideTrigger and options.hideTriggers.length == 0
 
     # Sanitize all positions
     options[prop] = new Opentip.Joint(options[prop]) for prop in [
@@ -196,7 +196,7 @@ class Opentip
       options.targetJoint = new Opentip.Joint(options.tipJoint).flip()
 
     # Used to show the opentip obviously
-    @showTriggersWhenHidden = [ ]
+    @showTriggers = [ ]
 
     # Those ensure that opentip doesn't disappear when hovering other related elements
     @showTriggersWhenVisible = [ ]
@@ -206,7 +206,7 @@ class Opentip
 
     # The obvious showTriggerELementWhenHidden is the options.showOn
     if options.showOn and options.showOn != "creation"
-      @showTriggersWhenHidden.push
+      @showTriggers.push
         element: @triggerElement
         event: options.showOn
 
@@ -254,15 +254,17 @@ class Opentip
         @hideTriggers.push
           element: hideTriggerElement
           event: hideOn
+          original: hideTrigger
 
-        if hideOn == "mouseout"
-          # When the hide trigger is mouseout, we have to attach a mouseover
-          # trigger to that element, so the tooltip doesn't disappear when
-          # hovering child elements. (Hovering children fires a mouseout
-          # mouseover event)
-          @showTriggersWhenVisible.push
-            element: hideTriggerElement
-            event: "mouseover"
+    # Now setup the events that make sure opentips don't appear when mouseover
+    # another hideTrigger
+    # 
+    # This also solves the problem of the tooltip disappearing when hovering child
+    # elements (Hovering children fires a mouseout mouseover event)
+    for hideTrigger in @hideTriggers
+      @showTriggersWhenVisible.push
+        element: hideTrigger.element
+        event: "mouseover"
 
     @bound = { }
     @bound[methodToBind] = (do (methodToBind) => return => @[methodToBind](arguments...)) for methodToBind in [
@@ -412,7 +414,7 @@ class Opentip
 
         when "hiding"
           # Setup the triggers to show the tip
-          for trigger in @showTriggersWhenHidden
+          for trigger in @showTriggers
             observeOrStop trigger.element, trigger.event, @bound.prepareToShow
           
         when "hidden"
@@ -425,6 +427,7 @@ class Opentip
 
   prepareToShow: ->
     @_abortHiding()
+    @_abortShowing()
     return if @visible
 
     @debug "Showing in #{@options.delay}s."
@@ -469,7 +472,9 @@ class Opentip
     @adapter.css @container, zIndex: Opentip.lastZIndex++
 
     # The order is important here! Do not reverse.
-    @_setupObservers "-hidden", "-hiding", "showing", "visible"
+    # Removing the showing and visible triggers as well in case they have been
+    # removed by -hidden or -hiding
+    @_setupObservers "-hidden", "-hiding", "-showing", "-visible", "showing", "visible"
 
     @reposition()
 
@@ -499,7 +504,7 @@ class Opentip
     # doesn't change after it will never call @_draw() again.
     @_draw()
 
-  abortShowing: ->
+  _abortShowing: ->
     if @preparingToShow
       @debug "Aborting showing."
       @_clearTimeouts()
@@ -508,7 +513,8 @@ class Opentip
       @_setupObservers "-showing", "-visible", "hiding", "hidden"
 
   prepareToHide: ->
-    @abortShowing()
+    @_abortShowing()
+    @_abortHiding()
 
     return unless @visible
 
@@ -518,12 +524,12 @@ class Opentip
 
     # We start observing even though it is not yet hidden, so the tooltip does
     # not disappear when a showEvent is triggered.
-    @_setupObservers "-showing", "-visible", "-hidden", "hiding"
+    @_setupObservers "-showing", "visible", "-hidden", "hiding"
 
     @_hideTimeoutId = @setTimeout @bound.hide, @options.hideDelay
 
   hide: ->
-    @abortShowing()
+    @_abortShowing()
     @_clearTimeouts()
 
     return unless @visible
@@ -536,7 +542,9 @@ class Opentip
 
     @_stopEnsureTriggerElement()
 
-    @_setupObservers "-showing", "-visible", "hiding", "hidden"
+    # Removing hiding and hidden as well in case some events have been removed
+    # by -showing or -visible
+    @_setupObservers "-showing", "-visible", "-hiding", "-hidden", "hiding", "hidden"
 
     @_stopFollowingMousePosition() unless @options.fixed
 
@@ -1392,7 +1400,7 @@ Opentip.findElements = ->
 # Publicly available
 # ------------------
 
-Opentip.version = "2.2.1"
+Opentip.version = "2.2.2"
 
 Opentip.debug = off
 
@@ -1405,7 +1413,7 @@ Opentip.tips = [ ]
 
 Opentip._abortShowingGroup = (group, originatingOpentip) ->
   for opentip in Opentip.tips
-    opentip.abortShowing() if opentip != originatingOpentip and opentip.options.group == group
+    opentip._abortShowing() if opentip != originatingOpentip and opentip.options.group == group
 
 Opentip._hideGroup = (group, originatingOpentip) ->
   for opentip in Opentip.tips
@@ -1492,7 +1500,8 @@ Opentip.styles =
     # - `"closeButton"`
     # - `ELEMENT`
     #
-    # This is just a shortcut, and will be added to hideTriggers
+    # This is just a shortcut, and will be added to hideTriggers if hideTrigger
+    # is an empty array
     hideTrigger: "trigger"
 
     # An array of hideTriggers.
