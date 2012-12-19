@@ -3,6 +3,10 @@ layout: default
 title: The free tooltip
 ---
 
+<script>
+  App.demo();
+</script>
+
 <h1 id="intro" markdown="1">
   opentip is a javascript tooltip framework  
   yes - it's free, open source and comes with different styles!
