@@ -29,7 +29,7 @@ Supported frameworks are:
 - [Prototype]
 
 
-> If you want to contribute, please read on in the [contribute](CONTRIBUTE)
+> If you want to contribute, please read on in the [contribute](https://github.com/enyo/opentip/blob/master/CONTRIBUTING.md)
 > file. If you are migrating from version **1.x** please refer to the
 > [migration section](#migrating-from-opentip-1x-to-2x)
 
@@ -71,7 +71,7 @@ refer to the [installation guide](http://www.opentip.org/installation.html).
 Usage
 -----
 
-*Version 2.2.2*
+*Version 2.2.3*
 
 With HTML data attributes:
 

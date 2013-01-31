@@ -1,5 +1,7 @@
 ###
 #
+# Opentip v2.2.3
+#
 # More info at [www.opentip.org](http://www.opentip.org)
 # 
 # Copyright (c) 2012, Matias Meno  
@@ -1400,7 +1402,7 @@ Opentip.findElements = ->
 # Publicly available
 # ------------------
 
-Opentip.version = "2.2.2"
+Opentip.version = "2.2.3"
 
 Opentip.debug = off
 
@@ -1498,6 +1500,7 @@ Opentip.styles =
     # - `"tip"`
     # - `"target"`
     # - `"closeButton"`
+    # - `"outside"` Somewhere outside the trigger or tip (Makes really only sense with the click event)
     # - `ELEMENT`
     #
     # This is just a shortcut, and will be added to hideTriggers if hideTrigger

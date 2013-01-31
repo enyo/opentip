@@ -8,11 +8,10 @@ head
 
   
   | <!--[if IE]>
-  != js('excanvas')
+  //- != js('excanvas')
   | <![endif]-->
   
   != css("stylus/opentip")
-
 
 
   //- != js('lib/ender')
@@ -20,20 +19,21 @@ head
   //- != js('src/adapter.ender')
 
 
-  != js('lib/jquery-1.8.0')
+  //- != js('lib/jquery-1.8.0')
   //- script
   //-   jQuery.noConflict()
   //- != js('lib/prototype-1.7.1')
-  //- != js('downloads/opentip-prototype-excanvas')
-  != js('excanvas')
-  != js('src/opentip')
-  //- != js('src/adapter.native')
-
-  != js('src/adapter.jquery')
-
+  
+  != js('downloads/opentip-native-excanvas.js')
+  //- != js('downloads/opentip-native.js')
+  //- != js('excanvas')
   //- != js('src/opentip')
   //- != js('src/adapter.native')
 
+  //- != js('src/adapter.jquery')
+
+  //- != js('src/opentip')
+  //- != js('src/adapter.native')
 
 
   :coffeescript
@@ -77,6 +77,12 @@ head
 
       window.x = new Opentip(element, "Hallo test bla test bl<br />kjsdlfksjdlf", { style: "dark", hideTrigger: "closeButton", stem: true, tipJoint: "top right", target: true, delay: 0, hideDelay: 0, showOn: "creation", borderRadius: 15 })
 
+
+      element = document.querySelector('.opentip-trigger1')
+      new Opentip element, "Hallo test", { showOn: "mouseover", hideTriggers: [ "trigger", "tip" ], hideOn: [ "mouseout", "click" ], hideDelay: 1, target: true }      
+
+
+
   :stylus
     body
       font: 20px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -102,12 +108,19 @@ head
     //- }
 
 
-body
+body(data-test="yes")
 
   #main
 
-    .test.opentip-test(data-ot="test",data-ot-hide-on="click",data-ot-tip-joint="bottom left") Hello
+    .test.opentip-test(data-ot="test",data-ot-hide-on="click",data-ot-tip-joint="bottom left") Hello first
     .test.opentip-test2(data-ot="test", data-ot-hide-trigger="closeButton", data-ot-target="true", data-ot-tip-joint="top") Hello
 
     .test
       a(href="/ajax-test-delayed",data-ot="", data-ot-style="glass", data-ot-ajax="yes", data-ot-show-on="click", data-ot-hide-on="click") AJAX
+
+
+
+    .test.opentip-trigger1 Hello1
+    .test.opentip-trigger2 Hello2
+
+
