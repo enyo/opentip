@@ -65,7 +65,9 @@ class Adapter
 
   # Wrap the element in the framework
   wrap: (element) ->
-    if element instanceof NodeList
+    if !element
+      element = [ ]
+    else if element instanceof NodeList
       element = (el for el in element)
     else if element not instanceof Array
       element = [ element ]
@@ -82,7 +84,7 @@ class Adapter
     if arguments.length == 3
       @unwrap(element).setAttribute attr, value
     else
-      @unwrap(element).getAttribute? attr
+      @unwrap(element).getAttribute attr
 
 
   lastDataId = 0
@@ -191,13 +193,14 @@ class Adapter
 
     return unless e?
 
-    if e.pageX or e.pageY
-      pos.x = e.pageX
-      pos.y = e.pageY
-    else if e.clientX or e.clientY
-      pos.x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft
-      pos.y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop
-
+    try
+      if e.pageX or e.pageY
+        pos.x = e.pageX
+        pos.y = e.pageY
+      else if e.clientX or e.clientY
+        pos.x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft
+        pos.y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop
+    catch e
     pos
 
   # Returns the offset of the element
@@ -280,6 +283,9 @@ class Adapter
       for own key, val of source
         target[key] = val
     target
+
+
+
 
 
 
