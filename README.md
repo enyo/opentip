@@ -71,7 +71,7 @@ refer to the [installation guide](http://www.opentip.org/installation.html).
 Usage
 -----
 
-*Version 2.2.4*
+*Version 2.2.5*
 
 With HTML data attributes:
 
@@ -97,7 +97,7 @@ Future plans
 
 - Add more skins.
 
-- Add cooler loading animation.
+- ~~Add cooler loading animation.~~
 
 - ~~Implement unit tests.~~
 
