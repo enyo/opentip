@@ -97,7 +97,7 @@ Future plans
 
 - Add more skins.
 
-- Add cooler loading animation.
+- ~~Add cooler loading animation.~~
 
 - ~~Implement unit tests.~~
 

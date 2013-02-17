@@ -315,7 +315,7 @@ class Opentip
       @adapter.append headerElement, titleElement
 
     if @options.ajax
-      @adapter.append @tooltipElement, @adapter.create """<div class="#{@class.loadingIndicator}"><span>Loading...</span></div>"""
+      @adapter.append @tooltipElement, @adapter.create """<div class="#{@class.loadingIndicator}"><span>↻</span></div>"""
 
     if "closeButton" in @options.hideTriggers
       @closeButtonElement = @adapter.create """<a href="javascript:undefined;" class="#{@class.close}"><span>Close</span></a>"""

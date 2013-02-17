@@ -1,5 +1,13 @@
 @import "nib"
 
+
+@keyframes loading
+  from
+    transform rotate(0deg)
+  to
+    transform rotate(360deg)
+
+
 .opentip-container, .opentip-container *
   box-sizing border-box
 
@@ -71,7 +79,17 @@
 
   &.loading
     .loading-indicator
+      width 30px
+      height @width
+      font-size @width
+      line-height @width
+      font-weight bold
       display block
+      span
+        display block
+        animation loading 2s linear infinite
+        text-align center
+
 
 
   // Styles
