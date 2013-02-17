@@ -303,7 +303,7 @@ Opentip = (function() {
       this.adapter.append(headerElement, titleElement);
     }
     if (this.options.ajax) {
-      this.adapter.append(this.tooltipElement, this.adapter.create("<div class=\"" + this["class"].loadingIndicator + "\"><span>Loading...</span></div>"));
+      this.adapter.append(this.tooltipElement, this.adapter.create("<div class=\"" + this["class"].loadingIndicator + "\"><span>↻</span></div>"));
     }
     if (__indexOf.call(this.options.hideTriggers, "closeButton") >= 0) {
       this.closeButtonElement = this.adapter.create("<a href=\"javascript:undefined;\" class=\"" + this["class"].close + "\"><span>Close</span></a>");
@@ -1137,6 +1137,7 @@ Opentip = (function() {
     this.loaded = false;
     this.loading = true;
     this.adapter.addClass(this.container, this["class"].loading);
+    this.setContent("");
     this.debug("Loading content from " + this.options.ajax);
     return this.adapter.ajax({
       url: this.options.ajax,
