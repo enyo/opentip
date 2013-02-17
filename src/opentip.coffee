@@ -1200,7 +1200,12 @@ class Opentip
 
     @loaded = no
     @loading = yes
+
     @adapter.addClass @container, @class.loading
+    # This will reset the dimensions so it has to be AFTER the `addClass` call
+    # since the `loading` class might show a loading indicator that will change
+    # the dimensions of the tooltip
+    @setContent ""
 
     @debug "Loading content from #{@options.ajax}"
 
