@@ -111,7 +111,7 @@ build = (watch, callback) ->
   options = ['-c', '-b', '-o' ]
   options = options.concat files
   options.unshift '-w' if watch
-  launch 'coffee', options, callback
+  launch "#{__dirname}/node_modules/coffee-script/bin/coffee", options, callback
 
 # ## *unlinkIfCoffeeFile*
 #
@@ -154,9 +154,9 @@ css = (watch, callback) ->
     callback = watch
     watch = false
 
-  options = [ "-o", "#{__dirname}/css/", "--include", "./node_modules/nib/lib" ]
+  options = [ "-o", "#{__dirname}/css/", "--include", "#{__dirname}/node_modules/nib/lib" ]
   options.push "-w" if watch
   options.push "#{__dirname}/css/stylus"
 
-  launch "stylus", options, callback
+  launch "#{__dirname}/node_modules/stylus/bin/stylus", options, callback
 

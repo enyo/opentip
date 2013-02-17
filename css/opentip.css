@@ -151,8 +151,8 @@
 }
 .opentip-container.hide-effect-fade.hiding {
   opacity: 0;
-  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   filter: alpha(opacity=0);
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 }
 .opentip-container.show-effect-appear.going-to-show,
 .opentip-container.show-effect-appear.showing {
@@ -164,8 +164,8 @@
 }
 .opentip-container.show-effect-appear.going-to-show {
   opacity: 0;
-  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   filter: alpha(opacity=0);
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 }
 .opentip-container.show-effect-appear.showing {
   opacity: 1;
