@@ -1,6 +1,6 @@
 ###
 #
-# Opentip v2.2.4
+# Opentip v2.2.5-dev
 #
 # More info at [www.opentip.org](http://www.opentip.org)
 # 
@@ -1402,7 +1402,7 @@ Opentip.findElements = ->
 # Publicly available
 # ------------------
 
-Opentip.version = "2.2.4"
+Opentip.version = "2.2.5-dev"
 
 Opentip.debug = off
 
