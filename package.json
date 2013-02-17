@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "coffee-script": "*",
+    "stylus": "*",
     "uglify-js2": "*",
     "request": "*",
     "nib": "*"
