@@ -268,7 +268,7 @@ To attach the Opentips then, you would do so like that in JS (with jQuery):
 
 {% highlight js %}
 // Create a style for all tag Opentips
-Opentip.syles.tag = {
+Opentip.styles.tag = {
   ajax: true, // The URL to download will be taken from the href attribute
   showOn: 'click', // this will disable the default <a /> link behaviour.
   target: true, // Takes the <a /> element as target
