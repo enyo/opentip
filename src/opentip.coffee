@@ -1214,7 +1214,7 @@ class Opentip
         @adapter.removeClass @container, @class.loading
         @setContent responseText
       onError: (error) =>
-        message = "There was a problem downloading the content."
+        message = @options.ajaxErrorMessage
         @debug message, error
         @setContent message
         @adapter.addClass @container, @class.ajaxError
@@ -1557,6 +1557,9 @@ Opentip.styles =
 
     # If off, the content will be downloaded every time the tooltip is shown.
     ajaxCache: on
+
+    # The message that gets displayed if the content couldn't be downloaded.
+    ajaxErrorMessage: "There was a problem downloading the content."
 
     # You can group opentips together. So when a tooltip shows, it looks if there are others in the same group, and hides them.
     group: null
