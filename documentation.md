@@ -338,6 +338,7 @@ Option                      | Type                                              
 `ajax`                      | Boolean, String                                            | `false`                | `false` No AJAX<br />`true` Opentip uses the `href` attribute of the trigger element if the trigger element is a link.<br />`String` An URL to download the content from.<br />
 `ajaxMethod`                | `"GET"`, `"POST"`                                          | `"GET"`                | &nbsp; 
 `ajaxCache`                 | Boolean                                                    | `yes`                  | If `false`, the content will be downloaded every time the tooltip is shown.
+`ajaxErrorMessage`          | String                                                     | `"There was a problem downloading the content."` | The message displayed when downloading the content with AJAX fails.
 `group`                     | String, `null`                                             | `null`                 | You can group opentips together. So when a tooltip shows, it looks if there are others in the same group, and hides them.
 `style`                     | String, `null`                                             | `null`                 | If `null`, `Opentip.defaultStyle` is used (which is `standard` if you don't change it)
 `extends`                   | String, `null`                                             | `null`                 | Exactly the same as `style` but used when creating styles because the name fits better.
