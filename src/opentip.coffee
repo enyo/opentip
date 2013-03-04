@@ -1,6 +1,6 @@
 ###
 #
-# Opentip v2.2.4-dev
+# Opentip v2.2.6-dev
 #
 # More info at [www.opentip.org](http://www.opentip.org)
 # 
@@ -315,7 +315,7 @@ class Opentip
       @adapter.append headerElement, titleElement
 
     if @options.ajax
-      @adapter.append @tooltipElement, @adapter.create """<div class="#{@class.loadingIndicator}"><span>Loading...</span></div>"""
+      @adapter.append @tooltipElement, @adapter.create """<div class="#{@class.loadingIndicator}"><span>↻</span></div>"""
 
     if "closeButton" in @options.hideTriggers
       @closeButtonElement = @adapter.create """<a href="javascript:undefined;" class="#{@class.close}"><span>Close</span></a>"""
@@ -1200,7 +1200,12 @@ class Opentip
 
     @loaded = no
     @loading = yes
+
     @adapter.addClass @container, @class.loading
+    # This will reset the dimensions so it has to be AFTER the `addClass` call
+    # since the `loading` class might show a loading indicator that will change
+    # the dimensions of the tooltip
+    @setContent ""
 
     @debug "Loading content from #{@options.ajax}"
 
@@ -1402,7 +1407,7 @@ Opentip.findElements = ->
 # Publicly available
 # ------------------
 
-Opentip.version = "2.2.4-dev"
+Opentip.version = "2.2.6-dev"
 
 Opentip.debug = off
 

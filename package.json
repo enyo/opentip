@@ -1,6 +1,6 @@
 {
   "name": "opentip",
-  "version": "2.2.4-dev",
+  "version": "2.2.6-dev",
   "description": "Free opensource tooltip class.",
   "keywords": [ "tooltip" ],
   "homepage": "http://www.opentip.org",
@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "coffee-script": "*",
+    "stylus": "*",
     "uglify-js2": "*",
     "request": "*",
     "nib": "*"
