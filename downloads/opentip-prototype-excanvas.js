@@ -1149,7 +1149,7 @@ Opentip = (function() {
       },
       onError: function(error) {
         var message;
-        message = "There was a problem downloading the content.";
+        message = _this.options.ajaxErrorMessage;
         _this.debug(message, error);
         _this.setContent(message);
         return _this.adapter.addClass(_this.container, _this["class"].ajaxError);
@@ -1477,6 +1477,7 @@ Opentip.styles = {
     ajax: false,
     ajaxMethod: "GET",
     ajaxCache: true,
+    ajaxErrorMessage: "There was a problem downloading the content.",
     group: null,
     style: null,
     background: "#fff18f",
