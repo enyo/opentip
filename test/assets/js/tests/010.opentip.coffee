@@ -281,7 +281,7 @@ describe "Opentip", ->
       enderElement = $ adapter.unwrap opentip.container
       loadingElement = enderElement.find "> .opentip > .loading-indicator > span"
       expect(loadingElement.length).to.be.ok()
-      expect(loadingElement.html()).to.be "Loading..."
+      expect(loadingElement.html()).to.be "↻"
 
     it "should add a close button if hideTrigger = close", ->
       enderElement = $ adapter.unwrap opentip.container
