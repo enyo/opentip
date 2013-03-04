@@ -22,17 +22,20 @@ describe "Opentip - AJAX", ->
           options.onComplete()
       afterEach ->
         adapter.ajax.restore()
+
       it "should use adapter.ajax", ->
         opentip = new Opentip adapter.create("<div></div>"), "Test", ajax: "http://www.test.com", ajaxMethod: "post"
         opentip._loadAjax()
         expect(adapter.ajax.callCount).to.be 1
         expect(adapter.ajax.args[0][0].url).to.equal "http://www.test.com"
         expect(adapter.ajax.args[0][0].method).to.equal "post"
+
+
       it "should be called by show() and update the content (only once!)", ->
         opentip = new Opentip adapter.create("<div></div>"), "Test", ajax: "http://www.test.com", ajaxMethod: "post", ajaxCache: yes
         sinon.stub opentip, "_triggerElementExists", -> yes
 
-        sinon.stub opentip, "setContent", (content) -> expect(content).to.be "response text"
+        sinon.spy opentip, "setContent"#, (content) -> #expect(content).to.be "response text"
 
         opentip.show()
         opentip.hide()
@@ -41,13 +44,14 @@ describe "Opentip - AJAX", ->
         opentip.show()
         opentip.hide()
         expect(adapter.ajax.callCount).to.be 1
-        expect(opentip.setContent.callCount).to.be 1
+        expect(opentip.setContent.callCount).to.be 2 # Every time AJAX gets loaded, it empties the content
+        expect(opentip.content).to.be "response text"
+
 
       it "if ajaxCache: false, should be called by show() and update the content every time show is called", ->
         opentip = new Opentip adapter.create("<div></div>"), "Test", ajax: "http://www.test.com", ajaxMethod: "post", ajaxCache: no
         sinon.stub opentip, "_triggerElementExists", -> yes
-        sinon.stub opentip, "setContent", (content) ->
-          expect(content).to.be "response text"
+        sinon.spy opentip, "setContent"#, (content) -> expect(content).to.be "response text"
         opentip.show()
         opentip.hide()
         opentip.show()
@@ -55,7 +59,7 @@ describe "Opentip - AJAX", ->
         opentip.show()
         opentip.hide()
         expect(adapter.ajax.callCount).to.be 3
-        expect(opentip.setContent.callCount).to.be 3
+        expect(opentip.setContent.callCount).to.be 6 # Every time AJAX gets loaded, it empties the content
 
     describe "on error", ->
       beforeEach ->
