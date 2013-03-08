@@ -442,10 +442,10 @@ Opentip = (function() {
   Opentip.prototype.show = function() {
     var _this = this;
     this._abortHiding();
-    this._clearTimeouts();
     if (this.visible) {
       return;
     }
+    this._clearTimeouts();
     if (!this._triggerElementExists()) {
       return this.deactivate();
     }
@@ -520,10 +520,10 @@ Opentip = (function() {
   Opentip.prototype.hide = function() {
     var _this = this;
     this._abortShowing();
-    this._clearTimeouts();
     if (!this.visible) {
       return;
     }
+    this._clearTimeouts();
     this.debug("Hiding!");
     this.visible = false;
     this.preparingToHide = false;
