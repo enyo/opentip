@@ -79,12 +79,12 @@ describe "Opentip - Appearing", ->
       sinon.stub opentip, "_clearTimeouts"
       opentip.show()
       expect(opentip._clearTimeouts.callCount).to.be.above 0
-    it "should clear all timeouts even if alrady visible", ->
+    it "should not clear all timeouts when already visible", ->
       triggerElementExists = no
       sinon.stub opentip, "_clearTimeouts"
       opentip.visible = yes
       opentip.show()
-      expect(opentip._clearTimeouts.callCount).to.be 1
+      expect(opentip._clearTimeouts.callCount).to.be 0
 
     it "should abort if already visible", ->
       triggerElementExists = no

@@ -450,8 +450,10 @@ class Opentip
 
   show: ->
     @_abortHiding()
-    @_clearTimeouts()
+    
     return if @visible
+    
+    @_clearTimeouts()
 
     return @deactivate() unless @_triggerElementExists()
 
@@ -532,9 +534,10 @@ class Opentip
 
   hide: ->
     @_abortShowing()
-    @_clearTimeouts()
 
     return unless @visible
+
+    @_clearTimeouts()
 
     @debug "Hiding!"
 
