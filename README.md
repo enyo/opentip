@@ -71,7 +71,7 @@ refer to the [installation guide](http://www.opentip.org/installation.html).
 Usage
 -----
 
-*Version 2.2.8-dev*
+*Version 2.3.0*
 
 With HTML data attributes:
 
