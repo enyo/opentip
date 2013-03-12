@@ -1,6 +1,6 @@
 ###
 #
-# Opentip v2.2.7
+# Opentip v2.3.0
 #
 # More info at [www.opentip.org](http://www.opentip.org)
 # 
@@ -51,22 +51,23 @@ class Opentip
   class:
     container: "opentip-container"
     opentip: "opentip"
-    content: "content"
-    loadingIndicator: "loading-indicator"
-    close: "close"
+    header: "ot-header"
+    content: "ot-content"
+    loadingIndicator: "ot-loading-indicator"
+    close: "ot-close"
 
-    goingToHide: "going-to-hide"
-    hidden: "hidden"
-    hiding: "hiding"
-    goingToShow: "going-to-show"
-    showing: "showing"
-    visible: "visible"
+    goingToHide: "ot-going-to-hide"
+    hidden: "ot-hidden"
+    hiding: "ot-hiding"
+    goingToShow: "ot-going-to-show"
+    showing: "ot-showing"
+    visible: "ot-visible"
 
-    loading: "loading"
-    ajaxError: "ajax-error"
-    fixed: "fixed"
-    showEffectPrefix: "show-effect-"
-    hideEffectPrefix: "hide-effect-"
+    loading: "ot-loading"
+    ajaxError: "ot-ajax-error"
+    fixed: "ot-fixed"
+    showEffectPrefix: "ot-show-effect-"
+    hideEffectPrefix: "ot-hide-effect-"
     stylePrefix: "style-"
   
 
@@ -299,14 +300,14 @@ class Opentip
   _buildElements: ->
 
     # The actual content will be set by `_updateElementContent()`
-    @tooltipElement = @adapter.create """<div class="#{@class.opentip}"><div class="header"></div><div class="#{@class.content}"></div></div>"""
+    @tooltipElement = @adapter.create """<div class="#{@class.opentip}"><div class="#{@class.header}"></div><div class="#{@class.content}"></div></div>"""
 
     @backgroundCanvas = @adapter.wrap document.createElement "canvas"
     @adapter.css @backgroundCanvas, position: "absolute"
 
     G_vmlCanvasManager?.initElement @adapter.unwrap @backgroundCanvas
 
-    headerElement = @adapter.find @tooltipElement, ".header"
+    headerElement = @adapter.find @tooltipElement, ".#{@class.header}"
 
     if @options.title
       # Create the title element and append it to the header
@@ -337,7 +338,7 @@ class Opentip
   #
   # If content is a function it is evaluated here.
   _updateElementContent: ->
-    contentDiv = @adapter.find @container, ".content"
+    contentDiv = @adapter.find @container, ".#{@class.content}"
 
     if contentDiv?
       if typeof @content == "function"
@@ -450,9 +451,9 @@ class Opentip
 
   show: ->
     @_abortHiding()
-    
+
     return if @visible
-    
+
     @_clearTimeouts()
 
     return @deactivate() unless @_triggerElementExists()
@@ -1410,7 +1411,7 @@ Opentip.findElements = ->
 # Publicly available
 # ------------------
 
-Opentip.version = "2.2.7"
+Opentip.version = "2.3.0"
 
 Opentip.debug = off
 
