@@ -225,14 +225,14 @@ describe "Opentip", ->
       opentip = new Opentip element, "<div><span></span></div>", escapeContent: yes
       sinon.stub opentip, "_triggerElementExists", -> yes
       opentip.show()
-      expect($(opentip.container).find(".content").html()).to.be """&lt;div&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;"""
+      expect($(opentip.container).find(".ot-content").html()).to.be """&lt;div&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;"""
       
     it "should not escape the content if not @options.escapeContent", ->
       element = document.createElement "div"
       opentip = new Opentip element, "<div><span></span></div>", escapeContent: no
       sinon.stub opentip, "_triggerElementExists", -> yes
       opentip.show()
-      expect($(opentip.container).find(".content > div > span").length).to.be 1
+      expect($(opentip.container).find(".ot-content > div > span").length).to.be 1
 
     it "should storeAndLock dimensions and reposition the element", ->
       element = document.createElement "div"
@@ -258,10 +258,10 @@ describe "Opentip", ->
     it "should set the classes", ->
       enderElement = $ adapter.unwrap opentip.container
       expect(enderElement.hasClass "opentip-container").to.be.ok()
-      expect(enderElement.hasClass "hidden").to.be.ok()
+      expect(enderElement.hasClass "ot-hidden").to.be.ok()
       expect(enderElement.hasClass "style-glass").to.be.ok()
-      expect(enderElement.hasClass "show-effect-appear").to.be.ok()
-      expect(enderElement.hasClass "hide-effect-fade").to.be.ok()
+      expect(enderElement.hasClass "ot-show-effect-appear").to.be.ok()
+      expect(enderElement.hasClass "ot-hide-effect-fade").to.be.ok()
 
   describe "_buildElements()", ->
     element = opentip = null
@@ -273,19 +273,19 @@ describe "Opentip", ->
 
     it "should add a h1 if title is provided", ->
       enderElement = $ adapter.unwrap opentip.container
-      headerElement = enderElement.find "> .opentip > .header > h1"
+      headerElement = enderElement.find "> .opentip > .ot-header > h1"
       expect(headerElement.length).to.be.ok()
       expect(headerElement.html()).to.be "the title"
 
     it "should add a loading indicator if ajax", ->
       enderElement = $ adapter.unwrap opentip.container
-      loadingElement = enderElement.find "> .opentip > .loading-indicator > span"
+      loadingElement = enderElement.find "> .opentip > .ot-loading-indicator > span"
       expect(loadingElement.length).to.be.ok()
       expect(loadingElement.html()).to.be "↻"
 
     it "should add a close button if hideTrigger = close", ->
       enderElement = $ adapter.unwrap opentip.container
-      closeButton = enderElement.find "> .opentip > .header > a.close > span"
+      closeButton = enderElement.find "> .opentip > .ot-header > a.ot-close > span"
       expect(closeButton.length).to.be.ok()
       expect(closeButton.html()).to.be "Close"
 
