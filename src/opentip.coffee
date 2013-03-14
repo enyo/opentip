@@ -221,8 +221,20 @@ class Opentip
 
     @options = options
 
+
+    @bound = { }
+    @bound[methodToBind] = (do (methodToBind) => return => @[methodToBind](arguments...)) for methodToBind in [
+      "prepareToShow"
+      "prepareToHide"
+      "show"
+      "hide"
+      "reposition"
+    ]
+
     # Build the HTML elements when the dom is ready.
-    @adapter.domReady => @_init()
+    @adapter.domReady =>
+      @activate()
+      @prepareToShow() if @options.showOn == "creation"
 
 
   # Initializes the tooltip by creating the container and setting up the event
@@ -230,9 +242,8 @@ class Opentip
   #
   # This does not yet create all elements. They are created when the tooltip
   # actually shows for the first time.
-  #
-  # This function activates the tooltip as well.
-  _init: ->
+  _setup: ->
+    @debug "Setting up the tooltip"
     @_buildContainer()
 
     @hideTriggers = [ ]
@@ -277,18 +288,6 @@ class Opentip
         element: hideTrigger.element
         event: "mouseover"
 
-    @bound = { }
-    @bound[methodToBind] = (do (methodToBind) => return => @[methodToBind](arguments...)) for methodToBind in [
-      "prepareToShow"
-      "prepareToHide"
-      "show"
-      "hide"
-      "reposition"
-    ]
-
-    @activate()
-
-    @prepareToShow() if @options.showOn == "creation"
 
   # This just builds the opentip container, which is the absolute minimum to
   # attach events to it.
@@ -394,7 +393,7 @@ class Opentip
 
   # Sets up appropriate observers
   activate: ->
-    @_setupObservers "-showing", "-visible", "hidden", "hiding"
+    @_setupObservers "hidden", "hiding"
 
   # Hides the tooltip and sets up appropriate observers
   deactivate: ->
@@ -455,6 +454,8 @@ class Opentip
     return if @visible
 
     @debug "Showing in #{@options.delay}s."
+
+    @_setup() unless @container?
 
     Opentip._abortShowingGroup @options.group, this if @options.group
 
