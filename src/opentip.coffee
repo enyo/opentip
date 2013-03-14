@@ -213,6 +213,12 @@ class Opentip
         element: @triggerElement
         event: options.showOn
 
+
+    # Backwards compatibility
+    if options.ajaxCache?
+      options.cache = options.ajaxCache
+      delete options.ajaxCache
+
     @options = options
 
     # Build the HTML elements when the dom is ready.
@@ -332,19 +338,31 @@ class Opentip
   #
   # This can be a function or a string. The function will be executed, and the
   # result used as new content of the tooltip.
-  setContent: (@content) -> @_updateElementContent() if @visible
+  setContent: (@content) ->
+    @_newContent = yes
+
+    if typeof @content == "function"
+      @_contentFunction = @content
+      @content = ""
+    else
+      @_contentFunction = null
+
+    @_updateElementContent() if @visible
 
   # Actually updates the content.
   #
   # If content is a function it is evaluated here.
   _updateElementContent: ->
-    contentDiv = @adapter.find @container, ".#{@class.content}"
+    if @_newContent or (!@options.cache and @_contentFunction)
+      contentDiv = @adapter.find @container, ".#{@class.content}"
 
-    if contentDiv?
-      if typeof @content == "function"
-        @debug "Executing content function."
-        @content = @content this
-      @adapter.update contentDiv, @content, @options.escapeContent
+      if contentDiv?
+        if @_contentFunction
+          @debug "Executing content function."
+          @content = @_contentFunction this
+        @adapter.update contentDiv, @content, @options.escapeContent
+
+      @_newContent = no
 
     @_storeAndLockDimensions()
     @reposition()
@@ -468,7 +486,7 @@ class Opentip
     @_buildElements() unless @tooltipElement?
     @_updateElementContent()
 
-    @_loadAjax() if @options.ajax and (not @loaded or not @options.ajaxCache)
+    @_loadAjax() if @options.ajax and (not @loaded or not @options.cache)
 
     @_searchAndActivateCloseButtons()
 
@@ -1556,6 +1574,13 @@ Opentip.styles =
     # - `null` (targetJoint is the opposite of tipJoint)
     targetJoint: null 
 
+    # If off and the content gets downloaded with AJAX, it will be downloaded
+    # every time the tooltip is shown. If the content is a function, the function
+    # will be executed every time.
+    cache: on
+
+    # ajaxCache: on # Deprecated in favor of cache.
+
     # AJAX URL
     # Set to `false` if no AJAX or `true` if it's attached to an `<a />`
     # element. In the latter case the `href` attribute will be used.
@@ -1563,9 +1588,6 @@ Opentip.styles =
 
     # Which method should AJAX use.
     ajaxMethod: "GET"
-
-    # If off, the content will be downloaded every time the tooltip is shown.
-    ajaxCache: on
 
     # The message that gets displayed if the content couldn't be downloaded.
     ajaxErrorMessage: "There was a problem downloading the content."

@@ -10,7 +10,7 @@ describe "Opentip - Positioning", ->
     triggerElementExists = yes
 
   afterEach ->
-    opentip[prop].restore?() for prop of opentip
+    opentip[prop]?.restore?() for prop of opentip
     $(".opentip-container").remove()
 
   describe "fixed", ->
