@@ -599,15 +599,13 @@ class Opentip
       @preparingToHide = no
       @_setupObservers "-hiding", "showing", "visible"
 
-  reposition: (e) ->
-    e ?= @lastEvent
-
-    position = @getPosition e
+  reposition: ->
+    position = @getPosition()
     return unless position?
 
     stem = @options.stem
 
-    {position, stem} = @_ensureViewportContainment e, position if @options.containInViewport
+    {position, stem} = @_ensureViewportContainment position if @options.containInViewport
 
     # If the position didn't change, no need to do anything    
     return if @_positionsEqual position, @currentPosition
@@ -634,7 +632,7 @@ class Opentip
       rawContainer.style.visibility = "visible"
 
 
-  getPosition: (e, tipJoint, targetJoint, stem) ->
+  getPosition: (tipJoint, targetJoint, stem) ->
 
     tipJoint ?= @options.tipJoint
     targetJoint ?= @options.targetJoint
@@ -682,9 +680,6 @@ class Opentip
 
     else
       # Follow mouse
-      @lastEvent = e if e?
-      mousePosition = @adapter.mousePosition e
-      return unless mousePosition?
       position = top: mousePosition.y, left: mousePosition.x
 
     if @options.autoOffset
@@ -722,7 +717,7 @@ class Opentip
 
     position
 
-  _ensureViewportContainment: (e, position) ->
+  _ensureViewportContainment: (position) ->
 
     stem = @options.stem
 
@@ -787,7 +782,7 @@ class Opentip
 
     # TODO: actually handle the stem here
     stem = tipJoint if @options.stem
-    position = @getPosition e, tipJoint, targetJoint, stem
+    position = @getPosition tipJoint, targetJoint, stem
 
     newSticksOut = @_sticksOut position
 
@@ -811,7 +806,7 @@ class Opentip
     if revertedX or revertedY
       # One of the positions have been reverted. So get the position again.
       stem = tipJoint if @options.stem
-      position = @getPosition e, tipJoint, targetJoint, stem
+      position = @getPosition tipJoint, targetJoint, stem
 
     {
       position: position
@@ -1193,10 +1188,10 @@ class Opentip
     input?.focus?()
 
   # Calls reposition() everytime the mouse moves
-  _followMousePosition: -> @adapter.observe document.body, "mousemove", @bound.reposition unless @options.fixed
+  _followMousePosition: -> Opentip._observeMousePosition @bound.reposition unless @options.fixed
 
   # Removes observer
-  _stopFollowingMousePosition: -> @adapter.stopObserving document.body, "mousemove", @bound.reposition unless @options.fixed
+  _stopFollowingMousePosition: -> Opentip._stopObservingMousePosition @bound.reposition unless @options.fixed
 
 
   # I thinks those are self explanatory
@@ -1308,6 +1303,31 @@ Opentip::ucfirst = (string) ->
 # Converts a camelized string into a dasherized one
 Opentip::dasherize = (string) ->
   string.replace /([A-Z])/g, (_, character) -> "-#{character.toLowerCase()}"
+
+
+
+
+
+# Mouse position stuff.
+
+mousePositionObservers = [ ]
+mousePosition = { x: 0, y: 0 }
+
+mouseMoved = (e) ->
+  mousePosition = Opentip.adapter.mousePosition e
+  observer() for observer in mousePositionObservers
+
+Opentip.followMousePosition = -> Opentip.adapter.observe document.body, "mousemove", mouseMoved
+
+
+# Called by opentips if they want updates on mouse position
+Opentip._observeMousePosition = (observer) ->
+  mousePositionObservers.push observer
+
+Opentip._stopObservingMousePosition = (removeObserver) ->
+  mousePositionObservers = (observer for observer in mousePositionObservers when observer != removeObserver)
+
+
 
 
 
@@ -1460,6 +1480,7 @@ Opentip.addAdapter = (adapter) ->
   if firstAdapter
     Opentip.adapter = adapter
     adapter.domReady Opentip.findElements
+    adapter.domReady Opentip.followMousePosition
     firstAdapter = no
 
 Opentip.positions = [
