@@ -235,6 +235,8 @@ class Opentip
   _init: ->
     @_buildContainer()
 
+    @hideTriggers = [ ]
+
     for hideTrigger, i in @options.hideTriggers
       hideTriggerElement = null
 
@@ -398,6 +400,7 @@ class Opentip
   deactivate: ->
     @debug "Deactivating tooltip."
     @hide()
+    @_setupObservers "-showing", "-visible", "-hidden", "-hiding"
 
 
   # If a state starts with a minus all observers are removed instead of set.
