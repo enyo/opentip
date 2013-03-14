@@ -293,6 +293,23 @@ describe "Opentip", ->
       expect(opentip.content).to.be "count2"
       opentip.adapter.find.restore()
 
+    it "should only update the HTML elements if the content has been changed", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, showOn: "click"
+      sinon.stub opentip.adapter, "find", -> "element"
+      sinon.stub opentip.adapter, "update", ->
+      opentip.visible = yes
+
+      opentip.setContent "TEST"
+      expect(opentip.adapter.update.callCount).to.be 1
+      opentip._updateElementContent()
+      opentip._updateElementContent()
+      expect(opentip.adapter.update.callCount).to.be 1
+      opentip.setContent "TEST2"
+      expect(opentip.adapter.update.callCount).to.be 2
+      opentip.adapter.find.restore()
+      opentip.adapter.update.restore()
+
 
   describe "_buildContainer()", ->
     element = document.createElement "div"
