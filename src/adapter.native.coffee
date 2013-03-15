@@ -134,6 +134,7 @@ class Adapter
 
   # Removes element
   remove: (element) ->
+    element = @unwrap element
     parentNode = element.parentNode
     parentNode.removeChild element if parentNode?
 
