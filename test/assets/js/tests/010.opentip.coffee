@@ -13,9 +13,9 @@ describe "Opentip", ->
 
   describe "constructor()", ->
     before ->
-      sinon.stub Opentip::, "_init"
+      sinon.stub Opentip::, "_setup"
     after ->
-      Opentip::_init.restore()
+      Opentip::_setup.restore()
     it "arguments should be optional", ->
       element = adapter.create "<div></div>"
       opentip = new Opentip element, "content"
@@ -55,13 +55,17 @@ describe "Opentip", ->
       expect(opentip.options.ajax).to.be false
 
     it "should disable a link if the event is onClick", ->
-      sinon.spy adapter, "observe"
+      sinon.stub adapter, "observe"
       element = $("""<a href="http://testlink">link</a>""")[0]
+      sinon.stub Opentip::, "_setupObservers"
       opentip = new Opentip element, showOn: "click"
+
 
       expect(adapter.observe.calledOnce).to.be.ok()
       expect(adapter.observe.getCall(0).args[1]).to.equal "click"
 
+
+      Opentip::_setupObservers.restore()
       adapter.observe.restore()
 
     it "should take all options from selected style", ->
@@ -319,6 +323,7 @@ describe "Opentip", ->
         style: "glass"
         showEffect: "appear"
         hideEffect: "fade"
+      opentip._setup()
 
     it "should set the id", ->
       expect(adapter.attr opentip.container, "id").to.equal "opentip-" + opentip.id
@@ -336,6 +341,7 @@ describe "Opentip", ->
     beforeEach ->
       element = document.createElement "div"
       opentip = new Opentip element, "the content", "the title", hideTrigger: "closeButton", stem: "top left", ajax: "bla"
+      opentip._setup()
       opentip._buildElements()
 
     it "should add a h1 if title is provided", ->

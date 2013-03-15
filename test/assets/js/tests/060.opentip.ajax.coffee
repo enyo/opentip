@@ -25,6 +25,7 @@ describe "Opentip - AJAX", ->
 
       it "should use adapter.ajax", ->
         opentip = new Opentip adapter.create("<div></div>"), "Test", ajax: "http://www.test.com", ajaxMethod: "post"
+        opentip._setup()
         opentip._loadAjax()
         expect(adapter.ajax.callCount).to.be 1
         expect(adapter.ajax.args[0][0].url).to.equal "http://www.test.com"
@@ -70,7 +71,7 @@ describe "Opentip - AJAX", ->
 
       it "should use the options.ajaxErrorMessage on failure", ->
         opentip = new Opentip adapter.create("<div></div>"), "Test", ajax: "http://www.test.com", ajaxMethod: "post", ajaxErrorMessage: "No download dude."
-
+        opentip._setup()
         expect(opentip.options.ajaxErrorMessage).to.be "No download dude."
 
         expect(opentip.content).to.be "Test"

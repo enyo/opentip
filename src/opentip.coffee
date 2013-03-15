@@ -243,7 +243,7 @@ class Opentip
   # This does not yet create all elements. They are created when the tooltip
   # actually shows for the first time.
   _setup: ->
-    @debug "Setting up the tooltip"
+    @debug "Setting up the tooltip."
     @_buildContainer()
 
     @hideTriggers = [ ]
@@ -305,7 +305,6 @@ class Opentip
 
   # Builds all elements inside the container and put the container in body.
   _buildElements: ->
-
     # The actual content will be set by `_updateElementContent()`
     @tooltipElement = @adapter.create """<div class="#{@class.opentip}"><div class="#{@class.header}"></div><div class="#{@class.content}"></div></div>"""
 
@@ -372,6 +371,7 @@ class Opentip
   # dimensions and sets them so the tolltip won't change in size (which can be
   # annoying when the tooltip gets too close to the browser edge)
   _storeAndLockDimensions: ->
+    return unless @container
     prevDimension = @dimensions
 
     @adapter.css @container,
@@ -482,6 +482,8 @@ class Opentip
 
     @debug "Showing now."
 
+    @_setup() unless @container?
+
     Opentip._hideGroup @options.group, this if @options.group
 
     @visible = yes
@@ -576,6 +578,7 @@ class Opentip
 
     @_stopFollowingMousePosition() unless @options.fixed
 
+    return unless @container
  
     @adapter.removeClass @container, @class.visible
     @adapter.removeClass @container, @class.showing
@@ -594,6 +597,9 @@ class Opentip
         @adapter.removeClass @container, @class.hiding
         @adapter.addClass @container, @class.hidden
         @setCss3Style @container, { transitionDuration: "0s" }
+        if @options.removeElementsOnHide
+          @adapter.remove @container
+          @container = null
       , hideDelay
 
   _abortHiding: ->
@@ -637,6 +643,7 @@ class Opentip
 
 
   getPosition: (tipJoint, targetJoint, stem) ->
+    return unless @container
 
     tipJoint ?= @options.tipJoint
     targetJoint ?= @options.targetJoint
@@ -1566,6 +1573,9 @@ Opentip.styles =
     # - array of event strings if multiple hideTriggers
     # - `null` (let Opentip decide)
     hideOn: null
+
+    # Removes all HTML elements from DOM when an Opentip is hidden if true
+    removeElementsOnHide: off
 
     # `OFFSET`
     offset: [ 0, 0 ]

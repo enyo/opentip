@@ -91,6 +91,9 @@ do ->
     # Appends given child to element
     append: (element, child) -> @wrap(element).insert @wrap child
 
+    # Removes element
+    remove: (element) -> @wrap(element).remove()
+
     # Add a class
     addClass: (element, className) -> @wrap(element).addClassName className
 

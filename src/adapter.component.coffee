@@ -48,10 +48,10 @@ module.exports = class Adapter
   data: (element, args...) -> $(element).data args...
 
   # Finds elements by selector
-  find: (element, selector) -> $(element).find selector
+  find: (element, selector) -> $(element).find(selector)[0]
 
   # Finds all elements by selector
-  findAll: -> @find.apply @, arguments
+  findAll: (element, selector) -> $(element).find selector
 
   # Updates the content of the element
   update: (element, content, escape) ->
@@ -63,6 +63,9 @@ module.exports = class Adapter
 
   # Appends given child to element
   append: (element, child) -> $(element).append child
+
+  # Removes element
+  remove: (element) -> $(element).remove()
 
   # Add a class
   addClass: (element, className) -> $(element).addClass className

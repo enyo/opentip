@@ -21,6 +21,12 @@ describe "Opentip - Appearing", ->
       opentip = new Opentip adapter.create("<div></div>"), "Test", delay: 0
       sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
 
+    it "should call _setup if no container yet", ->
+      sinon.spy opentip, "_setup"
+      opentip.prepareToShow()
+      opentip.prepareToShow()
+      expect(opentip._setup.calledOnce).to.be.ok()
+
     it "should always abort a hiding process", ->
       sinon.stub opentip, "_abortHiding"
       opentip.prepareToShow()
@@ -44,7 +50,11 @@ describe "Opentip - Appearing", ->
     it "should log that it's preparing to show", ->
       sinon.stub opentip, "debug"
       opentip.prepareToShow()
-      expect(opentip.debug.callCount).to.be 1
+      console.log opentip.debug.getCall(0)
+      console.log opentip.debug.getCall(1)
+      expect(opentip.debug.callCount).to.be 2
+      expect(opentip.debug.getCall(0).args[0]).to.be "Showing in 0s."
+      expect(opentip.debug.getCall(1).args[0]).to.be "Setting up the tooltip."
 
     it "should setup observers for 'showing'", ->
       sinon.stub opentip, "_setupObservers"
@@ -73,6 +83,12 @@ describe "Opentip - Appearing", ->
     beforeEach ->
       opentip = new Opentip adapter.create("<div></div>"), "Test", delay: 0
       sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
+
+    it "should call _setup if no container yet", ->
+      sinon.spy opentip, "_setup"
+      opentip.show()
+      opentip.show()
+      expect(opentip._setup.calledOnce).to.be.ok()
 
     it "should clear all timeouts", ->
       triggerElementExists = no

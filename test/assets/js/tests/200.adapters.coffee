@@ -193,6 +193,11 @@ describe "Generic adapter", ->
 
 
         describe "find()", ->
+          it "should only return one element", ->
+            element = $("""<div><span id="a-span" class="a"></span><div id="b-span" class="b"></div></div>""")[0]
+            aElement = adapter.find element, ".a"
+            expect(aElement.length == undefined).to.be.ok()
+            expect(aElement.tagName).to.be "SPAN"
           it "should properly retrieve child elements", ->
             element = $("""<div><span id="a-span" class="a"></span><div id="b-span" class="b"></div></div>""")[0]
             a = adapter.unwrap adapter.find element, ".a"
@@ -274,6 +279,16 @@ describe "Generic adapter", ->
             child = document.createElement "span"
             adapter.append adapter.wrap(element), adapter.wrap(child)
             expect(element.innerHTML).to.eql "<span></span>"
+
+        describe "remove()", ->
+          it "should completely remove element", ->
+            element = document.createElement "div"
+            element.className = "testelement99"
+            adapter.append document.body, element
+            expect(adapter.find(document.body, ".testelement99")).to.be.ok()
+            adapter.remove element
+            expect(adapter.find(document.body, ".testelement99")).to.not.be.ok()
+
 
         describe "offset()", ->
           it "should only return left and top", ->

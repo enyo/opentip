@@ -132,6 +132,11 @@ class Adapter
     unwrappedElement = @unwrap element
     unwrappedElement.appendChild unwrappedChild
 
+  # Removes element
+  remove: (element) ->
+    parentNode = element.parentNode
+    parentNode.removeChild element if parentNode?
+
   # Add a class
   addClass: (element, className) -> @unwrap(element).classList.add className
 
