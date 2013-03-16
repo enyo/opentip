@@ -321,7 +321,7 @@ class Opentip
       @adapter.update titleElement, @options.title, @options.escapeTitle
       @adapter.append headerElement, titleElement
 
-    if @options.ajax
+    if @options.ajax and !@loaded
       @adapter.append @tooltipElement, @adapter.create """<div class="#{@class.loadingIndicator}"><span>↻</span></div>"""
 
     if "closeButton" in @options.hideTriggers
@@ -333,6 +333,9 @@ class Opentip
     @adapter.append @container, @tooltipElement
     @adapter.append document.body, @container
 
+    # Makes sure that the content is redrawn.
+    @_newContent = yes
+    @redraw = on
 
   # Sets the content and updates the HTML element if currently visible
   #
@@ -481,7 +484,6 @@ class Opentip
     return @deactivate() unless @_triggerElementExists()
 
     @debug "Showing now."
-
     @_setup() unless @container?
 
     Opentip._hideGroup @options.group, this if @options.group
@@ -513,6 +515,8 @@ class Opentip
     @setCss3Style @container, transitionDuration: "0s"
 
     @defer =>
+      # Since this function is deferred, a hide() call could have already been made
+      return if !@visible or @preparingToHide
       @adapter.removeClass @container, @class.goingToShow
       @adapter.addClass @container, @class.showing
 
@@ -597,9 +601,12 @@ class Opentip
         @adapter.removeClass @container, @class.hiding
         @adapter.addClass @container, @class.hidden
         @setCss3Style @container, { transitionDuration: "0s" }
+
         if @options.removeElementsOnHide
+          @debug "Removing HTML elements."
           @adapter.remove @container
-          @container = null
+          delete @container
+          delete @tooltipElement
       , hideDelay
 
   _abortHiding: ->
