@@ -165,8 +165,8 @@
 }
 .opentip-container.ot-hide-effect-fade.ot-hiding {
   opacity: 0;
-  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   filter: alpha(opacity=0);
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 }
 .opentip-container.ot-show-effect-appear.ot-going-to-show,
 .opentip-container.ot-show-effect-appear.ot-showing {
@@ -178,8 +178,8 @@
 }
 .opentip-container.ot-show-effect-appear.ot-going-to-show {
   opacity: 0;
-  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   filter: alpha(opacity=0);
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 }
 .opentip-container.ot-show-effect-appear.ot-showing {
   opacity: 1;
