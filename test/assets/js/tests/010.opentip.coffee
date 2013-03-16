@@ -13,9 +13,9 @@ describe "Opentip", ->
 
   describe "constructor()", ->
     before ->
-      sinon.stub Opentip::, "_init"
+      sinon.stub Opentip::, "_setup"
     after ->
-      Opentip::_init.restore()
+      Opentip::_setup.restore()
     it "arguments should be optional", ->
       element = adapter.create "<div></div>"
       opentip = new Opentip element, "content"
@@ -55,13 +55,17 @@ describe "Opentip", ->
       expect(opentip.options.ajax).to.be false
 
     it "should disable a link if the event is onClick", ->
-      sinon.spy adapter, "observe"
+      sinon.stub adapter, "observe"
       element = $("""<a href="http://testlink">link</a>""")[0]
+      sinon.stub Opentip::, "_setupObservers"
       opentip = new Opentip element, showOn: "click"
+
 
       expect(adapter.observe.calledOnce).to.be.ok()
       expect(adapter.observe.getCall(0).args[1]).to.equal "click"
 
+
+      Opentip::_setupObservers.restore()
       adapter.observe.restore()
 
     it "should take all options from selected style", ->
@@ -192,6 +196,15 @@ describe "Opentip", ->
       expect(Opentip.tips[0]).to.equal opentip1
       expect(Opentip.tips[1]).to.equal opentip2
 
+    it "should rename ajaxCache to cache for backwards compatibility", ->
+      element = $("<div></div>")[0]
+      opentip1 = new Opentip element, ajaxCache: off
+      opentip2 = new Opentip element, ajaxCache: on
+
+      expect(opentip1.options.ajaxCache == opentip2.options.ajaxCache == undefined).to.be.ok()
+      expect(opentip1.options.cache).to.not.be.ok()
+      expect(opentip2.options.cache).to.be.ok()
+
   describe "init()", ->
     describe "showOn == creation", ->
       element = document.createElement "div"
@@ -215,7 +228,12 @@ describe "Opentip", ->
       expect(opentip._updateElementContent.callCount).to.equal 1
       opentip._updateElementContent.restore()
       
-
+    it "should not set the content directly if function", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, showOn: "click"
+      sinon.stub opentip, "_updateElementContent"
+      opentip.setContent -> "TEST"
+      expect(opentip.content).to.equal ""
 
 
   describe "_updateElementContent()", ->
@@ -244,6 +262,59 @@ describe "Opentip", ->
       expect(opentip._storeAndLockDimensions.callCount).to.equal 1
       expect(opentip.reposition.callCount).to.equal 1
 
+    it "should execute the content function", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, showOn: "click"
+      sinon.stub opentip.adapter, "find", -> "element"
+      opentip.visible = yes
+      opentip.setContent -> "BLA TEST"
+      expect(opentip.content).to.be "BLA TEST"
+      opentip.adapter.find.restore()
+
+    it "should only execute the content function once if cache:true", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, showOn: "click", cache: yes
+      sinon.stub opentip.adapter, "find", -> "element"
+      opentip.visible = yes
+      counter = 0
+      opentip.setContent -> "count#{counter++}"
+      expect(opentip.content).to.be "count0"
+      opentip._updateElementContent()
+      opentip._updateElementContent()
+      expect(opentip.content).to.be "count0"
+      opentip.adapter.find.restore()
+
+    it "should execute the content function multiple times if cache:false", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, showOn: "click", cache: no
+      sinon.stub opentip.adapter, "find", -> "element"
+      opentip.visible = yes
+      counter = 0
+      opentip.setContent -> "count#{counter++}"
+      expect(opentip.content).to.be "count0"
+      opentip._updateElementContent()
+      opentip._updateElementContent()
+      expect(opentip.content).to.be "count2"
+      opentip.adapter.find.restore()
+
+    it "should only update the HTML elements if the content has been changed", ->
+      element = document.createElement "div"
+      opentip = new Opentip element, showOn: "click"
+      sinon.stub opentip.adapter, "find", -> "element"
+      sinon.stub opentip.adapter, "update", ->
+      opentip.visible = yes
+
+      opentip.setContent "TEST"
+      expect(opentip.adapter.update.callCount).to.be 1
+      opentip._updateElementContent()
+      opentip._updateElementContent()
+      expect(opentip.adapter.update.callCount).to.be 1
+      opentip.setContent "TEST2"
+      expect(opentip.adapter.update.callCount).to.be 2
+      opentip.adapter.find.restore()
+      opentip.adapter.update.restore()
+
+
   describe "_buildContainer()", ->
     element = document.createElement "div"
     opentip = null
@@ -252,6 +323,7 @@ describe "Opentip", ->
         style: "glass"
         showEffect: "appear"
         hideEffect: "fade"
+      opentip._setup()
 
     it "should set the id", ->
       expect(adapter.attr opentip.container, "id").to.equal "opentip-" + opentip.id
@@ -269,6 +341,7 @@ describe "Opentip", ->
     beforeEach ->
       element = document.createElement "div"
       opentip = new Opentip element, "the content", "the title", hideTrigger: "closeButton", stem: "top left", ajax: "bla"
+      opentip._setup()
       opentip._buildElements()
 
     it "should add a h1 if title is provided", ->

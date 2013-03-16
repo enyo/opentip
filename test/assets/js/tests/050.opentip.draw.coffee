@@ -31,14 +31,16 @@ describe "Opentip - Drawing", ->
 
     it "should draw if canvas and @redraw", ->
       sinon.stub opentip, "debug"
+      opentip._setup()
       opentip.backgroundCanvas = document.createElement "canvas"
       opentip.redraw = on
       opentip._draw()
       expect(opentip.debug.callCount).to.be.above 0
-      expect(opentip.debug.args[0][0]).to.be "Drawing background."
+      expect(opentip.debug.args[1][0]).to.be "Drawing background."
 
     it "should add the stem classes", ->
       sinon.stub opentip, "debug"
+      opentip._setup()
       opentip.backgroundCanvas = document.createElement "canvas"
 
       opentip.currentStem = new Opentip.Joint "bottom left"

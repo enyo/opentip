@@ -10,8 +10,9 @@ describe "Opentip - Appearing", ->
     triggerElementExists = yes
 
   afterEach ->
-    opentip[prop]?.restore?() for own prop of opentip
-    opentip.deactivate()
+    if opentip
+      opentip[prop]?.restore?() for own prop of opentip
+      opentip.deactivate()
 
     $(".opentip-container").remove()
 
@@ -20,6 +21,12 @@ describe "Opentip - Appearing", ->
       triggerElementExists = no
       opentip = new Opentip adapter.create("<div></div>"), "Test", delay: 0
       sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
+
+    it "should call _setup if no container yet", ->
+      sinon.spy opentip, "_setup"
+      opentip.prepareToShow()
+      opentip.prepareToShow()
+      expect(opentip._setup.calledOnce).to.be.ok()
 
     it "should always abort a hiding process", ->
       sinon.stub opentip, "_abortHiding"
@@ -44,7 +51,9 @@ describe "Opentip - Appearing", ->
     it "should log that it's preparing to show", ->
       sinon.stub opentip, "debug"
       opentip.prepareToShow()
-      expect(opentip.debug.callCount).to.be 1
+      expect(opentip.debug.callCount).to.be 2
+      expect(opentip.debug.getCall(0).args[0]).to.be "Showing in 0s."
+      expect(opentip.debug.getCall(1).args[0]).to.be "Setting up the tooltip."
 
     it "should setup observers for 'showing'", ->
       sinon.stub opentip, "_setupObservers"
@@ -73,6 +82,12 @@ describe "Opentip - Appearing", ->
     beforeEach ->
       opentip = new Opentip adapter.create("<div></div>"), "Test", delay: 0
       sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
+
+    it "should call _setup if no container yet", ->
+      sinon.spy opentip, "_setup"
+      opentip.show()
+      opentip.show()
+      expect(opentip._setup.calledOnce).to.be.ok()
 
     it "should clear all timeouts", ->
       triggerElementExists = no
@@ -202,6 +217,21 @@ describe "Opentip - Appearing", ->
         opentip = new Opentip element, "test", delay: 0, showOn: event
         sinon.stub opentip, "_triggerElementExists", -> triggerElementExists
         testEvent opentip, event, done
+
+  describe "hide", ->
+    it "should remove HTML elements if removeElementsOnHide: true", (done) ->
+      opentip = new Opentip adapter.create("<div></div>"), "Test", { delay: 0, removeElementsOnHide: yes, hideEffectDuration: 0, hideDelay: 0 }
+      sinon.stub opentip, "_triggerElementExists", -> yes
+      opentip.show()
+      expect($("#opentip-#{opentip.id}").length).to.be 1
+      opentip.hide()
+      setTimeout (->
+        expect($("#opentip-#{opentip.id}").length).to.be 0
+        opentip.show()
+        expect($("#opentip-#{opentip.id}").length).to.be 1
+        opentip = null
+        done()
+      ), 10
 
   describe "visible", ->
     $element = null

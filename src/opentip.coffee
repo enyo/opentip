@@ -1,6 +1,6 @@
 ###
 #
-# Opentip v2.3.0
+# Opentip v2.4.0
 #
 # More info at [www.opentip.org](http://www.opentip.org)
 # 
@@ -213,10 +213,28 @@ class Opentip
         element: @triggerElement
         event: options.showOn
 
+
+    # Backwards compatibility
+    if options.ajaxCache?
+      options.cache = options.ajaxCache
+      delete options.ajaxCache
+
     @options = options
 
+
+    @bound = { }
+    @bound[methodToBind] = (do (methodToBind) => return => @[methodToBind](arguments...)) for methodToBind in [
+      "prepareToShow"
+      "prepareToHide"
+      "show"
+      "hide"
+      "reposition"
+    ]
+
     # Build the HTML elements when the dom is ready.
-    @adapter.domReady => @_init()
+    @adapter.domReady =>
+      @activate()
+      @prepareToShow() if @options.showOn == "creation"
 
 
   # Initializes the tooltip by creating the container and setting up the event
@@ -224,10 +242,11 @@ class Opentip
   #
   # This does not yet create all elements. They are created when the tooltip
   # actually shows for the first time.
-  #
-  # This function activates the tooltip as well.
-  _init: ->
+  _setup: ->
+    @debug "Setting up the tooltip."
     @_buildContainer()
+
+    @hideTriggers = [ ]
 
     for hideTrigger, i in @options.hideTriggers
       hideTriggerElement = null
@@ -269,18 +288,6 @@ class Opentip
         element: hideTrigger.element
         event: "mouseover"
 
-    @bound = { }
-    @bound[methodToBind] = (do (methodToBind) => return => @[methodToBind](arguments...)) for methodToBind in [
-      "prepareToShow"
-      "prepareToHide"
-      "show"
-      "hide"
-      "reposition"
-    ]
-
-    @activate()
-
-    @prepareToShow() if @options.showOn == "creation"
 
   # This just builds the opentip container, which is the absolute minimum to
   # attach events to it.
@@ -298,7 +305,6 @@ class Opentip
 
   # Builds all elements inside the container and put the container in body.
   _buildElements: ->
-
     # The actual content will be set by `_updateElementContent()`
     @tooltipElement = @adapter.create """<div class="#{@class.opentip}"><div class="#{@class.header}"></div><div class="#{@class.content}"></div></div>"""
 
@@ -315,7 +321,7 @@ class Opentip
       @adapter.update titleElement, @options.title, @options.escapeTitle
       @adapter.append headerElement, titleElement
 
-    if @options.ajax
+    if @options.ajax and !@loaded
       @adapter.append @tooltipElement, @adapter.create """<div class="#{@class.loadingIndicator}"><span>↻</span></div>"""
 
     if "closeButton" in @options.hideTriggers
@@ -327,24 +333,39 @@ class Opentip
     @adapter.append @container, @tooltipElement
     @adapter.append document.body, @container
 
+    # Makes sure that the content is redrawn.
+    @_newContent = yes
+    @redraw = on
 
   # Sets the content and updates the HTML element if currently visible
   #
   # This can be a function or a string. The function will be executed, and the
   # result used as new content of the tooltip.
-  setContent: (@content) -> @_updateElementContent() if @visible
+  setContent: (@content) ->
+    @_newContent = yes
+
+    if typeof @content == "function"
+      @_contentFunction = @content
+      @content = ""
+    else
+      @_contentFunction = null
+
+    @_updateElementContent() if @visible
 
   # Actually updates the content.
   #
   # If content is a function it is evaluated here.
   _updateElementContent: ->
-    contentDiv = @adapter.find @container, ".#{@class.content}"
+    if @_newContent or (!@options.cache and @_contentFunction)
+      contentDiv = @adapter.find @container, ".#{@class.content}"
 
-    if contentDiv?
-      if typeof @content == "function"
-        @debug "Executing content function."
-        @content = @content this
-      @adapter.update contentDiv, @content, @options.escapeContent
+      if contentDiv?
+        if @_contentFunction
+          @debug "Executing content function."
+          @content = @_contentFunction this
+        @adapter.update contentDiv, @content, @options.escapeContent
+
+      @_newContent = no
 
     @_storeAndLockDimensions()
     @reposition()
@@ -353,6 +374,7 @@ class Opentip
   # dimensions and sets them so the tolltip won't change in size (which can be
   # annoying when the tooltip gets too close to the browser edge)
   _storeAndLockDimensions: ->
+    return unless @container
     prevDimension = @dimensions
 
     @adapter.css @container,
@@ -374,12 +396,13 @@ class Opentip
 
   # Sets up appropriate observers
   activate: ->
-    @_setupObservers "-showing", "-visible", "hidden", "hiding"
+    @_setupObservers "hidden", "hiding"
 
   # Hides the tooltip and sets up appropriate observers
   deactivate: ->
     @debug "Deactivating tooltip."
     @hide()
+    @_setupObservers "-showing", "-visible", "-hidden", "-hiding"
 
 
   # If a state starts with a minus all observers are removed instead of set.
@@ -435,6 +458,8 @@ class Opentip
 
     @debug "Showing in #{@options.delay}s."
 
+    @_setup() unless @container?
+
     Opentip._abortShowingGroup @options.group, this if @options.group
 
     @preparingToShow = true
@@ -459,6 +484,7 @@ class Opentip
     return @deactivate() unless @_triggerElementExists()
 
     @debug "Showing now."
+    @_setup() unless @container?
 
     Opentip._hideGroup @options.group, this if @options.group
 
@@ -468,7 +494,7 @@ class Opentip
     @_buildElements() unless @tooltipElement?
     @_updateElementContent()
 
-    @_loadAjax() if @options.ajax and (not @loaded or not @options.ajaxCache)
+    @_loadAjax() if @options.ajax and (not @loaded or not @options.cache)
 
     @_searchAndActivateCloseButtons()
 
@@ -489,6 +515,8 @@ class Opentip
     @setCss3Style @container, transitionDuration: "0s"
 
     @defer =>
+      # Since this function is deferred, a hide() call could have already been made
+      return if !@visible or @preparingToHide
       @adapter.removeClass @container, @class.goingToShow
       @adapter.addClass @container, @class.showing
 
@@ -554,6 +582,7 @@ class Opentip
 
     @_stopFollowingMousePosition() unless @options.fixed
 
+    return unless @container
  
     @adapter.removeClass @container, @class.visible
     @adapter.removeClass @container, @class.showing
@@ -572,6 +601,12 @@ class Opentip
         @adapter.removeClass @container, @class.hiding
         @adapter.addClass @container, @class.hidden
         @setCss3Style @container, { transitionDuration: "0s" }
+
+        if @options.removeElementsOnHide
+          @debug "Removing HTML elements."
+          @adapter.remove @container
+          delete @container
+          delete @tooltipElement
       , hideDelay
 
   _abortHiding: ->
@@ -581,15 +616,13 @@ class Opentip
       @preparingToHide = no
       @_setupObservers "-hiding", "showing", "visible"
 
-  reposition: (e) ->
-    e ?= @lastEvent
-
-    position = @getPosition e
+  reposition: ->
+    position = @getPosition()
     return unless position?
 
     stem = @options.stem
 
-    {position, stem} = @_ensureViewportContainment e, position if @options.containInViewport
+    {position, stem} = @_ensureViewportContainment position if @options.containInViewport
 
     # If the position didn't change, no need to do anything    
     return if @_positionsEqual position, @currentPosition
@@ -616,7 +649,8 @@ class Opentip
       rawContainer.style.visibility = "visible"
 
 
-  getPosition: (e, tipJoint, targetJoint, stem) ->
+  getPosition: (tipJoint, targetJoint, stem) ->
+    return unless @container
 
     tipJoint ?= @options.tipJoint
     targetJoint ?= @options.targetJoint
@@ -664,9 +698,6 @@ class Opentip
 
     else
       # Follow mouse
-      @lastEvent = e if e?
-      mousePosition = @adapter.mousePosition e
-      return unless mousePosition?
       position = top: mousePosition.y, left: mousePosition.x
 
     if @options.autoOffset
@@ -704,7 +735,7 @@ class Opentip
 
     position
 
-  _ensureViewportContainment: (e, position) ->
+  _ensureViewportContainment: (position) ->
 
     stem = @options.stem
 
@@ -769,7 +800,7 @@ class Opentip
 
     # TODO: actually handle the stem here
     stem = tipJoint if @options.stem
-    position = @getPosition e, tipJoint, targetJoint, stem
+    position = @getPosition tipJoint, targetJoint, stem
 
     newSticksOut = @_sticksOut position
 
@@ -793,7 +824,7 @@ class Opentip
     if revertedX or revertedY
       # One of the positions have been reverted. So get the position again.
       stem = tipJoint if @options.stem
-      position = @getPosition e, tipJoint, targetJoint, stem
+      position = @getPosition tipJoint, targetJoint, stem
 
     {
       position: position
@@ -1175,10 +1206,10 @@ class Opentip
     input?.focus?()
 
   # Calls reposition() everytime the mouse moves
-  _followMousePosition: -> @adapter.observe document.body, "mousemove", @bound.reposition unless @options.fixed
+  _followMousePosition: -> Opentip._observeMousePosition @bound.reposition unless @options.fixed
 
   # Removes observer
-  _stopFollowingMousePosition: -> @adapter.stopObserving document.body, "mousemove", @bound.reposition unless @options.fixed
+  _stopFollowingMousePosition: -> Opentip._stopObservingMousePosition @bound.reposition unless @options.fixed
 
 
   # I thinks those are self explanatory
@@ -1290,6 +1321,31 @@ Opentip::ucfirst = (string) ->
 # Converts a camelized string into a dasherized one
 Opentip::dasherize = (string) ->
   string.replace /([A-Z])/g, (_, character) -> "-#{character.toLowerCase()}"
+
+
+
+
+
+# Mouse position stuff.
+
+mousePositionObservers = [ ]
+mousePosition = { x: 0, y: 0 }
+
+mouseMoved = (e) ->
+  mousePosition = Opentip.adapter.mousePosition e
+  observer() for observer in mousePositionObservers
+
+Opentip.followMousePosition = -> Opentip.adapter.observe document.body, "mousemove", mouseMoved
+
+
+# Called by opentips if they want updates on mouse position
+Opentip._observeMousePosition = (observer) ->
+  mousePositionObservers.push observer
+
+Opentip._stopObservingMousePosition = (removeObserver) ->
+  mousePositionObservers = (observer for observer in mousePositionObservers when observer != removeObserver)
+
+
 
 
 
@@ -1411,7 +1467,7 @@ Opentip.findElements = ->
 # Publicly available
 # ------------------
 
-Opentip.version = "2.3.0"
+Opentip.version = "2.4.0"
 
 Opentip.debug = off
 
@@ -1442,6 +1498,7 @@ Opentip.addAdapter = (adapter) ->
   if firstAdapter
     Opentip.adapter = adapter
     adapter.domReady Opentip.findElements
+    adapter.domReady Opentip.followMousePosition
     firstAdapter = no
 
 Opentip.positions = [
@@ -1524,6 +1581,9 @@ Opentip.styles =
     # - `null` (let Opentip decide)
     hideOn: null
 
+    # Removes all HTML elements from DOM when an Opentip is hidden if true
+    removeElementsOnHide: off
+
     # `OFFSET`
     offset: [ 0, 0 ]
 
@@ -1556,6 +1616,13 @@ Opentip.styles =
     # - `null` (targetJoint is the opposite of tipJoint)
     targetJoint: null 
 
+    # If off and the content gets downloaded with AJAX, it will be downloaded
+    # every time the tooltip is shown. If the content is a function, the function
+    # will be executed every time.
+    cache: on
+
+    # ajaxCache: on # Deprecated in favor of cache.
+
     # AJAX URL
     # Set to `false` if no AJAX or `true` if it's attached to an `<a />`
     # element. In the latter case the `href` attribute will be used.
@@ -1563,9 +1630,6 @@ Opentip.styles =
 
     # Which method should AJAX use.
     ajaxMethod: "GET"
-
-    # If off, the content will be downloaded every time the tooltip is shown.
-    ajaxCache: on
 
     # The message that gets displayed if the content couldn't be downloaded.
     ajaxErrorMessage: "There was a problem downloading the content."

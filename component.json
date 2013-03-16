@@ -1,7 +1,7 @@
 {
   "name": "opentip",
   "repo": "enyo/opentip",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Free opensource tooltip class.",
   "keywords": [ "tooltip" ],
   "dependencies": {
