@@ -70,6 +70,18 @@ describe "Generic adapter", ->
             element = document.createElement "div"
             expect(adapter.tagName element).to.equal "DIV"
 
+        describe "wrap()", ->
+          it "should also handle css selector strings", ->
+            element = document.createElement "div"
+            element.id = "wrap-test"
+            document.body.appendChild element
+
+            wrapped = adapter.wrap "div#wrap-test"
+            unwrapped = adapter.unwrap wrapped
+
+            expect(element).to.be unwrapped
+            document.body.removeChild element
+
         describe "unwrap()", ->
           it "should properly return the unwrapped element", ->
             element = document.createElement "div"
