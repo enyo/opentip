@@ -1654,9 +1654,10 @@ var __slice = [].slice;
           throw new Error("Multiple elements provided.");
         }
         element = this.unwrap(element);
+      } else if (typeof element === "string") {
+        element = $$(element)[0];
       }
-      $(element);
-      return element;
+      return $(element);
     };
 
     Adapter.prototype.unwrap = function(element) {
