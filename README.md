@@ -33,6 +33,13 @@ Supported frameworks are:
 > file. If you are migrating from version **1.x** please refer to the
 > [migration section](#migrating-from-opentip-1x-to-2x)
 
+### Build status
+
+Master [![Build Status](https://travis-ci.org/enyo/opentip.png?branch=master)](https://travis-ci.org/enyo/opentip)  
+
+Develop [![Build Status](https://travis-ci.org/enyo/opentip.png?branch=develop)](https://travis-ci.org/enyo/opentip) 
+
+
 Installation
 ------------
 
@@ -71,7 +78,7 @@ refer to the [installation guide](http://www.opentip.org/installation.html).
 Usage
 -----
 
-*Version 2.4.2*
+*Version 2.4.3*
 
 With HTML data attributes:
 

@@ -3,7 +3,7 @@
 #
 # Uses github.com/component components
 
-$ = require "jquery"
+$ = window.jQuery ? require "jquery"
 
 # The adapter class
 module.exports = class Adapter

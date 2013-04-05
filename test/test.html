@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+
+<div id="mocha"></div>
+
+<script src="vendor/jquery-1.9.1.js"></script>
+<script>jQuery.noConflict();</script>
+
+<script src="vendor/prototype-1.7.1.js"></script>
+<script src="vendor/sinon-1.6.0.js"></script>
+
+<script src="../node_modules/mocha/mocha.js"></script>
+<script src="../node_modules/expect.js/expect.js"></script>
+
+
+<script src="../lib/opentip.js"></script>
+
+<script src="ender.js"></script>
+<script>ender.noConflict();</script>
+
+<!-- Should stay first so it's the default adapter -->
+<script src="../lib/adapter-native.js"></script>
+
+<!-- <script src="../lib/adapter-component.js"></script> -->
+
+<script src="../lib/adapter-ender.js"></script>
+
+<script src="../lib/adapter-jquery.js"></script>
+
+<script src="../lib/adapter-prototype.js"></script>
+
+
+<script>
+  mocha.ui('bdd'); 
+  mocha.reporter('html');
+
+
+
+
+  window.Test = {
+    triggerEvent: function(element, event) {
+      if (document.createEvent) {
+        // dispatch for firefox + others
+        evt = document.createEvent("HTMLEvents");
+        evt.initEvent(event, true, true); // event type,bubbling,cancelable
+        element.dispatchEvent(evt);
+      }
+      else {
+        // dispatch for IE
+        evt = document.createEventObject();
+        element.fireEvent("on#{event}", evt);
+      }
+    },
+    clickElement: function(element) {
+      this.triggerEvent(element, "click");
+    }
+  };
+
+</script>
+
+<script src="test.js"></script>
+
+<script>
+  mocha.globals([ "stats", "report", "opentip-*", "jQuery*" ]);
+  if (window.mochaPhantomJS) { mochaPhantomJS.run(); }
+  else { mocha.run(); }
+</script>

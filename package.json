@@ -1,6 +1,6 @@
 {
   "name": "opentip",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "description": "Free opensource tooltip class.",
   "keywords": [ "tooltip" ],
   "homepage": "http://www.opentip.org",
@@ -37,6 +37,9 @@
       "url": "https://github.com/enyo/opentip.git" 
     } 
   ],
+  "scripts": {
+    "test": "node_modules/mocha-phantomjs/bin/mocha-phantomjs test/test.html"
+  },
   "dependencies": {
     "qwery": "3.x",
     "domready": "0.x",
@@ -45,11 +48,19 @@
     "reqwest": "0.x"
   },
   "devDependencies": {
-    "coffee-script": "*",
-    "stylus": "*",
+    "grunt": "*",
+    "grunt-contrib-stylus": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-coffee": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-curl": "*",
+    "mocha": "*",
+    "expect.js": "*",
+    "mocha-phantomjs": "*",
     "uglify-js2": "*",
-    "request": "*",
-    "nib": "*"
+    "request": "*"
   },
   "ender": "noop"
 }

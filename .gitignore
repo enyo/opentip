@@ -2,4 +2,6 @@ components
 build
 .*
 !.gitignore
+!.travis.yml
 node_modules
+.tmp-*
