@@ -22,9 +22,9 @@ module.exports = (grunt) ->
         dest: "lib/"
         ext: ".js"
 
-      # test:
-      #   files:
-      #     "test/test.js": "test/*.coffee"
+      test:
+        files:
+          "test/test.js": "test/src/*.coffee"
 
     # component:
     #   app:
@@ -55,18 +55,16 @@ module.exports = (grunt) ->
         files: "css/stylus/*.styl"
         tasks: [ "css" ]
         options: nospawn: on
-    #   js:
-    #     files: [
-    #       "src/dropzone.coffee"
-    #     ]
-    #     tasks: [ "js" ]
-    #     options: nospawn: on
-    #   test:
-    #     files: [
-    #       "test/*.coffee"
-    #     ]
-    #     tasks: [ "coffee:test" ]
-    #     options: nospawn: on
+      js:
+        files: "src/*.coffee"
+        tasks: [ "js" ]
+        options: nospawn: on
+      test:
+        files: [
+          "test/src/*.coffee"
+        ]
+        tasks: [ "coffee:test" ]
+        options: nospawn: on
 
     # uglify:
     #   js:
@@ -89,5 +87,7 @@ module.exports = (grunt) ->
   grunt.registerTask "default", [ "downloads" ]
 
   grunt.registerTask "css", "Compile the stylus files to css", [ "stylus" ]
+
+  grunt.registerTask "js", "Compile coffeescript and create all download files", [ "coffee" ]
 
   grunt.registerTask "downloads", [ "css" ]

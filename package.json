@@ -45,11 +45,13 @@
     "reqwest": "0.x"
   },
   "devDependencies": {
-    "coffee-script": "*",
     "grunt": "*",
     "grunt-contrib-stylus": "*",
     "grunt-contrib-watch": "*",
     "grunt-contrib-coffee": "*",
+    "mocha": "*",
+    "expect.js": "*",
+    "mocha-phantomjs": "*",
     "uglify-js2": "*",
     "request": "*"
   },
