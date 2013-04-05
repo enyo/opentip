@@ -67,6 +67,9 @@ class Adapter
   wrap: (element) ->
     if !element
       element = [ ]
+    else if typeof element == "string"
+      element = @find document.body, element
+      element = if element then [ element ] else [ ]
     else if element instanceof NodeList
       element = (el for el in element)
     else if element not instanceof Array

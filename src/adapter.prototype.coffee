@@ -43,8 +43,9 @@ do ->
       if isArrayOrNodeList element
         throw new Error "Multiple elements provided." if element.length > 1
         element = @unwrap element
-      $(element)
-      element
+      else if typeof element == "string"
+        element = $$(element)[0]
+      $ element
 
     # Returns the unwrapped element
     unwrap: (element) ->
