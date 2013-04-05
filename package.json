@@ -37,6 +37,9 @@
       "url": "https://github.com/enyo/opentip.git" 
     } 
   ],
+  "scripts": {
+    "test": "node_modules/mocha-phantomjs/bin/mocha-phantomjs test/test.html"
+  },
   "dependencies": {
     "qwery": "3.x",
     "domready": "0.x",

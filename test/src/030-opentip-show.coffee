@@ -225,13 +225,14 @@ describe "Opentip - Appearing", ->
       opentip.show()
       expect($("#opentip-#{opentip.id}").length).to.be 1
       opentip.hide()
+
       setTimeout (->
         expect($("#opentip-#{opentip.id}").length).to.be 0
         opentip.show()
         expect($("#opentip-#{opentip.id}").length).to.be 1
         opentip = null
         done()
-      ), 10
+      ), 100
 
   describe "visible", ->
     $element = null

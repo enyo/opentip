@@ -978,7 +978,7 @@
           expect($("#opentip-" + opentip.id).length).to.be(1);
           opentip = null;
           return done();
-        }), 10);
+        }), 100);
       });
     });
     return describe("visible", function() {
