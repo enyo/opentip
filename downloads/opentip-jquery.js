@@ -461,6 +461,9 @@ Opentip = (function() {
     this.preparingToShow = true;
     this._setupObservers("-hidden", "-hiding", "showing");
     this._followMousePosition();
+    if (this.options.fixed && !this.options.target) {
+      this.initialMousePosition = mousePosition;
+    }
     this.reposition();
     return this._showTimeoutId = this.setTimeout(this.bound.show, this.options.delay || 0);
   };
@@ -497,6 +500,9 @@ Opentip = (function() {
       zIndex: Opentip.lastZIndex++
     });
     this._setupObservers("-hidden", "-hiding", "-showing", "-visible", "showing", "visible");
+    if (this.options.fixed && !this.options.target) {
+      this.initialMousePosition = mousePosition;
+    }
     this.reposition();
     this.adapter.removeClass(this.container, this["class"].hiding);
     this.adapter.removeClass(this.container, this["class"].hidden);
@@ -687,10 +693,17 @@ Opentip = (function() {
         }
       }
     } else {
-      position = {
-        top: mousePosition.y,
-        left: mousePosition.x
-      };
+      if (this.initialMousePosition) {
+        position = {
+          top: this.initialMousePosition.y,
+          left: this.initialMousePosition.x
+        };
+      } else {
+        position = {
+          top: mousePosition.y,
+          left: mousePosition.x
+        };
+      }
     }
     if (this.options.autoOffset) {
       stemLength = this.options.stem ? this.options.stemLength : 0;
