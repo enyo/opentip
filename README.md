@@ -33,6 +33,9 @@ Supported frameworks are:
 > file. If you are migrating from version **1.x** please refer to the
 > [migration section](#migrating-from-opentip-1x-to-2x)
 
+[![Build Status](https://travis-ci.org/enyo/opentip.png?branch=master)](https://travis-ci.org/enyo/opentip) Master  
+[![Build Status](https://travis-ci.org/enyo/opentip.png?branch=develop)](https://travis-ci.org/enyo/opentip) Develop
+
 Installation
 ------------
 
