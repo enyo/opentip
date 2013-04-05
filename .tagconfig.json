@@ -32,12 +32,6 @@
         "\"version\": \"###\""
       ]
     },
-    {
-      "name": "downloads/generate.coffee",
-      "regexs": [
-        "Opentip v###"
-      ]
-    },
 
 
     {
@@ -122,6 +116,12 @@
       "name": "downloads/opentip-prototype.min.js",
       "regexs": [
         "Opentip\\.version=\"###\"",
+        "Opentip v###"
+      ]
+    },
+    {
+      "name": "Gruntfile.coffee",
+      "regexs": [
         "Opentip v###"
       ]
     }
