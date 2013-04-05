@@ -46,10 +46,12 @@
   },
   "devDependencies": {
     "coffee-script": "*",
-    "stylus": "*",
+    "grunt": "*",
+    "grunt-contrib-stylus": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-coffee": "*",
     "uglify-js2": "*",
-    "request": "*",
-    "nib": "*"
+    "request": "*"
   },
   "ender": "noop"
 }
