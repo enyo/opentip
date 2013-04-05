@@ -362,6 +362,17 @@ describe "Generic adapter", ->
             expect(listener.callCount).to.equal 2 # Shouldn't have changed
 
         describe "ajax()", ->
+          server = null
+
+          before ->
+            server = sinon.fakeServer.create()
+            server.respondWith "GET", "/ajax-test", "success get" # [ 200, { "Content-Type": "text/plain" }, "success get" ]
+            server.respondWith "POST", "/ajax-test", "success post"# [ 200, { "Content-Type": "text/plain" }, "success post" ]
+            server.respondWith "GET", "/ajax-test404", [ 404, { "Content-Type": "text/plain" }, "error" ]
+            server.autoRespond = true
+          after ->
+            server.restore()
+
           it "should throw an exception if no url provided", ->
             try
               adapter.ajax { }
@@ -372,7 +383,7 @@ describe "Generic adapter", ->
           it "should properly download the content with get", (done) ->
             success = sinon.stub()
             adapter.ajax
-              url: "./ajax-test"
+              url: "/ajax-test"
               method: "GET"
               onSuccess: (response) ->
                 expect(response).to.be "success get"
@@ -384,7 +395,7 @@ describe "Generic adapter", ->
           it "should properly download the content with post", (done) ->
             success = sinon.stub()
             adapter.ajax
-              url: "./ajax-test"
+              url: "/ajax-test"
               method: "post"
               onSuccess: (response) ->
                 expect(response).to.be "success post"
@@ -397,7 +408,7 @@ describe "Generic adapter", ->
           it "should properly call onError if error", (done) ->
             errorStub = sinon.stub()
             adapter.ajax
-              url: "./ajax-test404"
+              url: "/ajax-test404"
               method: "GET"
               onSuccess: (response) ->
                 done "Shouldn't have called onSuccess"

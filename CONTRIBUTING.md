@@ -40,63 +40,37 @@ the Opentip directory:
 $ npm install
 ```
 
-This will setup Coffeescript, Stylus and a few other dependencies to build and
-bundle the library.
+This will setup [Grunt](http://gruntjs.com) so you can compile Coffeescript and
+Stylus and generate the download files.
 
-To compile (build) and bundle the library use `cake`.
+To get a list of available commands use `grunt -h`.
 
-Just type the command without any arguments `$ cake` in the source directory to
-list all commands available. It will look something like this:
-
-```bash
-cake docs                 # generate documentation
-cake build                # compile source
-cake watch                # compile and watch
-cake css                  # compile stylus
-cake watchcss             # compile and watch stylus
-```
-
-To compile all source files:
+The most important command is
 
 ```bash
-$ cd path/to/opentip-source 
-$ cake build
+$ grunt watch
 ```
 
-> I prefer pull requests that only changed `.coffee` and `.stylus` files, since
-> I only checkin the `.css` and `.js` files before a release. But I accept
-> pull requests that contain the compiled files as well.
+This will observe any change to a coffeescript or stylus file and compile it
+immediately.
+
+
+> Please only submit commits with changed `.coffee` and `.stylus` files and do
+> *not* include the compiled JS or CSS files.
 
 
 ### Testing
 
-Go into the `test/` directory and install all dependencies. (You only have
-to do this the first time):
-
-```bash
-$ cd test/
-$ npm install
-```
-
-And you're ready to launch the server:
-
-```bash
-$ ./server.js
-```
-
-Now simply visit `http://localhost:3000` in your browser to see the tests.
+To test the library make sure that the source has been compiled with `grunt js`
+(as mentioned before, use `grunt watch` to always stay up to date) and then
+either type `npm test` to run the tests on the command line, or open the
+file `test/test.html` in a browser.
 
 It should look like this:
 
 ![Tests screenshot](https://raw.github.com/enyo/opentip/develop/files/tests.png)
 
-All tests are located in `assets/js/tests/` and are written in coffeescript but
-compiled on the fly.
-
-The webserver also automatically compiles any opentip changes (as well as the
-adapter changes), so don't worry about compiling coffeescript. When the time
-comes to deploy everything, I'll take care of properly bundling all Javascript
-files.
+All tests are located in `test/src` and are written in coffeescript.
 
 If you add a change, please make sure that all tests pass!
 
