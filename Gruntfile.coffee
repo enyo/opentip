@@ -67,7 +67,7 @@ module.exports = (grunt) ->
     uglify:
       options:
         banner: """
-                // Opentip v2.4.3-dev
+                // Opentip v2.4.3
                 // Copyright (c) 2009-2012
                 // www.opentip.org
                 // MIT Licensed
