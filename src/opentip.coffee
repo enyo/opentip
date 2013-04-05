@@ -470,6 +470,7 @@ class Opentip
 
     # Making sure the tooltip is at the right position as soon as it shows
     @_followMousePosition()
+    @initialMousePosition = mousePosition if @options.fixed and !@options.target # Used in reposition
     @reposition()
 
     @_showTimeoutId = @setTimeout @bound.show, @options.delay || 0
@@ -507,6 +508,7 @@ class Opentip
     # removed by -hidden or -hiding
     @_setupObservers "-hidden", "-hiding", "-showing", "-visible", "showing", "visible"
 
+    @initialMousePosition = mousePosition if @options.fixed and !@options.target # Used in reposition
     @reposition()
 
     @adapter.removeClass @container, @class.hiding
@@ -697,8 +699,12 @@ class Opentip
         
 
     else
-      # Follow mouse
-      position = top: mousePosition.y, left: mousePosition.x
+      if @initialMousePosition
+        # When the tooltip is fixed and has no target the position is stored at the beginning.
+        position = top: @initialMousePosition.y, left: @initialMousePosition.x
+      else
+        # Follow mouse
+        position = top: mousePosition.y, left: mousePosition.x
 
     if @options.autoOffset
       stemLength = if @options.stem then @options.stemLength else 0
