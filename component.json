@@ -8,5 +8,5 @@
     "component/jquery": "*"
   },
   "styles": [ "css/opentip.css" ],
-  "scripts": [ "index.js", "lib/opentip.js", "lib/adapter.component.js" ]
+  "scripts": [ "index.js", "lib/opentip.js", "lib/adapter-component.js" ]
 }
