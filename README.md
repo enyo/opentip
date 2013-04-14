@@ -65,6 +65,14 @@ If you prefer [ender] as package manager just install it like this:
 $ ender build opentip
 ```
 
+### Bower
+
+Another package manager supported is [bower]:
+
+```bash
+$ bower install opentip
+```
+
 * * *
 
 You should include opentip's CSS as well. It's in `css/opentip.css`. (Except
@@ -207,3 +215,4 @@ SOFTWARE.
 [excanvas]: https://github.com/enyo/excanvas
 [ender]: http://ender.no.de
 [component]: https://github.com/component
+[bower]: https://github.com/twitter/bower#readme
