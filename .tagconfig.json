@@ -27,6 +27,12 @@
       ]
     },
     {
+      "name": "bower.json",
+      "regexs": [
+        "\"version\": \"###\""
+      ]
+    },
+    {
       "name": "package.json",
       "regexs": [
         "\"version\": \"###\""
