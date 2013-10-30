@@ -67,11 +67,21 @@ $ ender build opentip
 
 ### Bower
 
-Another package manager supported is [bower]:
+Another package manager supported is [bower] (master version only):
 
 ```bash
 $ bower install opentip
 ```
+
+At the time of writting, the stable [bower] version does not support
+different configuration files in order to avoid conflicts with [component].
+But there is support in their master branch. You can install [bower] master 
+branch using this command (global mode):
+
+```bash
+$ npm install -g https://github.com/twitter/bower/tarball/master
+```
+
 
 * * *
 
@@ -86,7 +96,7 @@ refer to the [installation guide](http://www.opentip.org/installation.html).
 Usage
 -----
 
-*Version 2.4.6*
+*Version 2.4.7-dev*
 
 With HTML data attributes:
 

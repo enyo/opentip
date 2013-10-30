@@ -3,6 +3,8 @@ $ = jQuery
 
 if Opentip.adapters.component
   adapters = [ "component" ]
+else if Opentip.adapters.browserify
+  adapters = [ "browserify" ]
 else
   adapters = [
     "native"
@@ -180,8 +182,8 @@ describe "Generic adapter", ->
 
         describe "viewportDimensions()", ->
           it "should return the viewportDimensions", ->
-            
-            origDimensions = 
+
+            origDimensions =
               width: document.documentElement.clientWidth
               height: document.documentElement.clientHeight
 
