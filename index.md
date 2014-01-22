@@ -4,9 +4,8 @@ title: The free tooltip
 ---
 
 <script>
-//<![CDATA[
+
 App.demo();
-//]]>
 </script>
 
 <h1 id="intro" markdown="1">
