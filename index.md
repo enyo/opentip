@@ -3,7 +3,11 @@ layout: default
 title: The free tooltip
 ---
 
-<script type="text/javascript">App.demo();</script>
+<script>
+//<![CDATA[
+App.demo();
+//]]>
+</script>
 
 <h1 id="intro" markdown="1">
   opentip is a javascript tooltip framework  
