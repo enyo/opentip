@@ -233,7 +233,7 @@ Opentip keeps a list for you: `Opentip.tips`.
 So, to hide all tips, just do:
 
 {% highlight js %}
-  for(var i = 0; i < Opentip.tips; i ++) { Opentip.tips[i].hide(); }
+  for(var i = 0; i < Opentip.tips.length; i ++) { Opentip.tips[i].hide(); }
 {% endhighlight %}
 
 
