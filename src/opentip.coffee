@@ -973,21 +973,25 @@
       ctx = backgroundCanvas.getContext "2d"
 
       ctx.setTransform 1, 0, 0, 1, 0, 0
-
       ctx.clearRect 0, 0, backgroundCanvas.width, backgroundCanvas.height
       ctx.beginPath()
+
+      scaleFactor = Opentip.backingScale ctx
+      backingStoreRatio = ctx.webkitBackingStorePixelRatio or ctx.mozBackingStorePixelRatio or ctx.msBackingStorePixelRatio or ctx.oBackingStorePixelRatio or ctx.backingStorePixelRatio or 1
+      ratio = scaleFactor / backingStoreRatio
+
+      if scaleFactor > 1
+        oldWidth = backgroundCanvas.width
+        oldHeight = backgroundCanvas.height
+        backgroundCanvas.width = oldWidth * ratio
+        backgroundCanvas.height = oldHeight * ratio
+        # update the context for the new canvas scale
+        # ctx = backgroundCanvas.getContext "2d"
+        ctx.scale(ratio, ratio)
 
       ctx.fillStyle = @_getColor ctx, @dimensions, @options.background, @options.backgroundGradientHorizontal
       ctx.lineJoin = "miter"
       ctx.miterLimit = 500
-
-      scaleFactor = Opentip.backingScale
-
-      if scaleFactor > 1
-        backgroundCanvas.width = backgroundCanvas.width * scaleFactor
-        backgroundCanvas.height = backgroundCanvas.height * scaleFactor
-        # update the context for the new canvas scale
-        ctx = backgroundCanvas.getContext "2d"
 
       # Since borders are always in the middle and I want them outside I need to
       # draw the actual path half the border width outset.
