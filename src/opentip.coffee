@@ -984,6 +984,15 @@
       ctx.clearRect 0, 0, backgroundCanvas.width, backgroundCanvas.height
       ctx.beginPath()
 
+      # Retina
+      ratio = Opentip.getPixelRatio(ctx) * 2
+      if ratio > 1
+        oldWidth = backgroundCanvas.width
+        oldHeight = backgroundCanvas.height
+        backgroundCanvas.width = oldWidth * ratio
+        backgroundCanvas.height = oldHeight * ratio
+        ctx.scale ratio, ratio
+
       ctx.fillStyle = @_getColor ctx, @dimensions, @options.background, @options.backgroundGradientHorizontal
       ctx.lineJoin = "miter"
       ctx.miterLimit = 500
@@ -1451,6 +1460,18 @@
     if Opentip.debug and console?.debug?
       args.unshift "##{@id} |"
       console.debug args... 
+
+
+
+  # Pixel ratio
+  # -------
+
+  Opentip.getPixelRatio = (ctx) ->
+    backingStore = undefined
+    if "devicePixelRatio" of window
+      backingStore = ctx.backingStorePixelRatio or ctx.webkitBackingStorePixelRatio or ctx.mozBackingStorePixelRatio or ctx.msBackingStorePixelRatio or ctx.oBackingStorePixelRatio or ctx.backingStorePixelRatio or 1
+      return window.devicePixelRatio / backingStore if window.devicePixelRatio > 1
+    1
 
 
 
