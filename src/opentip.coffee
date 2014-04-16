@@ -981,6 +981,14 @@
       ctx.lineJoin = "miter"
       ctx.miterLimit = 500
 
+      scaleFactor = Opentip.backingScale
+
+      if scaleFactor > 1
+        backgroundCanvas.width = backgroundCanvas.width * scaleFactor
+        backgroundCanvas.height = backgroundCanvas.height * scaleFactor
+        # update the context for the new canvas scale
+        ctx = backgroundCanvas.getContext "2d"
+
       # Since borders are always in the middle and I want them outside I need to
       # draw the actual path half the border width outset.
       #
@@ -1349,6 +1357,11 @@
 
   Opentip._stopObservingMousePosition = (removeObserver) ->
     mousePositionObservers = (observer for observer in mousePositionObservers when observer != removeObserver)
+
+  # Retina devices have a pixel ratio of 2
+  Opentip.backingScale = (context) ->
+    return window.devicePixelRatio  if window.devicePixelRatio > 1  if "devicePixelRatio" of window
+    1
 
   # Every position is converted to this class
   class Opentip.Joint
