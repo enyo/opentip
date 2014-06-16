@@ -48,19 +48,19 @@
     "reqwest": "0.x"
   },
   "devDependencies": {
-    "grunt": "*",
-    "grunt-contrib-stylus": "*",
-    "grunt-contrib-watch": "*",
-    "grunt-contrib-coffee": "*",
-    "grunt-contrib-concat": "*",
-    "grunt-contrib-uglify": "*",
-    "grunt-contrib-clean": "*",
-    "grunt-curl": "*",
-    "mocha": "*",
-    "expect.js": "*",
-    "mocha-phantomjs": "*",
-    "uglify-js2": "*",
-    "request": "*"
+    "grunt": "~0.4.5",
+    "grunt-contrib-stylus": "~0.17.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-contrib-coffee": "~0.10.1",
+    "grunt-contrib-concat": "~0.4.0",
+    "grunt-contrib-uglify": "~0.5.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-curl": "~2.0.2",
+    "mocha": "~1.20.1",
+    "expect.js": "~0.3.1",
+    "mocha-phantomjs": "~3.4.1",
+    "uglify-js2": "~2.1.11",
+    "request": "~2.36.0"
   },
   "ender": "noop"
 }
