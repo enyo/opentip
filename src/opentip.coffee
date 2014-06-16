@@ -219,6 +219,10 @@ class Opentip
       options.cache = options.ajaxCache
       delete options.ajaxCache
 
+    # Where to place the container, by default document.body
+    unless options.root?
+      options.root = document.body
+
     @options = options
 
 
@@ -328,10 +332,10 @@ class Opentip
       @closeButtonElement = @adapter.create """<a href="javascript:undefined;" class="#{@class.close}"><span>Close</span></a>"""
       @adapter.append headerElement, @closeButtonElement
 
-    # Now put the tooltip and the canvas in the container and the container in the body
+    # Now put the tooltip and the canvas in the container and the container in options.root
     @adapter.append @container, @backgroundCanvas
     @adapter.append @container, @tooltipElement
-    @adapter.append document.body, @container
+    @adapter.append @options.root, @container
 
     # Makes sure that the content is redrawn.
     @_newContent = yes
