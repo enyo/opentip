@@ -205,6 +205,17 @@ describe "Opentip", ->
       expect(opentip1.options.cache).to.not.be.ok()
       expect(opentip2.options.cache).to.be.ok()
 
+    it "should throw an exception if there is more than one element", ->
+      elements = $("li")
+
+      expect( -> new Opentip elements).to.throwException "You can't call Opentip on multiple elements."
+
+    it "should throw an exception if no elements were given", ->
+      selector = "#this-element-definitely-doesnt-exist"
+      element = $(selector)
+
+      expect( -> new Opentip selector).to.throwException "#{selector} is not a valid element."
+
   describe "init()", ->
     describe "showOn == creation", ->
       element = document.createElement "div"

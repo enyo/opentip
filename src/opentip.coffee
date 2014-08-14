@@ -91,7 +91,7 @@ class Opentip
     @triggerElement = @adapter.wrap element
 
     throw new Error "You can't call Opentip on multiple elements." if @triggerElement.length > 1
-    throw new Error "Invalid element." if @triggerElement.length < 1
+    throw new Error "#{element} is not a valid element." if @triggerElement.length < 1
 
     # AJAX
     @loaded = no
