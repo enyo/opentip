@@ -874,6 +874,9 @@ class Opentip
     @debug "Drawing background."
 
     @redraw = off
+    
+    # Corners Dictionary(Array)
+    cornersArray = ['topRight', 'bottomRight', 'bottomLeft', 'topLeft']
 
     # Take care of the classes
     if @currentStem
@@ -1033,8 +1036,11 @@ class Opentip
         # Firefox 3.6 requires the last boolean parameter (anticlockwise)
         ctx.arc hb-offset[0], -hb+offset[1], @options.closeButtonRadius, -(Math.PI / 2 + angle1), angle2, no
       else
-        ctx.lineTo -@options.borderRadius + hb, -hb
-        ctx.quadraticCurveTo hb, -hb, hb, @options.borderRadius - hb
+        if Array.isArray(@options.straightenedCorners) && @options.straightenedCorners.indexOf(cornersArray[i]) > -1
+            ctx.lineTo hb, -hb
+        else
+            ctx.lineTo -@options.borderRadius + hb, -hb
+            ctx.quadraticCurveTo hb, -hb, hb, @options.borderRadius - hb
 
 
     # Start drawing without caring about the shadows or stems
@@ -1692,6 +1698,9 @@ Opentip.styles =
 
     # Shadow color...
     shadowColor: "rgba(0, 0, 0, 0.1)"
+    
+    # Straightened Corners. Add the options to make certain corner(s) straightend (not rounded)
+    straightenedCorners: []
 
   glass:
     extends: "standard"
